@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Seed Sample Courses (dev tool)</title>
+</head>
+<body style="font-family:sans-serif;padding:40px;max-width:600px;margin:0 auto;">
+<h2>Seed Sample Courses</h2>
+<p style="color:#666;font-size:14px;line-height:1.6;">
+  Dev-only helper: creates sample courses <strong>with real lessons</strong> in Firestore,
+  so <code>courses.html</code>, <code>lesson.html</code>, and progress tracking all have
+  something real to work with. You must be logged in (any account) for this to work, since
+  course creation requires <code>instructorId == request.auth.uid</code>. This is safe to
+  run more than once — it always adds new course docs (it doesn't check for duplicates), so
+  only run it once or twice. Delete this file once you have real courses from real instructors.
+</p>
+<button id="seedBtn" style="padding:12px 20px;font-size:14px;font-weight:600;border-radius:8px;border:none;background:#5B3FD6;color:#fff;cursor:pointer;">Seed Sample Courses</button>
+<p id="status" style="margin-top:16px;font-size:13px;white-space:pre-line;"></p>
+
+<script type="module">
+  import { auth, watchAuth } from './auth.js';
+  import { createCourse } from './courses.js';
+  import { createLesson } from './lessons.js';
+
+  const status = document.getElementById('status');
+  let uid = null;
+  watchAuth(user => {
+    uid = user ? user.uid : null;
+    status.textContent = user ? `Logged in as ${user.email}` : 'Not logged in — log in first, then reload this page.';
+  });
+
+  // Placeholder video — public domain sample clip, safe to use as a stand-in
+  // until instructors upload their own lesson videos.
+  const SAMPLE_VIDEO = 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+
+  const sample = [
+    {
+      title: 'Professional Makeup Artistry',
+      category: 'Beauty & Cosmetics',
+      price: 25000,
+      thumbGradient: 'linear-gradient(160deg,#F4A6C1,#E96D95)',
+      description: 'Learn the fundamentals of professional makeup application, from everyday client looks to full glam for weddings and events. Covers skin prep, color theory, contouring, and building a starter kit on a budget — everything you need to start taking paying clients in Nigeria.',
+      lessons: [
+        'Understanding Skin Types & Prepping the Face',
+        'Color Theory for Makeup Artists',
+        'Everyday Natural Look',
+        'Full Glam: Foundation to Setting Spray',
+        'Bridal Makeup Fundamentals',
+        'Building Your Client Base & Pricing Your Work'
+      ]
+    },
+    {
+      title: 'Nail Tech & Gel Extensions',
+      category: 'Beauty & Cosmetics',
+      price: 15000,
+      thumbGradient: 'linear-gradient(160deg,#E9A6D8,#B85FC7)',
+      description: 'A hands-on course in gel nail extensions, nail art, and salon hygiene standards. Learn the tools of the trade, common client requests, and how to price and package your services for a home-based or salon nail business.',
+      lessons: [
+        'Tools, Hygiene & Setting Up Your Station',
+        'Gel Extension Basics',
+        'Shaping & Structure',
+        'Simple Nail Art Techniques',
+        'Pricing & Client Booking'
+      ]
+    },
+    {
+      title: 'Catering & Event Management',
+      category: 'Food & Catering',
+      price: 18000,
+      thumbGradient: 'linear-gradient(160deg,#F2C879,#D9842E)',
+      description: 'Turn your cooking skills into a catering business. This course covers menu planning for Nigerian events, bulk cooking techniques, costing and quotations, vendor logistics, and how to manage a team on event day.',
+      lessons: [
+        'Menu Planning for Nigerian Events',
+        'Bulk Cooking Techniques & Food Safety',
+        'Costing, Quotations & Profit Margins',
+        'Sourcing Ingredients & Vendor Relationships',
+        'Managing Staff on Event Day',
+        'Marketing Your Catering Business'
+      ]
+    },
+    {
+      title: 'Small Chops & Party Snacks Business',
+      category: 'Food & Catering',
+      price: 12000,
+      thumbGradient: 'linear-gradient(160deg,#F0B15C,#C96A1E)',
+      description: "A focused course on Nigeria's most in-demand party food category — small chops. Learn recipes, batch production, packaging, and how to build a steady stream of weekend orders.",
+      lessons: [
+        'Core Small Chops Recipes',
+        'Batch Production for Large Orders',
+        'Packaging & Presentation',
+        'Getting Your First Regular Clients'
+      ]
+    },
+    {
+      title: 'Digital Marketing Mastery',
+      category: 'Digital Business',
+      price: 22000,
+      thumbGradient: 'linear-gradient(160deg,#7C8CF0,#3957D6)',
+      description: 'A practical, no-fluff introduction to digital marketing for Nigerian businesses and freelancers: social media strategy, running paid ads on a small budget, basic copywriting, and simple analytics to know what is actually working.',
+      lessons: [
+        'Digital Marketing Foundations',
+        'Building a Content Strategy',
+        'Running Ads on a Small Budget',
+        'Copywriting That Converts',
+        'Reading Your Analytics',
+        'Landing Your First Clients'
+      ]
+    },
+    {
+      title: 'Freelancing on Upwork & Fiverr',
+      category: 'Digital Business',
+      price: 20000,
+      thumbGradient: 'linear-gradient(160deg,#6E7EE0,#2E4BC7)',
+      description: 'Everything you need to start earning in dollars as a Nigerian freelancer — setting up winning profiles, writing proposals that get replies, pricing your services, and handling international clients and payments.',
+      lessons: [
+        'Setting Up a Profile That Gets Hired',
+        'Writing Proposals That Get Replies',
+        'Pricing Your Services',
+        'Handling International Clients & Payments',
+        'Avoiding Scams & Staying Protected'
+      ]
+    },
+    {
+      title: 'Content Creation & YouTube Growth',
+      category: 'Creator Economy',
+      price: 0,
+      thumbGradient: 'linear-gradient(160deg,#8C7AE6,#5B3FD6)',
+      description: 'Free introductory course on building an audience as a content creator — from choosing a niche and filming with just a phone, to editing, thumbnails, and understanding the algorithm on TikTok, Instagram, and YouTube.',
+      lessons: [
+        'Choosing Your Niche',
+        'Filming Well With Just a Phone',
+        'Editing Basics for Short-Form Video',
+        'Thumbnails & Titles That Get Clicks',
+        'Understanding the Algorithm',
+        'Turning an Audience Into Income'
+      ]
+    },
+    {
+      title: 'Personal Branding for Creators',
+      category: 'Creator Economy',
+      price: 10000,
+      thumbGradient: 'linear-gradient(160deg,#A08CF0,#6A4FD9)',
+      description: 'Learn how to build a personal brand that attracts brand deals and opportunities — defining your voice, consistent visual identity, storytelling, and pitching yourself to brands with confidence.',
+      lessons: [
+        'Defining Your Voice & Story',
+        'Building a Consistent Visual Identity',
+        'Storytelling for Social Media',
+        'Pitching Yourself to Brands'
+      ]
+    }
+  ];
+
+  document.getElementById('seedBtn').addEventListener('click', async () => {
+    if(!uid){ status.textContent = 'Please log in first.'; return; }
+    const btn = document.getElementById('seedBtn');
+    btn.disabled = true;
+    let log = '';
+
+    for(const c of sample){
+      log += `Creating "${c.title}"…\n`;
+      status.textContent = log;
+
+      const courseId = await createCourse({
+        title: c.title,
+        description: c.description,
+        category: c.category,
+        price: c.price,
+        lessonsCount: c.lessons.length,
+        thumbGradient: c.thumbGradient,
+        instructorId: uid,
+        instructorName: 'Demo Instructor'
+      });
+
+      for(let i = 0; i < c.lessons.length; i++){
+        await createLesson(courseId, {
+          title: c.lessons[i],
+          videoUrl: SAMPLE_VIDEO,
+          order: i + 1,
+          durationSeconds: 300 + i * 60,
+          resources: []
+        });
+      }
+
+      log += `  → added ${c.lessons.length} lessons\n`;
+      status.textContent = log;
+    }
+
+    log += '\nDone! Go check courses.html — enroll in a course and progress should now track correctly.';
+    status.textContent = log;
+    btn.disabled = false;
+  });
+</script>
+</body>
+</html>

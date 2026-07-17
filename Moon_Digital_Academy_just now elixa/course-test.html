@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Test — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+  --sidebar-w:240px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--gradient);color:#fff;display:flex;flex-direction:column;padding:22px 16px;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .25s ease;}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 26px;}
+.sb-logo{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;flex-shrink:0;}
+.sb-logo-img{height:26px;width:auto;display:block;}
+.sb-brand-text .name{font-size:13px;font-weight:700;line-height:1.2;}
+.sb-brand-text .tag{font-size:9.5px;color:var(--gold);font-weight:700;letter-spacing:.05em;}
+.sb-nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+.sb-link{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;font-size:13px;font-weight:600;color:rgba(255,255,255,.68);}
+.sb-link svg{width:18px;height:18px;flex-shrink:0;}
+.sb-link:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-link.active{background:rgba(255,255,255,.14);color:#fff;}
+.sb-divider{height:1px;background:rgba(255,255,255,.12);margin:14px 4px;}
+.sb-foot{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;background:rgba(255,255,255,.08);margin-top:6px;}
+.sb-foot-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#1A1330;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;}
+.sb-foot-text .n{font-size:12px;font-weight:700;}
+.sb-foot-text .r{font-size:10px;color:rgba(255,255,255,.6);}
+.sb-close{display:none;position:absolute;top:20px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;align-items:center;justify-content:center;}
+.sb-close svg{width:15px;height:15px;}
+
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:14px 28px;}
+.hamburger{display:none;width:38px;height:38px;border-radius:10px;background:var(--bg-lav);align-items:center;justify-content:center;color:var(--navy);flex-shrink:0;}
+.hamburger svg{width:18px;height:18px;}
+.page-title{font-size:17px;}
+.page-sub{font-size:12px;color:var(--grey);margin-top:2px;}
+.overlay-nav{display:none;position:fixed;inset:0;background:rgba(20,22,58,.45);z-index:30;}
+
+.wrap{max-width:760px;margin:0 auto;padding:32px 24px 70px;}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:18px;}
+.back svg{width:14px;height:14px;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:16px;}
+.q-num{font-size:11px;font-weight:700;color:var(--violet);margin-bottom:8px;}
+.q-text{font-size:15px;font-weight:600;margin-bottom:14px;}
+.option{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1.5px solid var(--border);border-radius:11px;margin-bottom:9px;cursor:pointer;transition:.15s;}
+.option:hover{border-color:var(--violet);}
+.option.selected{border-color:var(--violet);background:var(--bg-lav);}
+.option input{accent-color:var(--violet);width:16px;height:16px;flex-shrink:0;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:12px;font-weight:600;font-size:14px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+.state-box{text-align:center;padding:70px 20px;color:var(--grey);}
+.hidden{display:none;}
+
+.result-badge{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.result-badge.pass{background:var(--green-bg);color:var(--green);}
+.result-badge.fail{background:var(--red-bg);color:var(--red);}
+.result-badge svg{width:30px;height:30px;}
+
+@media (max-width:860px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.3);}
+  .sidebar.open ~ .overlay-nav{display:block;}
+  .sb-close{display:flex;}
+  .main{margin-left:0;}
+  .hamburger{display:flex;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <button class="sb-close" id="sbClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="sb-brand">
+      <img src="logo-white.png" alt="Moon Digital Academy" class="sb-logo-img">
+      <div class="sb-brand-text"><div class="tag">STUDENT PORTAL</div></div>
+    </div>
+    <nav class="sb-nav">
+      <a href="dashboard-student.html" class="sb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>Dashboard
+      </a>
+      <a href="my-courses.html" class="sb-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>My Courses
+      </a>
+      <a href="courses.html" class="sb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>View Catalog
+      </a>
+    </nav>
+    <div class="sb-divider"></div>
+    <a href="index.html" class="sb-link" style="margin-bottom:2px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Site
+    </a>
+    <button id="logoutBtn" class="sb-link" style="margin-bottom:10px;width:100%;text-align:left;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log Out
+    </button>
+    <div class="sb-foot">
+      <div class="sb-foot-avatar" id="sbFootAvatar">–</div>
+      <div class="sb-foot-text"><div class="n" id="sbFootName">Loading…</div><div class="r">Student</div></div>
+    </div>
+  </aside>
+  <div class="overlay-nav" id="overlayNav"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div>
+        <div class="page-title">Final Test</div>
+        <div class="page-sub" id="courseTitleSub">Loading…</div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <a href="my-courses.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to My Courses</a>
+
+      <div id="loadingState" class="state-box">Loading test…</div>
+
+      <div id="noTestState" class="state-box hidden">
+        <h4 style="color:var(--navy);margin-bottom:6px;">No final test yet</h4>
+        <p>The instructor hasn't set up a test for this course yet.</p>
+      </div>
+
+      <div id="testForm" class="hidden"></div>
+
+      <button class="btn btn-violet" id="submitTestBtn" style="width:100%;display:none;">Submit Answers</button>
+
+      <div id="resultView" class="hidden">
+        <div class="card" style="text-align:center;">
+          <div class="result-badge" id="resultBadge"></div>
+          <h3 id="resultTitle" style="font-size:19px;margin-bottom:6px;"></h3>
+          <p id="resultDetail" style="color:var(--grey);font-size:13.5px;margin-bottom:20px;"></p>
+          <div id="resultActions"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { watchAuth, auth, db, logout } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getFinalTest, submitTestAttempt, getTestAttempt } from './finalTest.js';
+  import { issueCertificateIfPassed } from './certificates.js';
+  import { getCourse } from './courses.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+  let currentUser = null;
+  let test = null;
+  let course = null;
+
+  const sidebar = document.getElementById('sidebar');
+  const overlayNav = document.getElementById('overlayNav');
+  document.getElementById('hamburger').addEventListener('click', () => sidebar.classList.add('open'));
+  document.getElementById('sbClose').addEventListener('click', () => sidebar.classList.remove('open'));
+  overlayNav.addEventListener('click', () => sidebar.classList.remove('open'));
+  document.getElementById('logoutBtn').addEventListener('click', async () => { await logout(); window.location.href = 'login.html'; });
+
+  function initials(firstName, lastName){
+    return ((firstName || '').charAt(0) + (lastName || '').charAt(0)).toUpperCase() || '–';
+  }
+
+  function renderQuestions(){
+    const wrap = document.getElementById('testForm');
+    wrap.innerHTML = test.questions.map((q, qi) => `
+      <div class="card">
+        <div class="q-num">Question ${qi + 1} of ${test.questions.length}</div>
+        <div class="q-text">${q.question}</div>
+        ${q.options.map((opt, oi) => `
+          <label class="option" data-q="${qi}" data-o="${oi}">
+            <input type="radio" name="q${qi}" value="${oi}">
+            <span>${opt}</span>
+          </label>`).join('')}
+      </div>`).join('');
+
+    wrap.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        const qi = opt.getAttribute('data-q');
+        wrap.querySelectorAll(`.option[data-q="${qi}"]`).forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input').checked = true;
+      });
+    });
+  }
+
+  function collectAnswers(){
+    return test.questions.map((q, qi) => {
+      const checked = document.querySelector(`input[name="q${qi}"]:checked`);
+      return checked ? Number(checked.value) : -1;
+    });
+  }
+
+  function showResult({ score, passed, correct, total }){
+    document.getElementById('testForm').classList.add('hidden');
+    document.getElementById('submitTestBtn').style.display = 'none';
+    const resultView = document.getElementById('resultView');
+    resultView.classList.remove('hidden');
+    document.getElementById('resultBadge').className = 'result-badge ' + (passed ? 'pass' : 'fail');
+    document.getElementById('resultBadge').innerHTML = passed
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+    document.getElementById('resultTitle').textContent = passed ? 'You passed!' : 'Not quite there yet';
+    document.getElementById('resultDetail').textContent = `You scored ${score}% (${correct} of ${total} correct). Passing score is ${test.passingScore}%.`;
+    document.getElementById('resultActions').innerHTML = passed
+      ? `<a href="certificate.html?course=${courseId}" class="btn btn-violet" style="width:100%;">View Your Certificate</a>`
+      : `<button class="btn btn-violet" id="retryBtn" style="width:100%;">Try Again</button>`;
+    if(!passed){
+      document.getElementById('retryBtn').addEventListener('click', () => {
+        resultView.classList.add('hidden');
+        document.getElementById('testForm').classList.remove('hidden');
+        document.getElementById('submitTestBtn').style.display = 'inline-flex';
+      });
+    }
+  }
+
+  document.getElementById('submitTestBtn').addEventListener('click', async function(){
+    const answers = collectAnswers();
+    if(answers.includes(-1)){
+      alert('Please answer every question before submitting.');
+      return;
+    }
+    this.disabled = true;
+    this.textContent = 'Grading…';
+    try{
+      const result = await submitTestAttempt(currentUser.uid, courseId, answers);
+      if(result.passed && (!course.certificateSettings || course.certificateSettings.enabled !== false)){
+        const certSettings = course.certificateSettings || {};
+        await issueCertificateIfPassed(currentUser.uid, courseId, {
+          studentName: document.getElementById('sbFootName').textContent,
+          courseTitle: course.title,
+          instructorName: course.instructorName,
+          credentialTitle: certSettings.credentialTitle || '',
+          signatoryName: certSettings.signatoryName || course.instructorName,
+          score: result.score
+        });
+      }
+      showResult(result);
+    }catch(err){
+      alert('Something went wrong grading your test. Please try again.');
+    }finally{
+      this.disabled = false;
+      this.textContent = 'Submit Answers';
+    }
+  });
+
+  watchAuth(async function(user){
+    if(!user){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+    currentUser = user;
+    const profileSnap = await getDoc(doc(db, "users", user.uid));
+    const profile = profileSnap.exists() ? profileSnap.data() : { firstName: '', lastName: '' };
+    document.getElementById('sbFootAvatar').textContent = initials(profile.firstName, profile.lastName);
+    document.getElementById('sbFootName').textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
+
+    if(!courseId){ window.location.href = 'my-courses.html'; return; }
+
+    course = await getCourse(courseId);
+    document.getElementById('courseTitleSub').textContent = course ? course.title : '';
+
+    test = await getFinalTest(courseId);
+    document.getElementById('loadingState').classList.add('hidden');
+
+    if(!test || !test.questions || test.questions.length === 0){
+      document.getElementById('noTestState').classList.remove('hidden');
+      return;
+    }
+
+    const priorAttempt = await getTestAttempt(user.uid, courseId);
+    if(priorAttempt && priorAttempt.passed){
+      showResult({ score: priorAttempt.score, passed: true, correct: Math.round(priorAttempt.score / 100 * test.questions.length), total: test.questions.length });
+      return;
+    }
+
+    document.getElementById('testForm').classList.remove('hidden');
+    document.getElementById('submitTestBtn').style.display = 'inline-flex';
+    renderQuestions();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button,input{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+input{cursor:text;}
+.wrap{max-width:900px;margin:0 auto;padding:28px 24px 70px;}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:20px;}
+.back svg{width:14px;height:14px;}
+
+.steps{display:flex;align-items:center;gap:8px;margin-bottom:28px;}
+.step-dot{width:26px;height:26px;border-radius:50%;background:var(--border);color:var(--grey);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-dot.active{background:var(--violet);color:#fff;}
+.step-dot.done{background:var(--green);color:#fff;}
+.step-line{flex:1;height:2px;background:var(--border);}
+.step-label{font-size:11.5px;color:var(--grey);white-space:nowrap;}
+
+.layout{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start;}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;}
+
+/* Order summary sidebar */
+.order-card h5{font-size:13px;margin-bottom:16px;}
+.order-course{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.order-thumb{width:56px;height:56px;border-radius:10px;flex-shrink:0;}
+.order-title{font-size:13px;font-weight:700;margin-bottom:3px;}
+.order-instructor{font-size:11.5px;color:var(--grey);}
+.order-row{display:flex;justify-content:space-between;font-size:12.5px;color:var(--grey);margin-bottom:10px;}
+.order-row.total{font-size:15px;font-weight:700;color:var(--navy);border-top:1px solid var(--border);padding-top:14px;margin-top:6px;}
+
+/* Payment methods */
+.pm-option{display:flex;align-items:center;gap:12px;border:1.5px solid var(--border);border-radius:13px;padding:15px 16px;margin-bottom:11px;cursor:pointer;transition:.15s;}
+.pm-option.selected{border-color:var(--violet);background:#EDE9FB;}
+.pm-option svg{width:20px;height:20px;color:var(--grey);flex-shrink:0;}
+.pm-option.selected svg{color:var(--violet);}
+.pm-option .pm-title{font-size:13.5px;font-weight:700;}
+.pm-option .pm-sub{font-size:11.5px;color:var(--grey);}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;transition:.15s;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:hover{background:var(--violet-dark);}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.spinner.show{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.bank-details{background:var(--bg-lav);border-radius:12px;padding:16px;margin:16px 0;}
+.bank-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;}
+.bank-row .lbl{color:var(--grey);}
+.bank-row .val{font-weight:700;}
+.notice{font-size:11.5px;color:var(--grey);line-height:1.6;background:#FCE9C9;color:#8A5A1C;padding:10px 12px;border-radius:9px;margin-bottom:16px;}
+
+/* Processing / success / error states */
+.state-panel{text-align:center;padding:50px 24px;}
+.state-icon{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.state-icon svg{width:30px;height:30px;}
+.state-panel h3{font-size:19px;margin-bottom:8px;}
+.state-panel p{font-size:13.5px;color:var(--grey);line-height:1.6;max-width:380px;margin:0 auto;}
+.processing-spinner{width:44px;height:44px;border:4px solid var(--border);border-top-color:var(--violet);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px;}
+
+/* Receipt */
+.receipt{max-width:420px;margin:0 auto;text-align:left;background:var(--bg-lav);border-radius:14px;padding:22px;margin-top:24px;}
+.receipt-row{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px dashed var(--border);}
+.receipt-row:last-child{border-bottom:none;}
+.receipt-row .lbl{color:var(--grey);}
+.receipt-row .val{font-weight:700;}
+.receipt-actions{display:flex;gap:10px;margin-top:20px;max-width:420px;margin-left:auto;margin-right:auto;}
+
+.hidden{display:none;}
+@media print{
+  .no-print{display:none;}
+}
+@media (max-width:760px){
+  .layout{grid-template-columns:1fr;}
+  .layout .order-card{order:-1;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+
+<div class="wrap">
+  <a href="#" id="backLink" class="back no-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Course</a>
+
+  <h1 style="font-size:20px;margin-bottom:6px;">Checkout</h1>
+  <p style="font-size:13px;color:var(--grey);margin-bottom:20px;">You're 3 quick steps away from starting your course — pick how you'd like to pay, confirm the details, and you're in.</p>
+
+  <div class="steps no-print">
+    <div class="step-dot active" id="stepDot1">1</div><div class="step-label">Method</div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="stepDot2">2</div><div class="step-label">Review</div>
+    <div class="step-line"></div>
+    <div class="step-dot" id="stepDot3">3</div><div class="step-label">Done</div>
+  </div>
+
+  <div id="loadingState" class="state-panel">Loading order…</div>
+
+  <div id="checkoutContent" class="hidden">
+    <div class="layout">
+      <div>
+        <!-- Step 1: Method selection -->
+        <div class="card" id="methodStep">
+          <h4 style="font-size:15px;margin-bottom:16px;">Select Payment Method</h4>
+          <div class="pm-option selected" data-method="paystack">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            <div><div class="pm-title">Card — Paystack</div><div class="pm-sub">Pay with debit/credit card via Paystack</div></div>
+          </div>
+          <div class="pm-option" data-method="flutterwave">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            <div><div class="pm-title">Card — Flutterwave</div><div class="pm-sub">Pay with debit/credit card via Flutterwave</div></div>
+          </div>
+          <div class="pm-option" data-method="bank_transfer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6"/></svg>
+            <div><div class="pm-title">Bank Transfer</div><div class="pm-sub">Pay directly from your bank</div></div>
+          </div>
+          <div class="notice" style="margin-top:14px;">Card payments here are simulated for now — no live Paystack/Flutterwave account is connected yet.</div>
+          <button class="btn btn-violet" id="toReviewBtn" style="margin-top:6px;">Continue to Review</button>
+        </div>
+
+        <!-- Step 2: Review -->
+        <div class="card hidden" id="reviewStep">
+          <h4 style="font-size:15px;margin-bottom:16px;">Review &amp; Confirm</h4>
+          <div class="order-row"><span>Course</span><span id="reviewCourseTitle" style="font-weight:700;color:var(--navy);"></span></div>
+          <div class="order-row"><span>Payment Method</span><span id="reviewMethod" style="font-weight:700;color:var(--navy);"></span></div>
+          <div class="order-row total"><span>Total Due</span><span id="reviewTotal"></span></div>
+
+          <div id="bankDetailsBlock" class="hidden">
+            <div class="bank-details">
+              <div class="bank-row"><span class="lbl">Bank Name</span><span class="val">Moon Trust Bank</span></div>
+              <div class="bank-row"><span class="lbl">Account Name</span><span class="val">Moon Digital Academy Ltd</span></div>
+              <div class="bank-row"><span class="lbl">Account Number</span><span class="val">0123456789</span></div>
+              <div class="bank-row"><span class="lbl">Reference</span><span class="val" id="bankRefLabel"></span></div>
+            </div>
+            <p style="font-size:11.5px;color:var(--grey);margin-bottom:16px;">Use the reference above so we can match your transfer. Your enrollment activates once we confirm receipt — usually within 1 business day.</p>
+          </div>
+
+          <p style="font-size:11.5px;color:var(--grey);margin:14px 0 12px;" id="confirmDisclaimer">By confirming, you agree to pay the amount above for lifetime access to this course.</p>
+
+          <button class="btn btn-violet" id="payNowBtn">
+            <span class="spinner" id="payNowSpinner"></span>
+            <span id="payNowLabel">Confirm &amp; Pay</span>
+          </button>
+          <button class="btn btn-outline" id="backToMethodBtn" style="margin-top:10px;">Back</button>
+        </div>
+
+        <!-- Processing -->
+        <div class="card hidden" id="processingStep">
+          <div class="state-panel">
+            <div class="processing-spinner"></div>
+            <h3>Processing your payment…</h3>
+            <p>Please don't close this page.</p>
+          </div>
+        </div>
+
+        <!-- Success / Receipt -->
+        <div class="card hidden" id="successStep">
+          <div class="state-panel">
+            <div class="state-icon" style="background:var(--green-bg);color:var(--green);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+            <h3 id="successHeadline">Payment Successful!</h3>
+            <p id="successSub">You're enrolled. Here's your receipt.</p>
+
+            <div class="receipt" id="receiptBlock">
+              <div class="receipt-row"><span class="lbl">Reference</span><span class="val" id="receiptRef"></span></div>
+              <div class="receipt-row"><span class="lbl">Course</span><span class="val" id="receiptCourse"></span></div>
+              <div class="receipt-row"><span class="lbl">Amount</span><span class="val" id="receiptAmount"></span></div>
+              <div class="receipt-row"><span class="lbl">Method</span><span class="val" id="receiptMethod"></span></div>
+              <div class="receipt-row"><span class="lbl">Date</span><span class="val" id="receiptDate"></span></div>
+              <div class="receipt-row"><span class="lbl">Status</span><span class="val" id="receiptStatus"></span></div>
+            </div>
+            <div class="receipt-actions no-print">
+              <button class="btn btn-outline" id="printReceiptBtn">Print / Save PDF</button>
+              <a href="dashboard-student.html" class="btn btn-violet" id="goToDashboardBtn">Go to Dashboard</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="card hidden" id="errorStep">
+          <div class="state-panel">
+            <div class="state-icon" style="background:var(--red-bg);color:var(--red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg></div>
+            <h3>Payment Failed</h3>
+            <p id="errorSub">Something went wrong processing your payment. You have not been charged.</p>
+            <button class="btn btn-violet" id="retryBtn" style="margin-top:20px;max-width:220px;margin-left:auto;margin-right:auto;">Try Again</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card order-card">
+        <h5>Order Summary</h5>
+        <div class="order-course">
+          <div class="order-thumb" id="orderThumb"></div>
+          <div>
+            <div class="order-title" id="orderTitle"></div>
+            <div class="order-instructor" id="orderInstructor"></div>
+          </div>
+        </div>
+        <div class="order-row"><span>Course price</span><span id="orderPrice"></span></div>
+        <div class="order-row"><span>Quantity</span><span>1</span></div>
+        <div class="order-row total"><span>Total</span><span id="orderTotal"></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { watchAuth } from './auth.js';
+  import { getCourse, isEnrolled, courseThumbStyle } from './courses.js';
+  import { createPayment, simulateCardProcessing, completePayment, failPayment } from './payments.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+  let currentUser = null;
+  let course = null;
+  let selectedMethod = 'paystack';
+  let activePayment = null;
+
+  document.getElementById('backLink').href = courseId ? `course-detail.html?course=${courseId}` : 'courses.html';
+
+  if(!courseId){
+    document.getElementById('loadingState').textContent = 'No course specified.';
+  } else {
+    watchAuth(async function(user){
+      if(!user){
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+      currentUser = user;
+      await init();
+    });
+  }
+
+  async function init(){
+    course = await getCourse(courseId);
+    if(!course){ document.getElementById('loadingState').textContent = 'Course not found.'; return; }
+
+    if(course.price <= 0){
+      // Free courses don't need checkout — this page shouldn't normally be reached for them.
+      window.location.href = `course-detail.html?course=${courseId}`;
+      return;
+    }
+
+    const alreadyIn = await isEnrolled(currentUser.uid, courseId);
+    if(alreadyIn){
+      window.location.href = `lesson.html?course=${courseId}`;
+      return;
+    }
+
+    const priceLabel = '₦' + Number(course.price).toLocaleString();
+    document.getElementById('orderThumb').style.cssText += courseThumbStyle(course);
+    document.getElementById('orderTitle').textContent = course.title;
+    document.getElementById('orderInstructor').textContent = 'by ' + course.instructorName;
+    document.getElementById('orderPrice').textContent = priceLabel;
+    document.getElementById('orderTotal').textContent = priceLabel;
+
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('checkoutContent').classList.remove('hidden');
+  }
+
+  function setStep(step){
+    ['methodStep','reviewStep','processingStep','successStep','errorStep'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    document.getElementById(step).classList.remove('hidden');
+    const dotMap = { methodStep: 1, reviewStep: 2, processingStep: 2, successStep: 3, errorStep: 2 };
+    const active = dotMap[step];
+    [1,2,3].forEach(n => {
+      const dot = document.getElementById('stepDot' + n);
+      dot.classList.remove('active','done');
+      if(n < active) dot.classList.add('done');
+      else if(n === active) dot.classList.add('active');
+    });
+  }
+
+  document.querySelectorAll('.pm-option').forEach(function(opt){
+    opt.addEventListener('click', function(){
+      document.querySelectorAll('.pm-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      selectedMethod = opt.getAttribute('data-method');
+    });
+  });
+
+  const methodLabels = { paystack: 'Card — Paystack', flutterwave: 'Card — Flutterwave', bank_transfer: 'Bank Transfer' };
+
+  document.getElementById('toReviewBtn').addEventListener('click', function(){
+    document.getElementById('reviewCourseTitle').textContent = course.title;
+    document.getElementById('reviewMethod').textContent = methodLabels[selectedMethod];
+    document.getElementById('reviewTotal').textContent = '₦' + Number(course.price).toLocaleString();
+    document.getElementById('bankDetailsBlock').classList.toggle('hidden', selectedMethod !== 'bank_transfer');
+    document.getElementById('payNowLabel').textContent = selectedMethod === 'bank_transfer' ? "I've Made This Transfer" : 'Confirm & Pay';
+    document.getElementById('confirmDisclaimer').textContent = selectedMethod === 'bank_transfer'
+      ? "Once you click below, we'll mark this as pending and activate your enrollment as soon as we confirm your transfer."
+      : "By confirming, you agree to pay the amount above for lifetime access to this course.";
+    setStep('reviewStep');
+  });
+  document.getElementById('backToMethodBtn').addEventListener('click', () => setStep('methodStep'));
+
+  document.getElementById('payNowBtn').addEventListener('click', async function(){
+    this.disabled = true;
+    document.getElementById('payNowSpinner').classList.add('show');
+    try{
+      activePayment = await createPayment({
+        uid: currentUser.uid,
+        courseId,
+        courseTitle: course.title,
+        amount: course.price,
+        method: selectedMethod
+      });
+      document.getElementById('bankRefLabel').textContent = activePayment.reference;
+
+      if(selectedMethod === 'bank_transfer'){
+        showReceipt('pending');
+        return;
+      }
+
+      setStep('processingStep');
+      const result = await simulateCardProcessing();
+      if(result === 'completed'){
+        await completePayment(activePayment.id, courseId, currentUser.uid);
+        showReceipt('completed');
+      } else {
+        await failPayment(activePayment.id);
+        setStep('errorStep');
+      }
+    }catch(err){
+      setStep('errorStep');
+      document.getElementById('errorSub').textContent = 'A technical error occurred. Please try again.';
+    }finally{
+      this.disabled = false;
+      document.getElementById('payNowSpinner').classList.remove('show');
+    }
+  });
+
+  function showReceipt(status){
+    const isPending = status === 'pending';
+    document.getElementById('successHeadline').textContent = isPending ? 'Transfer Received — Pending Confirmation' : 'Payment Successful!';
+    document.getElementById('successSub').textContent = isPending
+      ? "We'll activate your enrollment once we confirm your bank transfer."
+      : "You're enrolled. Here's your receipt.";
+    document.getElementById('receiptRef').textContent = activePayment.reference;
+    document.getElementById('receiptCourse').textContent = course.title;
+    document.getElementById('receiptAmount').textContent = '₦' + Number(course.price).toLocaleString();
+    document.getElementById('receiptMethod').textContent = methodLabels[selectedMethod];
+    document.getElementById('receiptDate').textContent = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    document.getElementById('receiptStatus').textContent = isPending ? 'Pending Confirmation' : 'Completed';
+    document.getElementById('goToDashboardBtn').classList.toggle('hidden', isPending);
+    setStep('successStep');
+  }
+
+  document.getElementById('retryBtn').addEventListener('click', () => setStep('methodStep'));
+  document.getElementById('printReceiptBtn').addEventListener('click', () => window.print());
+</script>
+</body>
+</html>

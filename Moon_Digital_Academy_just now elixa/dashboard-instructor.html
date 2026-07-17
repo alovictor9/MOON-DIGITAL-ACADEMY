@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instructor Dashboard — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --sidebar-w:240px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button,textarea,input,select{font-family:'Inter',sans-serif;}
+button{color:inherit;cursor:pointer;border:none;background:none;}
+
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--gradient);color:#fff;display:flex;flex-direction:column;padding:22px 16px;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .25s ease;}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 26px;}
+.sb-logo{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;flex-shrink:0;}
+.sb-logo-img{height:26px;width:auto;display:block;}
+.sb-brand-text .name{font-size:13px;font-weight:700;line-height:1.2;}
+.sb-brand-text .tag{font-size:9.5px;color:var(--gold);font-weight:700;letter-spacing:.05em;}
+.sb-nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+.sb-link{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;font-size:13px;font-weight:600;color:rgba(255,255,255,.68);}
+.sb-link svg{width:18px;height:18px;flex-shrink:0;}
+.sb-link:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-link.active{background:rgba(255,255,255,.14);color:#fff;}
+.sb-divider{height:1px;background:rgba(255,255,255,.12);margin:14px 4px;}
+.sb-foot{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;background:rgba(255,255,255,.08);margin-top:6px;}
+.sb-foot-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#1A1330;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;}
+.sb-foot-text .n{font-size:12px;font-weight:700;}
+.sb-foot-text .r{font-size:10px;color:rgba(255,255,255,.6);}
+.sb-close{display:none;position:absolute;top:20px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;align-items:center;justify-content:center;}
+.sb-close svg{width:15px;height:15px;}
+
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:14px 28px;}
+.hamburger{display:none;width:38px;height:38px;border-radius:10px;background:var(--bg-lav);align-items:center;justify-content:center;color:var(--navy);flex-shrink:0;}
+.hamburger svg{width:18px;height:18px;}
+.topbar-title .page-title{font-size:17px;}
+.topbar-title .page-sub{font-size:12px;color:var(--grey);margin-top:2px;}
+.overlay-nav{display:none;position:fixed;inset:0;background:rgba(20,22,58,.45);z-index:30;}
+
+.wrap{max-width:1080px;margin:0 auto;padding:32px 24px 70px;}
+
+@media (max-width:860px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.3);}
+  .sidebar.open ~ .overlay-nav{display:block;}
+  .sb-close{display:flex;}
+  .main{margin-left:0;}
+  .hamburger{display:flex;}
+}
+.hdr-row{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:26px;}
+.page-title{font-size:22px;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--grey);}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:14px;}
+.back svg{width:14px;height:14px;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:11px;font-weight:600;font-size:13px;transition:.15s;}
+.btn svg{width:15px;height:15px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:hover{background:var(--violet-dark);}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+.btn-outline:hover{border-color:var(--violet);color:var(--violet);}
+.btn-sm{padding:8px 14px;font-size:12.5px;}
+.btn:disabled{opacity:.6;cursor:default;}
+
+/* course grid */
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.course-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.course-thumb{height:100px;}
+.course-body{padding:16px;}
+.course-cat{font-size:10.5px;font-weight:700;color:var(--violet);margin-bottom:6px;}
+.course-body h4{font-size:14.5px;margin-bottom:10px;line-height:1.35;}
+.course-stats{display:flex;gap:14px;font-size:11.5px;color:var(--grey);margin-bottom:14px;}
+.new-course-card{border:1.5px dashed var(--border);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:30px;color:var(--grey);font-weight:600;font-size:13px;cursor:pointer;min-height:200px;}
+.new-course-card:hover{border-color:var(--violet);color:var(--violet);}
+.new-course-card svg{width:26px;height:26px;}
+
+/* tabs */
+.tab-row{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px;}
+.tab-btn{padding:11px 18px;font-size:13px;font-weight:600;color:var(--grey);border-bottom:2px solid transparent;}
+.tab-btn.active{color:var(--violet);border-bottom-color:var(--violet);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* item cards (lessons/assignments) */
+.item-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.question-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px;}
+.question-card .q-num{font-size:11px;font-weight:700;color:var(--violet);margin-bottom:8px;}
+.question-card .option-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.question-card .option-row input[type="text"]{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;}
+.question-card .option-row input[type="radio"]{width:16px;height:16px;flex-shrink:0;accent-color:var(--violet);}
+.question-card .remove-question{font-size:11.5px;color:var(--red);font-weight:600;}
+#assignmentQuestionList .aq-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:14px;}
+#assignmentQuestionList .aq-num{font-size:11px;font-weight:700;color:var(--violet);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+#assignmentQuestionList .aq-type-select{font-size:11.5px;font-weight:600;border:1.5px solid var(--border);border-radius:8px;padding:5px 8px;}
+#assignmentQuestionList .aq-option-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+#assignmentQuestionList .aq-option-row input[type="text"]{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;}
+#assignmentQuestionList .aq-option-row input[type="radio"]{width:16px;height:16px;flex-shrink:0;accent-color:var(--violet);}
+#assignmentQuestionList .aq-points{width:80px;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;}
+#assignmentQuestionList .remove-aq-question{font-size:11.5px;color:var(--red);font-weight:600;margin-top:4px;}
+#assignmentQuestionList .aq-written-hint{font-size:11.5px;color:var(--grey);margin-bottom:8px;}
+.item-main{display:flex;align-items:center;gap:12px;}
+.item-num{width:28px;height:28px;border-radius:8px;background:var(--bg-lav);color:var(--violet);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.item-title{font-size:13.5px;font-weight:600;}
+.item-sub{font-size:11.5px;color:var(--grey);margin-top:2px;}
+.item-actions{display:flex;gap:8px;}
+.icon-btn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--grey);}
+.icon-btn:hover{background:var(--bg-lav);color:var(--red);}
+.icon-btn svg{width:15px;height:15px;}
+
+/* forms */
+.form-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:20px;}
+.form-card h5{font-size:14.5px;margin-bottom:16px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--grey);}
+.field input, .field textarea, .field select{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:13px;outline:none;color:var(--navy);}
+.field input:focus, .field textarea:focus, .field select:focus{border-color:var(--violet);}
+.field textarea{resize:vertical;min-height:70px;}
+.resource-row{display:flex;gap:8px;margin-bottom:8px;}
+.resource-row input{flex:1;}
+.remove-resource{width:36px;flex-shrink:0;color:var(--red);border:1.5px solid var(--border);border-radius:10px;}
+.add-resource-link{font-size:12px;font-weight:700;color:var(--violet);}
+
+.overlay{position:fixed;inset:0;background:rgba(20,22,58,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
+.overlay.show{display:flex;}
+.modal{background:#fff;border-radius:18px;padding:26px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal h5{font-size:16px;margin-bottom:18px;}
+.modal-actions{display:flex;gap:10px;margin-top:6px;}
+
+.state-box{text-align:center;padding:60px 20px;color:var(--grey);}
+.hidden{display:none;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:13px 22px;border-radius:11px;font-size:13px;font-weight:600;box-shadow:0 20px 40px -12px rgba(20,22,58,.4);z-index:200;display:none;}
+.toast.show{display:block;}
+
+@media (max-width:900px){ .course-grid{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} }
+@media (max-width:560px){ .course-grid{grid-template-columns:1fr;} }
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <button class="sb-close" id="sbClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="sb-brand">
+      <img src="logo-white.png" alt="Moon Digital Academy" class="sb-logo-img">
+      <div class="sb-brand-text"><div class="tag">INSTRUCTOR PORTAL</div></div>
+    </div>
+    <nav class="sb-nav">
+      <a href="dashboard-instructor.html" class="sb-link active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>My Courses
+      </a>
+      <a href="grading.html" class="sb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Grading
+      </a>
+      <a href="courses.html" class="sb-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>View Catalog
+      </a>
+    </nav>
+    <div class="sb-divider"></div>
+    <a href="community.html" class="sb-link" style="margin-bottom:2px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community
+    </a>
+    <a href="index.html" class="sb-link" style="margin-bottom:2px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Site
+    </a>
+    <button id="logoutBtn" class="sb-link" style="margin-bottom:10px;width:100%;text-align:left;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log Out
+    </button>
+    <div class="sb-foot">
+      <div class="sb-foot-avatar" id="sbFootAvatar">–</div>
+      <div class="sb-foot-text"><div class="n" id="sbFootName">Loading…</div><div class="r">Instructor</div></div>
+    </div>
+  </aside>
+  <div class="overlay-nav" id="overlayNav"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <div class="topbar-title">
+        <div class="page-title">My Courses</div>
+        <div class="page-sub">Create courses, add lessons, and post assignments.</div>
+      </div>
+    </header>
+
+<div class="wrap">
+
+  <!-- ===== Course list view ===== -->
+  <div id="listView">
+    <div id="loadingListState" class="state-box">Loading your courses…</div>
+    <div id="courseGrid" class="course-grid hidden"></div>
+  </div>
+
+  <!-- ===== Course manage view ===== -->
+  <div id="manageView" class="hidden">
+    <a href="dashboard-instructor.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>All Courses</a>
+    <div class="hdr-row">
+      <div>
+        <div class="page-title" id="courseTitleHdr">Loading…</div>
+        <div class="page-sub" id="courseSubHdr"></div>
+      </div>
+      <button class="btn btn-outline" id="editCourseBtn">Edit Course</button>
+    </div>
+
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="lessons">Lessons</button>
+      <button class="tab-btn" data-tab="assignments">Assignments</button>
+      <button class="tab-btn" data-tab="finalTest">Final Test</button>
+    </div>
+
+    <div class="tab-panel active" id="lessonsTab">
+      <div id="lessonList"></div>
+      <button class="btn btn-outline" id="showLessonFormBtn">+ Add Lesson</button>
+      <div class="form-card hidden" id="lessonForm">
+        <h5 id="lessonFormHeading">New Lesson</h5>
+        <div class="field"><label>Title</label><input type="text" id="lessonTitle" placeholder="e.g. Introduction to Color Theory"></div>
+        <div class="field"><label>Description</label><textarea id="lessonDescription" placeholder="What does this lesson cover?"></textarea></div>
+        <div class="two-col">
+          <div class="field"><label>Video URL</label><input type="text" id="lessonVideoUrl" placeholder="https://..."></div>
+          <div class="field"><label>Order</label><input type="number" id="lessonOrder" min="1" value="1"></div>
+        </div>
+        <div class="field">
+          <label>Resources (optional)</label>
+          <div id="resourceRows"></div>
+          <button class="add-resource-link" id="addResourceBtn" type="button">+ Add resource link</button>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-violet" id="saveLessonBtn">Save Lesson</button>
+          <button class="btn btn-outline" id="cancelLessonBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="assignmentsTab">
+      <div id="assignmentList"></div>
+      <button class="btn btn-outline" id="showAssignmentFormBtn">+ Add Assignment</button>
+      <div class="form-card hidden" id="assignmentForm">
+        <h5 id="assignmentFormHeading">New Assignment</h5>
+        <div class="field"><label>Title</label><input type="text" id="assignmentTitle" placeholder="e.g. Bridal Look Portfolio Quiz"></div>
+        <div class="field"><label>Instructions (optional)</label><textarea id="assignmentDesc" placeholder="Any overall instructions for students"></textarea></div>
+        <div class="field">
+          <label>Link to a Lesson (optional)</label>
+          <select id="assignmentLessonSelect"><option value="">Whole course (not tied to one lesson)</option></select>
+        </div>
+        <div class="field"><label>Due Date (optional)</label><input type="date" id="assignmentDue"></div>
+
+        <div style="border-top:1px solid var(--border);margin:20px 0 16px;"></div>
+        <p style="font-size:12.5px;color:var(--grey);margin-bottom:12px;">
+          Add multiple-choice questions (auto-scored suggestion) or written-response questions
+          (student types an answer, you grade it manually). Total points = sum of all questions.
+        </p>
+        <div id="assignmentQuestionList"></div>
+        <button class="btn btn-outline" id="addAssignmentQuestionBtn" type="button">+ Add Question</button>
+
+        <div class="modal-actions">
+          <button class="btn btn-violet" id="saveAssignmentBtn">Post Assignment</button>
+          <button class="btn btn-outline" id="cancelAssignmentBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="finalTestTab">
+      <p style="font-size:12.5px;color:var(--grey);margin-bottom:16px;">
+        A multiple-choice test students take after finishing all lessons. It's graded automatically,
+        and a certificate is issued the moment a student passes.
+      </p>
+      <div class="field" style="max-width:220px;">
+        <label>Passing Score (%)</label>
+        <input type="number" id="testPassingScore" min="1" max="100" value="70">
+      </div>
+      <div id="testQuestionList"></div>
+      <button class="btn btn-outline" id="addQuestionBtn" type="button">+ Add Question</button>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="btn btn-violet" id="saveTestBtn">Save Final Test</button>
+      </div>
+
+      <div style="border-top:1px solid var(--border);margin:28px 0 20px;"></div>
+      <h5 style="font-size:15px;margin-bottom:8px;">Certificate</h5>
+      <p style="font-size:12.5px;color:var(--grey);margin-bottom:16px;">
+        Configure the certificate students receive the moment they pass this final test.
+      </p>
+      <div class="field" style="display:flex;align-items:center;gap:8px;max-width:400px;">
+        <input type="checkbox" id="certEnabled" checked style="width:16px;height:16px;">
+        <label for="certEnabled" style="margin:0;">Issue a certificate when a student passes</label>
+      </div>
+      <div class="two-col" style="margin-top:14px;">
+        <div class="field">
+          <label>Credential Title (optional)</label>
+          <input type="text" id="certCredentialTitle" placeholder="e.g. Certified Bridal Makeup Specialist">
+        </div>
+        <div class="field">
+          <label>Signed By (optional)</label>
+          <input type="text" id="certSignatory" placeholder="Defaults to your name">
+        </div>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn btn-violet" id="saveCertBtn">Save Certificate Settings</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+<!-- ===== New/Edit course modal ===== -->
+<div class="overlay" id="courseOverlay">
+  <div class="modal">
+    <h5 id="courseModalTitle">New Course</h5>
+    <div class="field"><label>Title</label><input type="text" id="courseTitleInput" placeholder="e.g. Professional Makeup Artistry"></div>
+    <div class="field"><label>Description</label><textarea id="courseDescInput" placeholder="What will students learn?"></textarea></div>
+    <div class="field"><label>Intro Video Link (optional)</label><input type="text" id="courseIntroVideoInput" placeholder="https://... (shown before students enroll)"></div>
+    <div class="field">
+      <label>Course Picture</label>
+      <div id="thumbPreview" style="width:100%;height:110px;border-radius:11px;background:linear-gradient(160deg,#7C8CF0,#3957D6);background-size:cover;background-position:center;margin-bottom:8px;"></div>
+      <input type="text" id="courseThumbUrlInput" placeholder="Paste an image URL" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:12.5px;">
+      <div style="font-size:11px;color:var(--grey);margin-top:5px;">Optional — must be a direct link to an image file (ending in .jpg, .png, etc). If you skip this, a placeholder color will be used instead.</div>
+    </div>
+    <div class="two-col">
+      <div class="field">
+        <label>Category</label>
+        <select id="courseCategoryInput">
+          <option>Beauty & Cosmetics</option>
+          <option>Food & Catering</option>
+          <option>Fashion & Design</option>
+          <option>Digital Business</option>
+          <option>Creator Economy</option>
+          <option>Web & App Development</option>
+          <option>Graphic Design</option>
+          <option>Video Editing & Film</option>
+          <option>Photography</option>
+          <option>Marketing & Sales</option>
+          <option>Freelancing & Remote Work</option>
+          <option>Data & AI</option>
+          <option>Personal Finance</option>
+          <option>Health & Wellness</option>
+        </select>
+      </div>
+      <div class="field"><label>Price (₦, 0 = free)</label><input type="number" id="coursePriceInput" min="0" value="0"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-violet" id="saveCourseBtn">Save Course</button>
+      <button class="btn btn-outline" id="cancelCourseBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { watchAuth, auth, db, logout } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { createCourse, updateCourse, getCourse, listCoursesByInstructor, courseThumbStyle } from './courses.js';
+  import { createLesson, listLessonsForCourse, updateLesson, deleteLesson } from './lessons.js';
+  import { createAssignment, listAssignmentsForCourse, updateAssignment, deleteAssignment } from './assignments.js';
+  import { saveFinalTest, getFinalTest } from './finalTest.js';
+
+  let existingThumbnailUrl = null;
+
+  let currentUser = null;
+  let editingCourseId = null; // null = creating new
+  let activeCourseId = new URLSearchParams(window.location.search).get('course');
+
+  function showToast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ---- Sidebar toggle (mobile) ----
+  const sidebar = document.getElementById('sidebar');
+  const overlayNav = document.getElementById('overlayNav');
+  function closeSidebar(){ sidebar.classList.remove('open'); }
+  document.getElementById('hamburger').addEventListener('click', () => sidebar.classList.add('open'));
+  document.getElementById('sbClose').addEventListener('click', closeSidebar);
+  overlayNav.addEventListener('click', closeSidebar);
+
+  function initials(firstName, lastName){
+    return ((firstName || '').charAt(0) + (lastName || '').charAt(0)).toUpperCase() || '–';
+  }
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await logout();
+    window.location.href = 'login.html';
+  });
+
+  watchAuth(async function(user){
+    if(!user){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+    // Populate sidebar footer with the instructor's name.
+    const profileSnap = await getDoc(doc(db, "users", user.uid));
+    const profile = profileSnap.exists() ? profileSnap.data() : { firstName: '', lastName: '' };
+    document.getElementById('sbFootAvatar').textContent = initials(profile.firstName, profile.lastName);
+    document.getElementById('sbFootName').textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
+    return afterAuth(user);
+  });
+
+  async function afterAuth(user){
+    if(!user){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+    currentUser = user;
+    if(activeCourseId){
+      showManageView();
+      await loadCourseManagement(activeCourseId);
+    } else {
+      showListView();
+      await loadCourseList();
+    }
+  }
+
+  function showListView(){
+    document.getElementById('listView').classList.remove('hidden');
+    document.getElementById('manageView').classList.add('hidden');
+  }
+  function showManageView(){
+    document.getElementById('listView').classList.add('hidden');
+    document.getElementById('manageView').classList.remove('hidden');
+  }
+
+  // ---- Course list ----
+  async function loadCourseList(){
+    const courses = await listCoursesByInstructor(currentUser.uid);
+    document.getElementById('loadingListState').classList.add('hidden');
+    const grid = document.getElementById('courseGrid');
+    grid.classList.remove('hidden');
+    grid.innerHTML = '';
+
+    const newCard = document.createElement('div');
+    newCard.className = 'new-course-card';
+    newCard.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>New Course`;
+    newCard.addEventListener('click', () => openCourseModal(null));
+    grid.appendChild(newCard);
+
+    for(const course of courses){
+      const lessons = await listLessonsForCourse(course.id);
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      const priceLabel = course.price > 0 ? '₦' + Number(course.price).toLocaleString() : 'Free';
+      const statusBadges = {
+        pending: '<span style="font-size:10px;font-weight:700;color:#C97F33;background:#FCE9C9;padding:3px 8px;border-radius:6px;">PENDING APPROVAL</span>',
+        rejected: '<span style="font-size:10px;font-weight:700;color:var(--red);background:var(--red-bg,#FBE3E3);padding:3px 8px;border-radius:6px;">REJECTED</span>',
+        approved: '<span style="font-size:10px;font-weight:700;color:var(--green);background:var(--green-bg);padding:3px 8px;border-radius:6px;">LIVE</span>'
+      };
+      const statusBadge = statusBadges[course.status || 'approved'] || '';
+      card.innerHTML = `
+        <div class="course-thumb" style="${courseThumbStyle(course)}"></div>
+        <div class="course-body">
+          <div class="course-cat" style="display:flex;justify-content:space-between;align-items:center;gap:8px;">${course.category}${statusBadge}</div>
+          <h4>${course.title}</h4>
+          <div class="course-stats"><span>${lessons.length} lessons</span><span>${priceLabel}</span></div>
+          ${course.status === 'rejected' && course.rejectionReason ? `<div style="font-size:11px;color:var(--red);margin-bottom:8px;">Reason: ${course.rejectionReason}</div>` : ''}
+          <a href="?course=${course.id}" class="btn btn-violet btn-sm" style="width:100%;">Manage Course</a>
+        </div>`;
+      grid.appendChild(card);
+    }
+  }
+
+  // ---- Course create/edit modal ----
+  function openCourseModal(course){
+    editingCourseId = course ? course.id : null;
+    existingThumbnailUrl = course ? (course.thumbnailUrl || null) : null;
+    document.getElementById('courseModalTitle').textContent = course ? 'Edit Course' : 'New Course';
+    document.getElementById('courseTitleInput').value = course ? course.title : '';
+    document.getElementById('courseDescInput').value = course ? course.description : '';
+    document.getElementById('courseIntroVideoInput').value = course ? (course.introVideoUrl || '') : '';
+    document.getElementById('courseCategoryInput').value = course ? course.category : 'Beauty & Cosmetics';
+    document.getElementById('coursePriceInput').value = course ? course.price : 0;
+    document.getElementById('courseThumbUrlInput').value = (course && course.thumbnailUrl) ? course.thumbnailUrl : '';
+    document.getElementById('thumbPreview').style.cssText = 'width:100%;height:110px;border-radius:11px;margin-bottom:8px;' +
+      courseThumbStyle(course || {});
+    document.getElementById('courseOverlay').classList.add('show');
+  }
+  document.getElementById('courseThumbUrlInput').addEventListener('input', function(e){
+    const url = e.target.value.trim();
+    if(!url){
+      document.getElementById('thumbPreview').style.cssText = 'width:100%;height:110px;border-radius:11px;margin-bottom:8px;' +
+        courseThumbStyle({});
+      return;
+    }
+    document.getElementById('thumbPreview').style.cssText =
+      `width:100%;height:110px;border-radius:11px;margin-bottom:8px;background-image:url('${url}');background-size:cover;background-position:center;`;
+  });
+  document.getElementById('cancelCourseBtn').addEventListener('click', () => document.getElementById('courseOverlay').classList.remove('show'));
+  document.getElementById('editCourseBtn').addEventListener('click', async () => {
+    const course = await getCourse(activeCourseId);
+    openCourseModal(course);
+  });
+
+  const gradients = [
+    'linear-gradient(160deg,#F4A6C1,#E96D95)',
+    'linear-gradient(160deg,#F2C879,#D9842E)',
+    'linear-gradient(160deg,#7C8CF0,#3957D6)',
+    'linear-gradient(160deg,#8C7AE6,#5B3FD6)'
+  ];
+
+  document.getElementById('saveCourseBtn').addEventListener('click', async function(){
+    const title = document.getElementById('courseTitleInput').value.trim();
+    if(!title){ showToast('Please enter a course title.'); return; }
+    const payload = {
+      title,
+      description: document.getElementById('courseDescInput').value.trim(),
+      introVideoUrl: document.getElementById('courseIntroVideoInput').value.trim(),
+      category: document.getElementById('courseCategoryInput').value,
+      price: Number(document.getElementById('coursePriceInput').value) || 0
+    };
+    this.disabled = true;
+    const originalLabel = this.textContent;
+    try{
+      const pastedUrl = document.getElementById('courseThumbUrlInput').value.trim();
+      payload.thumbnailUrl = pastedUrl || null;
+      this.textContent = 'Saving…';
+      if(editingCourseId){
+        await updateCourse(editingCourseId, payload);
+        showToast('Course updated.');
+      } else {
+        const id = await createCourse({
+          ...payload,
+          instructorId: currentUser.uid,
+          instructorName: (currentUser.displayName || currentUser.email),
+          thumbGradient: gradients[Math.floor(Math.random() * gradients.length)]
+        });
+        showToast('Course created!');
+        window.location.href = '?course=' + id;
+        return;
+      }
+      document.getElementById('courseOverlay').classList.remove('show');
+      if(activeCourseId){ await loadCourseManagement(activeCourseId); } else { await loadCourseList(); }
+    }catch(err){
+      showToast('Something went wrong. Please try again.');
+    }finally{
+      this.disabled = false;
+      this.textContent = originalLabel;
+    }
+  });
+
+  // ---- Course management view ----
+  let activeLessons = [];
+
+  async function loadCourseManagement(courseId){
+    const course = await getCourse(courseId);
+    if(!course){ showToast('Course not found.'); showListView(); return; }
+    document.getElementById('courseTitleHdr').textContent = course.title;
+    document.getElementById('courseSubHdr').textContent = `${course.category} · ${course.price > 0 ? '₦' + course.price.toLocaleString() : 'Free'}`;
+    await refreshLessons(courseId);
+    await refreshAssignments(courseId);
+    await refreshFinalTest(courseId, course);
+  }
+
+  async function refreshLessons(courseId){
+    activeLessons = await listLessonsForCourse(courseId);
+    const wrap = document.getElementById('lessonList');
+    wrap.innerHTML = '';
+    if(activeLessons.length === 0){
+      wrap.innerHTML = '<p style="font-size:13px;color:var(--grey);margin-bottom:14px;">No lessons yet — add your first one below.</p>';
+    }
+    activeLessons.forEach(function(l, i){
+      const row = document.createElement('div');
+      row.className = 'item-card';
+      row.innerHTML = `
+        <div class="item-main">
+          <div class="item-num">${i+1}</div>
+          <div><div class="item-title">${l.title}</div><div class="item-sub">${l.resources && l.resources.length ? l.resources.length + ' resource(s)' : 'No resources'}</div></div>
+        </div>
+        <div class="item-actions">
+          <button class="icon-btn edit-lesson" data-id="${l.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button class="icon-btn del-lesson" data-id="${l.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></button>
+        </div>`;
+      wrap.appendChild(row);
+    });
+    wrap.querySelectorAll('.edit-lesson').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const lesson = activeLessons.find(l => l.id === btn.getAttribute('data-id'));
+        if(lesson) openLessonForm(lesson);
+      });
+    });
+    wrap.querySelectorAll('.del-lesson').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('Delete this lesson? This cannot be undone.')) return;
+        await deleteLesson(activeCourseId, btn.getAttribute('data-id'));
+        showToast('Lesson deleted.');
+        await refreshLessons(activeCourseId);
+      });
+    });
+  }
+
+  async function refreshAssignments(courseId){
+    const assignments = await listAssignmentsForCourse(courseId);
+    const wrap = document.getElementById('assignmentList');
+    wrap.innerHTML = '';
+    if(assignments.length === 0){
+      wrap.innerHTML = '<p style="font-size:13px;color:var(--grey);margin-bottom:14px;">No assignments yet — add one below.</p>';
+    }
+    assignments.forEach(function(a){
+      const dueLabel = a.dueDate ? 'Due ' + new Date(a.dueDate).toLocaleDateString() : 'No due date';
+      const linkedLesson = a.lessonId ? activeLessons.find(l => l.id === a.lessonId) : null;
+      const lessonLabel = linkedLesson ? ` · Lesson ${linkedLesson.order}: ${linkedLesson.title}` : '';
+      const qCount = (a.questions || []).length;
+      const row = document.createElement('div');
+      row.className = 'item-card';
+      row.innerHTML = `
+        <div class="item-main">
+          <div><div class="item-title">${a.title}</div><div class="item-sub">${dueLabel} · ${qCount} question${qCount === 1 ? '' : 's'} · ${a.maxScore} pts${lessonLabel}</div></div>
+        </div>
+        <div class="item-actions">
+          <a href="grading.html?course=${courseId}&assignment=${a.id}" class="btn btn-outline btn-sm">Grade Submissions</a>
+          <button class="icon-btn edit-assignment" data-id="${a.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+          <button class="icon-btn del-assignment" data-id="${a.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6"/></svg></button>
+        </div>`;
+      wrap.appendChild(row);
+    });
+    wrap.querySelectorAll('.edit-assignment').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const assignment = assignments.find(a => a.id === btn.getAttribute('data-id'));
+        if(assignment) openAssignmentForm(assignment);
+      });
+    });
+    wrap.querySelectorAll('.del-assignment').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('Delete this assignment? Student submissions will remain but be orphaned.')) return;
+        await deleteAssignment(activeCourseId, btn.getAttribute('data-id'));
+        showToast('Assignment deleted.');
+        await refreshAssignments(activeCourseId);
+      });
+    });
+  }
+
+  // ---- Final Test builder ----
+  function questionCardHtml(index, q){
+    q = q || { question: '', options: ['', '', '', ''], correctIndex: 0 };
+    const radios = q.options.map((opt, i) => `
+      <div class="option-row">
+        <input type="radio" name="correct-${index}" value="${i}" ${i === q.correctIndex ? 'checked' : ''}>
+        <input type="text" class="opt-input" placeholder="Option ${i + 1}" value="${(opt || '').replace(/"/g, '&quot;')}">
+      </div>`).join('');
+    return `
+      <div class="question-card" data-index="${index}">
+        <div class="q-num">Question ${index + 1}</div>
+        <div class="field"><input type="text" class="q-text" placeholder="Question text" value="${(q.question || '').replace(/"/g, '&quot;')}"></div>
+        <div style="font-size:11px;color:var(--grey);margin-bottom:6px;">Select the radio button next to the correct answer.</div>
+        ${radios}
+        <button type="button" class="remove-question">Remove question</button>
+      </div>`;
+  }
+
+  function renderQuestions(questions){
+    const list = document.getElementById('testQuestionList');
+    list.innerHTML = questions.map((q, i) => questionCardHtml(i, q)).join('');
+    list.querySelectorAll('.remove-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.question-card');
+        const idx = Number(card.getAttribute('data-index'));
+        const current = collectQuestions();
+        current.splice(idx, 1);
+        renderQuestions(current);
+      });
+    });
+  }
+
+  function collectQuestions(){
+    return Array.from(document.querySelectorAll('.question-card')).map(card => {
+      const options = Array.from(card.querySelectorAll('.opt-input')).map(inp => inp.value.trim());
+      const checked = card.querySelector('input[type="radio"]:checked');
+      const idx = Number(card.getAttribute('data-index'));
+      const correctIndex = checked ? Number(checked.value) : 0;
+      return { question: card.querySelector('.q-text').value.trim(), options, correctIndex };
+    });
+  }
+
+  document.getElementById('addQuestionBtn').addEventListener('click', () => {
+    const current = collectQuestions();
+    current.push({ question: '', options: ['', '', '', ''], correctIndex: 0 });
+    renderQuestions(current);
+  });
+
+  async function refreshFinalTest(courseId, course){
+    const test = await getFinalTest(courseId);
+    document.getElementById('testPassingScore').value = test ? test.passingScore : 70;
+    renderQuestions(test ? test.questions : []);
+
+    const certSettings = (course && course.certificateSettings) || {};
+    document.getElementById('certEnabled').checked = certSettings.enabled !== false;
+    document.getElementById('certCredentialTitle').value = certSettings.credentialTitle || '';
+    document.getElementById('certSignatory').value = certSettings.signatoryName || '';
+  }
+
+  document.getElementById('saveCertBtn').addEventListener('click', async function(){
+    this.disabled = true;
+    try{
+      await updateCourse(activeCourseId, {
+        certificateSettings: {
+          enabled: document.getElementById('certEnabled').checked,
+          credentialTitle: document.getElementById('certCredentialTitle').value.trim(),
+          signatoryName: document.getElementById('certSignatory').value.trim()
+        }
+      });
+      showToast('Certificate settings saved.');
+    }catch(err){
+      showToast('Could not save certificate settings. Please try again.');
+    }finally{
+      this.disabled = false;
+    }
+  });
+
+  document.getElementById('saveTestBtn').addEventListener('click', async function(){
+    const questions = collectQuestions();
+    const incomplete = questions.some(q => !q.question || q.options.some(o => !o));
+    if(questions.length === 0){ showToast('Add at least one question first.'); return; }
+    if(incomplete){ showToast('Every question needs text and all 4 options filled in.'); return; }
+    this.disabled = true;
+    try{
+      await saveFinalTest(activeCourseId, {
+        passingScore: document.getElementById('testPassingScore').value,
+        questions
+      });
+      showToast('Final test saved.');
+    }catch(err){
+      showToast('Could not save the test. Please try again.');
+    }finally{
+      this.disabled = false;
+    }
+  });
+
+  // ---- Tabs ----
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.getAttribute('data-tab') + 'Tab').classList.add('active');
+    });
+  });
+
+  // ---- Lesson form (create + edit) ----
+  let editingLessonId = null;
+
+  function openLessonForm(lesson){
+    editingLessonId = lesson ? lesson.id : null;
+    document.getElementById('lessonFormHeading').textContent = lesson ? 'Edit Lesson' : 'New Lesson';
+    document.getElementById('lessonTitle').value = lesson ? lesson.title : '';
+    document.getElementById('lessonDescription').value = lesson ? (lesson.description || '') : '';
+    document.getElementById('lessonVideoUrl').value = lesson ? lesson.videoUrl : '';
+    document.getElementById('lessonOrder').value = lesson ? lesson.order : (activeLessons.length + 1);
+    const resourceRows = document.getElementById('resourceRows');
+    resourceRows.innerHTML = '';
+    if(lesson && lesson.resources && lesson.resources.length){
+      lesson.resources.forEach(r => {
+        const row = document.createElement('div');
+        row.className = 'resource-row';
+        row.innerHTML = `<input type="text" placeholder="Resource name" class="res-name" value="${(r.name || '').replace(/"/g, '&quot;')}"><input type="text" placeholder="URL" class="res-url" value="${(r.url || '').replace(/"/g, '&quot;')}"><button type="button" class="remove-resource">✕</button>`;
+        row.querySelector('.remove-resource').addEventListener('click', () => row.remove());
+        resourceRows.appendChild(row);
+      });
+    }
+    document.getElementById('saveLessonBtn').textContent = lesson ? 'Save Changes' : 'Save Lesson';
+    document.getElementById('lessonForm').classList.remove('hidden');
+    document.getElementById('lessonForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('showLessonFormBtn').addEventListener('click', () => openLessonForm(null));
+  document.getElementById('cancelLessonBtn').addEventListener('click', () => {
+    editingLessonId = null;
+    document.getElementById('lessonForm').classList.add('hidden');
+  });
+  document.getElementById('addResourceBtn').addEventListener('click', () => {
+    const row = document.createElement('div');
+    row.className = 'resource-row';
+    row.innerHTML = `<input type="text" placeholder="Resource name" class="res-name"><input type="text" placeholder="URL" class="res-url"><button type="button" class="remove-resource">✕</button>`;
+    row.querySelector('.remove-resource').addEventListener('click', () => row.remove());
+    document.getElementById('resourceRows').appendChild(row);
+  });
+  document.getElementById('saveLessonBtn').addEventListener('click', async function(){
+    const title = document.getElementById('lessonTitle').value.trim();
+    const videoUrl = document.getElementById('lessonVideoUrl').value.trim();
+    if(!title || !videoUrl){ showToast('Title and video URL are required.'); return; }
+    const resources = Array.from(document.querySelectorAll('.resource-row')).map(row => ({
+      name: row.querySelector('.res-name').value.trim(),
+      url: row.querySelector('.res-url').value.trim()
+    })).filter(r => r.name && r.url);
+    const payload = {
+      title, videoUrl, resources,
+      description: document.getElementById('lessonDescription').value.trim(),
+      order: Number(document.getElementById('lessonOrder').value) || activeLessons.length + 1
+    };
+
+    this.disabled = true;
+    try{
+      if(editingLessonId){
+        await updateLesson(activeCourseId, editingLessonId, payload);
+        showToast('Lesson updated.');
+      } else {
+        await createLesson(activeCourseId, payload);
+        showToast('Lesson added.');
+      }
+      editingLessonId = null;
+      document.getElementById('lessonForm').classList.add('hidden');
+      document.getElementById('lessonTitle').value = '';
+      document.getElementById('lessonDescription').value = '';
+      document.getElementById('lessonVideoUrl').value = '';
+      document.getElementById('resourceRows').innerHTML = '';
+      await refreshLessons(activeCourseId);
+    }catch(err){
+      showToast('Could not save lesson. Please try again.');
+    }finally{
+      this.disabled = false;
+    }
+  });
+
+  // ---- Assignment form (create + edit) ----
+  let editingAssignmentId = null;
+
+  function aqCardHtml(index, q){
+    q = q || { type: 'mcq', question: '', options: ['', '', '', ''], correctIndex: 0, points: 10 };
+    const isMcq = q.type !== 'written';
+    const radios = (q.options && q.options.length ? q.options : ['', '', '', '']).map((opt, i) => `
+      <div class="aq-option-row">
+        <input type="radio" name="aq-correct-${index}" value="${i}" ${i === q.correctIndex ? 'checked' : ''}>
+        <input type="text" class="aq-opt-input" placeholder="Option ${i + 1}" value="${(opt || '').replace(/"/g, '&quot;')}">
+      </div>`).join('');
+    return `
+      <div class="aq-card" data-index="${index}">
+        <div class="aq-num">
+          <span>Question ${index + 1}</span>
+          <select class="aq-type-select">
+            <option value="mcq" ${isMcq ? 'selected' : ''}>Multiple Choice</option>
+            <option value="written" ${!isMcq ? 'selected' : ''}>Written Response</option>
+          </select>
+        </div>
+        <div class="field"><input type="text" class="aq-text" placeholder="Question text" value="${(q.question || '').replace(/"/g, '&quot;')}"></div>
+        <div class="aq-mcq-block" ${isMcq ? '' : 'style="display:none;"'}>
+          <div style="font-size:11px;color:var(--grey);margin-bottom:6px;">Select the correct answer (used as an auto-scoring suggestion — you still confirm the final grade).</div>
+          ${radios}
+        </div>
+        <div class="aq-written-hint" ${isMcq ? 'style="display:none;"' : ''}>Student will type a free-text answer here. You'll grade it manually.</div>
+        <div class="field" style="max-width:120px;margin-top:8px;">
+          <label style="font-size:11px;">Points</label>
+          <input type="number" class="aq-points" min="1" value="${q.points || 10}">
+        </div>
+        <button type="button" class="remove-aq-question">Remove question</button>
+      </div>`;
+  }
+
+  function renderAssignmentQuestions(questions){
+    const list = document.getElementById('assignmentQuestionList');
+    list.innerHTML = questions.map((q, i) => aqCardHtml(i, q)).join('');
+    list.querySelectorAll('.aq-type-select').forEach(sel => {
+      sel.addEventListener('change', function(){
+        const card = this.closest('.aq-card');
+        card.querySelector('.aq-mcq-block').style.display = this.value === 'mcq' ? '' : 'none';
+        card.querySelector('.aq-written-hint').style.display = this.value === 'written' ? '' : 'none';
+      });
+    });
+    list.querySelectorAll('.remove-aq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.aq-card');
+        const idx = Number(card.getAttribute('data-index'));
+        const current = collectAssignmentQuestions();
+        current.splice(idx, 1);
+        renderAssignmentQuestions(current);
+      });
+    });
+  }
+
+  function collectAssignmentQuestions(){
+    return Array.from(document.querySelectorAll('#assignmentQuestionList .aq-card')).map(card => {
+      const type = card.querySelector('.aq-type-select').value;
+      const points = Number(card.querySelector('.aq-points').value) || 10;
+      const question = card.querySelector('.aq-text').value.trim();
+      if(type === 'written'){
+        return { type: 'written', question, points };
+      }
+      const options = Array.from(card.querySelectorAll('.aq-opt-input')).map(inp => inp.value.trim());
+      const checked = card.querySelector('input[type="radio"]:checked');
+      const correctIndex = checked ? Number(checked.value) : 0;
+      return { type: 'mcq', question, options, correctIndex, points };
+    });
+  }
+
+  document.getElementById('addAssignmentQuestionBtn').addEventListener('click', () => {
+    const current = collectAssignmentQuestions();
+    current.push({ type: 'mcq', question: '', options: ['', '', '', ''], correctIndex: 0, points: 10 });
+    renderAssignmentQuestions(current);
+  });
+
+  function openAssignmentForm(assignment){
+    editingAssignmentId = assignment ? assignment.id : null;
+    document.getElementById('assignmentFormHeading').textContent = assignment ? 'Edit Assignment' : 'New Assignment';
+    const select = document.getElementById('assignmentLessonSelect');
+    select.innerHTML = '<option value="">Whole course (not tied to one lesson)</option>' +
+      activeLessons.map(l => `<option value="${l.id}">Lesson ${l.order}: ${l.title}</option>`).join('');
+    document.getElementById('assignmentTitle').value = assignment ? assignment.title : '';
+    document.getElementById('assignmentDesc').value = assignment ? (assignment.description || '') : '';
+    select.value = assignment ? (assignment.lessonId || '') : '';
+    document.getElementById('assignmentDue').value = assignment && assignment.dueDate ? assignment.dueDate.slice(0, 10) : '';
+    renderAssignmentQuestions(assignment && assignment.questions && assignment.questions.length ? assignment.questions : [
+      { type: 'mcq', question: '', options: ['', '', '', ''], correctIndex: 0, points: 10 }
+    ]);
+    document.getElementById('saveAssignmentBtn').textContent = assignment ? 'Save Changes' : 'Post Assignment';
+    document.getElementById('assignmentForm').classList.remove('hidden');
+    document.getElementById('assignmentForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('showAssignmentFormBtn').addEventListener('click', () => openAssignmentForm(null));
+  document.getElementById('cancelAssignmentBtn').addEventListener('click', () => {
+    editingAssignmentId = null;
+    document.getElementById('assignmentForm').classList.add('hidden');
+  });
+  document.getElementById('saveAssignmentBtn').addEventListener('click', async function(){
+    const title = document.getElementById('assignmentTitle').value.trim();
+    if(!title){ showToast('Please enter an assignment title.'); return; }
+    const questions = collectAssignmentQuestions();
+    if(questions.length === 0){ showToast('Add at least one question.'); return; }
+    if(questions.some(q => !q.question)){ showToast('Every question needs text.'); return; }
+    if(questions.some(q => q.type === 'mcq' && q.options.some(o => !o))){ showToast('Every multiple-choice question needs all 4 options filled in.'); return; }
+    const maxScore = questions.reduce((sum, q) => sum + (q.points || 0), 0);
+    const payload = {
+      title,
+      description: document.getElementById('assignmentDesc').value.trim(),
+      lessonId: document.getElementById('assignmentLessonSelect').value || null,
+      dueDate: document.getElementById('assignmentDue').value || null,
+      questions,
+      maxScore
+    };
+    this.disabled = true;
+    try{
+      if(editingAssignmentId){
+        await updateAssignment(activeCourseId, editingAssignmentId, payload);
+        showToast('Assignment updated.');
+      } else {
+        await createAssignment(activeCourseId, payload);
+        showToast('Assignment posted.');
+      }
+      editingAssignmentId = null;
+      document.getElementById('assignmentForm').classList.add('hidden');
+      document.getElementById('assignmentTitle').value = '';
+      document.getElementById('assignmentDesc').value = '';
+      await refreshAssignments(activeCourseId);
+    }catch(err){
+      showToast('Could not save assignment. Please try again.');
+    }finally{
+      this.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>

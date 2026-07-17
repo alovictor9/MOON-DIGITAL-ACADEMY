@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B; --gold-dark:#D98E1E;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+.wrap{max-width:820px;margin:0 auto;padding:28px 24px 70px;}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:20px;}
+.back svg{width:14px;height:14px;}
+.state-box{text-align:center;padding:100px 20px;color:var(--grey);}
+
+.congrats-banner{display:flex;align-items:center;gap:16px;background:var(--bg-lav);border-radius:16px;padding:18px 22px;margin-bottom:20px;}
+.congrats-emoji{font-size:32px;flex-shrink:0;}
+.congrats-banner h2{font-size:17px;margin-bottom:4px;}
+.congrats-banner p{font-size:12.5px;color:var(--grey);line-height:1.5;}
+
+/* Certificate */
+.cert-outer{background:#fff;border-radius:20px;box-shadow:0 30px 60px -30px rgba(20,22,58,.25);padding:14px;margin-bottom:22px;}
+.cert{border:2px solid var(--gold);border-radius:12px;padding:50px 46px;text-align:center;position:relative;background:
+  radial-gradient(circle at top left, rgba(91,63,214,.05), transparent 40%),
+  radial-gradient(circle at bottom right, rgba(242,169,59,.06), transparent 40%);
+}
+.cert-inner-border{position:absolute;inset:10px;border:1px solid var(--border);border-radius:8px;pointer-events:none;}
+.cert-logo{display:flex;align-items:center;justify-content:center;gap:9px;margin-bottom:22px;}
+.cert-logo-circle{width:34px;height:34px;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:11px;}
+.cert-logo-text{font-size:13px;font-weight:700;color:var(--navy);}
+.cert-eyebrow{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--grey);margin-bottom:18px;}
+.cert-presented{font-size:13px;color:var(--grey);margin-bottom:10px;}
+.cert-name{font-family:'Playfair Display',serif;font-size:34px;color:var(--navy);margin-bottom:18px;}
+.cert-desc{font-size:13.5px;color:var(--grey);line-height:1.7;max-width:480px;margin:0 auto 6px;}
+.cert-course{font-family:'Poppins';font-weight:700;font-size:19px;color:var(--violet);margin:10px 0 26px;}
+.cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:34px;gap:20px;flex-wrap:wrap;}
+.cert-foot-block{text-align:left;}
+.cert-foot-block.right{text-align:right;}
+.cert-foot-label{font-size:10px;color:var(--grey-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px;}
+.cert-foot-val{font-size:12.5px;font-weight:700;color:var(--navy);}
+.cert-sig{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);border-bottom:1.5px solid var(--navy);padding-bottom:4px;margin-bottom:4px;}
+
+.actions-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px;}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:11px;font-weight:600;font-size:13.5px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+
+.verify-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+.verify-card h5{font-size:13px;margin-bottom:8px;}
+.verify-row{display:flex;gap:10px;align-items:center;}
+.verify-link{flex:1;font-size:12.5px;color:var(--grey);background:var(--bg-lav);padding:10px 12px;border-radius:9px;overflow-x:auto;white-space:nowrap;}
+.copy-btn{flex-shrink:0;font-size:12px;font-weight:700;color:var(--violet);padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;}
+.verify-note{font-size:11.5px;color:var(--grey-light);margin-top:10px;}
+
+@media print{
+  .no-print{display:none;}
+  body{background:#fff;}
+  .cert-outer{box-shadow:none;padding:0;}
+}
+@media (max-width:640px){
+  .cert{padding:34px 20px;}
+  .cert-name{font-size:26px;}
+  .cert-foot{flex-direction:column;align-items:flex-start;}
+  .cert-foot-block.right{text-align:left;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <a href="dashboard-student.html" class="back no-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Dashboard</a>
+
+  <div id="loadingState" class="state-box">Loading certificate…</div>
+  <div id="notEligibleState" class="state-box hidden">
+    <h3 style="font-size:17px;margin-bottom:8px;">Not quite there yet</h3>
+    <p>Pass the course's final test to earn this certificate.</p>
+  </div>
+
+  <div id="certContent" class="hidden">
+    <div class="congrats-banner">
+      <div class="congrats-emoji">🎉</div>
+      <div>
+        <h2 id="congratsHeadline">Congratulations!</h2>
+        <p>You've completed every lesson in this course. That's real, hard-won skill — well done.</p>
+      </div>
+    </div>
+
+    <div class="cert-outer">
+      <div class="cert">
+        <div class="cert-inner-border"></div>
+        <div class="cert-logo">
+          <div class="cert-logo-circle">NDA</div>
+          <div class="cert-logo-text">Moon Digital Academy</div>
+        </div>
+        <div class="cert-eyebrow" id="certEyebrow">Certificate of Completion</div>
+        <div class="cert-presented">This certifies that</div>
+        <div class="cert-name" id="certStudentName">–</div>
+        <div class="cert-desc" id="certDesc">has successfully completed all requirements for the course</div>
+        <div class="cert-course" id="certCourseTitle">–</div>
+        <div class="cert-foot">
+          <div class="cert-foot-block">
+            <div class="cert-foot-label">Date Issued</div>
+            <div class="cert-foot-val" id="certDate">–</div>
+          </div>
+          <div class="cert-foot-block">
+            <div class="cert-foot-label">Final Test Score</div>
+            <div class="cert-foot-val" id="certScore">–</div>
+          </div>
+          <div class="cert-foot-block right">
+            <div class="cert-sig" id="certSig">Moon Digital Academy</div>
+            <div class="cert-foot-label">Authorized Signature</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions-row no-print">
+      <button class="btn btn-violet" id="downloadBtn">Download PDF</button>
+      <a href="dashboard-student.html" class="btn btn-outline">Back to Dashboard</a>
+    </div>
+
+    <div class="verify-card no-print">
+      <h5>Verification Link</h5>
+      <p style="font-size:12px;color:var(--grey);line-height:1.6;margin-bottom:12px;">This certificate confirms you completed every lesson in <b id="verifyDescCourse"></b> through Moon Digital Academy. Share the link below with employers, clients, or on your profile — anyone can use it to confirm this certificate is genuine.</p>
+      <div class="verify-row">
+        <div class="verify-link" id="verifyLink"></div>
+        <button class="copy-btn" id="copyVerifyBtn">Copy</button>
+      </div>
+      <p class="verify-note">Anyone with this link can confirm this certificate is genuine — no login required.</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { watchAuth, db } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getCertificate } from './certificates.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+
+  if(!courseId){
+    document.getElementById('loadingState').textContent = 'No course specified.';
+  } else {
+    watchAuth(async function(user){
+      if(!user){
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+      await init(user);
+    });
+  }
+
+  async function init(user){
+    const profileSnap = await getDoc(doc(db, "users", user.uid));
+    const profile = profileSnap.exists() ? profileSnap.data() : {};
+    const studentName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
+
+    const cert = await getCertificate(user.uid, courseId);
+    document.getElementById('loadingState').classList.add('hidden');
+
+    if(!cert){
+      document.getElementById('notEligibleState').classList.remove('hidden');
+      return;
+    }
+
+    document.getElementById('certStudentName').textContent = cert.studentName;
+    if(cert.credentialTitle){
+      document.getElementById('certEyebrow').textContent = 'Certificate of Achievement';
+      document.getElementById('certDesc').textContent = 'has successfully earned the credential';
+      document.getElementById('certCourseTitle').textContent = cert.credentialTitle;
+    } else {
+      document.getElementById('certCourseTitle').textContent = cert.courseTitle;
+    }
+    document.getElementById('certSig').textContent = cert.signatoryName || 'Moon Digital Academy';
+    document.getElementById('congratsHeadline').textContent = `Congratulations, ${(profile.firstName || cert.studentName)}!`;
+    document.getElementById('verifyDescCourse').textContent = cert.courseTitle;
+    document.getElementById('certScore').textContent = (cert.score !== undefined && cert.score !== null) ? cert.score + '%' : '–';
+    const issuedDate = cert.issuedAt && cert.issuedAt.seconds ? new Date(cert.issuedAt.seconds * 1000) : new Date();
+    document.getElementById('certDate').textContent = issuedDate.toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+
+    const verifyUrl = `${window.location.origin}${window.location.pathname.replace('certificate.html','certificate-verify.html')}?code=${cert.certificateCode}`;
+    document.getElementById('verifyLink').textContent = verifyUrl;
+    document.getElementById('copyVerifyBtn').addEventListener('click', function(){
+      navigator.clipboard.writeText(verifyUrl).then(() => {
+        this.textContent = 'Copied!';
+        setTimeout(() => { this.textContent = 'Copy'; }, 1500);
+      });
+    });
+
+    document.getElementById('certContent').classList.remove('hidden');
+  }
+
+  document.getElementById('downloadBtn').addEventListener('click', () => window.print());
+</script>
+</body>
+</html>

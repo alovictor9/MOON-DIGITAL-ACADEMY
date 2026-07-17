@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moon Digital Academy — Student Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B; --gold-dark:#D98E1E;
+  --violet:#5B3FD6; --violet-dark:#4A30B8; --blue-btn:#1B4FC4;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+  --active-bg:#EDE9FB; --sidebar-w:240px;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4,h5{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+input{font-family:'Inter',sans-serif;}
+a{text-decoration:none;color:inherit;}
+::-webkit-scrollbar{width:8px;height:8px;}
+::-webkit-scrollbar-thumb{background:#D6D3EC;border-radius:8px;}
+
+.app{display:flex;min-height:100vh;}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;background:var(--gradient);color:#fff;display:flex;flex-direction:column;padding:22px 16px;position:fixed;top:0;left:0;bottom:0;z-index:40;transition:transform .25s ease;}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 26px;}
+.sb-logo{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;flex-shrink:0;}
+.sb-logo-img{height:26px;width:auto;display:block;}
+.sb-brand-text .name{font-size:13px;font-weight:700;line-height:1.2;}
+.sb-brand-text .tag{font-size:9.5px;color:var(--gold);font-weight:700;letter-spacing:.05em;}
+.sb-nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+.sb-link{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;font-size:13px;font-weight:600;color:rgba(255,255,255,.68);}
+.sb-link svg{width:18px;height:18px;flex-shrink:0;}
+.sb-link:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-link.active{background:rgba(255,255,255,.14);color:#fff;}
+.sb-divider{height:1px;background:rgba(255,255,255,.12);margin:14px 4px;}
+.sb-foot{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;background:rgba(255,255,255,.08);}
+.sb-foot-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#1A1330;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;}
+.sb-foot-text .n{font-size:12px;font-weight:700;}
+.sb-foot-text .r{font-size:10px;color:rgba(255,255,255,.6);}
+.sb-close{display:none;position:absolute;top:20px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;align-items:center;justify-content:center;}
+.sb-close svg{width:15px;height:15px;}
+
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:14px 28px;gap:16px;}
+.topbar-left{display:flex;align-items:center;gap:14px;min-width:0;}
+.hamburger{display:none;width:38px;height:38px;border-radius:10px;background:var(--bg-lav);align-items:center;justify-content:center;color:var(--navy);flex-shrink:0;}
+.hamburger svg{width:18px;height:18px;}
+.page-title{font-size:19px;}
+.page-sub{font-size:12px;color:var(--grey);margin-top:2px;}
+.topbar-search{display:none;align-items:center;gap:8px;background:var(--bg-lav);border-radius:10px;padding:9px 14px;width:240px;flex-shrink:0;}
+.topbar-search svg{width:15px;height:15px;color:var(--grey-light);flex-shrink:0;}
+.topbar-search input{border:none;background:none;outline:none;font-size:13px;width:100%;color:var(--navy);}
+.topbar-right{display:flex;align-items:center;gap:16px;flex-shrink:0;}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--bg-lav);display:flex;align-items:center;justify-content:center;color:var(--navy);position:relative;flex-shrink:0;}
+.icon-btn svg{width:17px;height:17px;}
+.icon-btn .dot{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--red);border:2px solid #fff;}
+.notif-panel{position:absolute;top:48px;right:0;width:320px;max-width:90vw;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 20px 45px -15px rgba(20,22,58,.25);z-index:60;overflow:hidden;}
+.notif-panel.hidden{display:none;}
+.notif-panel-head{padding:14px 16px;font-size:13px;font-weight:700;border-bottom:1px solid var(--border);}
+.notif-panel-list{max-height:320px;overflow-y:auto;}
+.notif-item{display:flex;gap:10px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.notif-item:last-child{border-bottom:none;}
+.notif-item .n-icon{width:30px;height:30px;border-radius:8px;background:var(--bg-lav);color:var(--violet);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.notif-item .n-icon svg{width:15px;height:15px;}
+.notif-item .n-msg{font-size:12.5px;line-height:1.5;}
+.notif-item .n-time{font-size:10.5px;color:var(--grey-light);margin-top:3px;}
+.notif-panel-foot{display:block;text-align:center;padding:11px;font-size:12px;font-weight:700;color:var(--violet);border-top:1px solid var(--border);}
+.notif-panel-foot:hover{background:var(--bg-lav);}
+.ann-banner{background:var(--bg-lav);border:1px solid var(--border);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;gap:12px;align-items:flex-start;}
+.ann-banner .icon{width:32px;height:32px;border-radius:9px;background:var(--violet);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ann-banner .icon svg{width:16px;height:16px;}
+.ann-banner h5{font-size:13px;margin-bottom:3px;}
+.ann-banner p{font-size:12.5px;color:var(--grey);line-height:1.5;}
+.ann-banner .dismiss{margin-left:auto;color:var(--grey-light);flex-shrink:0;font-size:18px;line-height:1;padding:2px 6px;}
+.tb-avatar{width:36px;height:36px;border-radius:50%;background:var(--gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;}
+
+.content{padding:26px 28px 60px;max-width:1240px;width:100%;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(20,22,58,.45);z-index:30;}
+.page{display:none;}
+.hidden{display:none !important;}
+.page.active{display:block;animation:fade .25s ease;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:11px;font-weight:600;font-size:13.5px;white-space:nowrap;}
+.btn svg{width:15px;height:15px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-gold{background:var(--gold);color:#1A1330;}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+.btn-sm{padding:8px 13px;font-size:12.5px;border-radius:9px;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;}
+.section{margin-bottom:26px;}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.section-head h3{font-size:15px;}
+.section-head .link{font-size:12.5px;font-weight:700;color:var(--violet);}
+
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;overflow-x:auto;}
+.chip{flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:8px 15px;border-radius:20px;background:var(--bg-lav);font-size:12.5px;font-weight:600;color:var(--grey);white-space:nowrap;}
+.chip.active{background:var(--violet);color:#fff;}
+
+/* hero */
+.hero-card{background:var(--gradient);border-radius:20px;padding:26px 28px;position:relative;overflow:hidden;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.hero-card::after{content:"";position:absolute;top:-60px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06);}
+.hero-card .eyebrow{color:#cfd3ff;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;position:relative;z-index:2;}
+.hero-card h1{color:#fff;font-size:21px;line-height:1.35;margin:8px 0 0;max-width:480px;position:relative;z-index:2;}
+.hero-card .gold-txt{color:var(--gold);}
+.hero-btns{display:flex;gap:10px;position:relative;z-index:2;flex-shrink:0;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:26px;}
+.stat-card{padding:18px;}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.stat-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.stat-icon svg{width:18px;height:18px;}
+.stat-num{font-family:'Poppins';font-weight:700;font-size:24px;}
+.stat-label{font-size:12px;color:var(--grey);margin-top:3px;}
+
+/* continue learning */
+.cl-card{display:flex;gap:16px;padding:16px;align-items:center;}
+.cl-thumb{width:88px;height:88px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.cl-thumb svg{width:32px;height:32px;color:rgba(255,255,255,.9);}
+.cl-info{flex:1;min-width:0;}
+.cl-cat{font-size:10.5px;font-weight:700;margin-bottom:4px;}
+.cl-info h4{font-size:14.5px;margin-bottom:8px;}
+.cl-track{height:6px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:8px;}
+.cl-track-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--violet),#8B6AF0);}
+.cl-meta{font-size:11.5px;color:var(--grey);}
+
+/* course grid */
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.course-card{overflow:hidden;}
+.course-thumb{height:130px;position:relative;display:flex;align-items:center;justify-content:center;}
+.course-thumb svg{width:34px;height:34px;color:rgba(255,255,255,.92);}
+.course-badge{position:absolute;top:12px;left:12px;background:var(--gold);color:#1A1330;font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:6px;}
+.course-body{padding:16px;}
+.course-cat{font-size:10.5px;font-weight:700;margin-bottom:6px;}
+.course-body h4{font-size:14px;margin-bottom:10px;line-height:1.35;}
+.course-meta{display:flex;gap:14px;font-size:11px;color:var(--grey);margin-bottom:14px;}
+.course-meta span{display:flex;align-items:center;gap:4px;}
+.course-meta svg{width:13px;height:13px;}
+
+/* achievements */
+.ach-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.ach-card{padding:18px 14px;text-align:center;}
+.ach-card.locked{opacity:.5;}
+.ach-icon{font-size:26px;margin-bottom:8px;}
+.ach-title{font-size:12.5px;font-weight:700;margin-bottom:3px;}
+.ach-sub{font-size:10.5px;color:var(--grey);}
+
+.two-col-layout{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;align-items:start;}
+.about-card{padding:18px;}
+.about-ic{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
+.about-ic svg{width:15px;height:15px;}
+.about-card h5{font-size:13.5px;margin-bottom:7px;}
+.about-card p{font-size:12px;color:var(--grey);line-height:1.6;}
+
+@media (max-width:1080px){
+  .two-col-layout{grid-template-columns:1fr;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .course-grid{grid-template-columns:1fr 1fr;}
+  .ach-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:860px){
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.3);}
+  .sidebar.open ~ .overlay{display:block;}
+  .sb-close{display:flex;}
+  .main{margin-left:0;}
+  .hamburger{display:flex;}
+  .topbar-search{display:none;}
+  .content{padding:20px 16px 50px;}
+  .hero-card{flex-direction:column;align-items:flex-start;}
+  .hero-btns{width:100%;}
+  .hero-btns .btn{flex:1;}
+}
+@media (max-width:640px){
+  .stat-grid,.course-grid,.ach-grid{grid-template-columns:1fr;}
+  .cl-card{flex-direction:column;align-items:flex-start;}
+  .page-title{font-size:16px;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <button class="sb-close" id="sbClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <div class="sb-brand">
+      <img src="logo-white.png" alt="Moon Digital Academy" class="sb-logo-img">
+      <div class="sb-brand-text"><div class="tag">STUDENT PORTAL</div></div>
+    </div>
+    <nav class="sb-nav">
+      <a href="#" class="sb-link active" data-page="home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>Home
+      </a>
+      <a href="#" class="sb-link" data-page="courses">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>My Courses
+      </a>
+      <a href="#" class="sb-link" data-page="progress">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg>Progress
+      </a>
+      <a href="#" class="sb-link" data-page="certificates">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6l-8-4Z"/></svg>Certificates
+      </a>
+      <a href="#" class="sb-link" data-page="messages">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages
+      </a>
+    </nav>
+    <div class="sb-divider"></div>
+    <a href="community.html" class="sb-link" style="margin-bottom:2px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Community
+    </a>
+    <a href="index.html" class="sb-link" style="margin-bottom:2px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Site
+    </a>
+    <button id="logoutBtn" class="sb-link" style="margin-bottom:10px;width:100%;text-align:left;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log Out
+    </button>
+    <div class="sb-foot">
+      <div class="sb-foot-avatar" id="sbFootAvatar">–</div>
+      <div class="sb-foot-text"><div class="n" id="sbFootName">Loading…</div><div class="r">Student</div></div>
+    </div>
+  </aside>
+  <div class="overlay" id="overlay"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+        <div>
+          <div class="page-title" id="pageTitle">Welcome back, Amaka</div>
+          <div class="page-sub" id="pageSub">Let's keep your learning streak going</div>
+        </div>
+      </div>
+      <div class="topbar-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+        <input placeholder="Search courses...">
+      </div>
+      <div class="topbar-right" style="position:relative;">
+        <button class="icon-btn" id="notifBellBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 4 1.5 5 1.5 6.5H4.5C4.5 13 6 12 6 8Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg><span class="dot" id="notifDot" style="display:none;"></span></button>
+        <div class="notif-panel hidden" id="notifPanel">
+          <div class="notif-panel-head">Notifications</div>
+          <div id="notifPanelList" class="notif-panel-list">
+            <p style="font-size:12.5px;color:var(--grey);padding:16px;">Loading…</p>
+          </div>
+          <a href="#" class="notif-panel-foot" data-page="messages">View All Messages</a>
+        </div>
+        <div class="tb-avatar" id="tbAvatar">–</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- ============ PAGE: HOME ============ -->
+      <section class="page active" id="page-home">
+        <div id="announcementBanner"></div>
+        <div class="hero-card">
+          <div>
+            <div class="eyebrow">Keep Going</div>
+            <h1 id="heroHeadline">Loading your progress…</h1>
+          </div>
+          <div class="hero-btns">
+            <a href="#" class="btn btn-gold" id="heroContinueBtn" data-page="courses">Continue Learning</a>
+            <a href="#" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.06);" data-page="progress">View Progress</a>
+          </div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="card stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:#FCE9C9;color:#C97F33;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div></div>
+            <div class="stat-num" id="statEnrolled">0</div><div class="stat-label">Enrolled Courses</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:#DDF2E3;color:#3F8F62;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg></div></div>
+            <div class="stat-num" id="statCompleted">0</div><div class="stat-label">Completed</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:#E3E8FE;color:#3957D6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 17l5-5 4 4 8-9"/></svg></div></div>
+            <div class="stat-num" id="statAvgProgress">0%</div><div class="stat-label">Avg. Progress</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-top"><div class="stat-icon" style="background:#E7E3FB;color:#5B3FD6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 12.5l2 2 4-5"/><circle cx="12" cy="12" r="9"/></svg></div></div>
+            <div class="stat-num" id="statLessonsDone">0</div><div class="stat-label">Lessons Completed</div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head"><h3>Continue Learning</h3><span class="link" data-page="courses">View All Courses</span></div>
+          <div id="continueLearningWrap"><div class="card" style="padding:20px;font-size:13px;color:var(--grey);">Loading…</div></div>
+        </div>
+
+        <div class="two-col-layout">
+          <div class="section">
+            <div class="section-head"><h3>Recommended For You</h3><span class="link" data-page="courses">Explore More</span></div>
+            <div class="course-grid" id="recommendedGrid">
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-head"><h3>About the Academy</h3></div>
+            <div class="card about-card" style="margin-bottom:12px;">
+              <div class="about-ic" style="background:#E7E3FB;color:#5B3FD6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12.5l2 2 4-5"/></svg></div>
+              <h5>About Moon Digital Academy</h5>
+              <p>A modern online learning platform empowering individuals with practical, income-generating skills.</p>
+            </div>
+            <div class="card about-card">
+              <div class="about-ic" style="background:#FCE9C9;color:#C97F33;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg></div>
+              <h5>Our Mission</h5>
+              <p>To provide affordable, industry-relevant education that equips learners to thrive.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PAGE: MY COURSES ============ -->
+      <section class="page" id="page-courses">
+        <div class="field" style="max-width:340px;margin-bottom:14px;position:relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--grey-light);"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="myCoursesSearch" placeholder="Search your courses…" style="width:100%;padding:10px 12px 10px 34px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;">
+        </div>
+        <div class="chip-row" id="myCoursesChipRow" style="margin-bottom:20px;">
+          <div class="chip active" data-category="all">All Courses</div>
+        </div>
+        <div id="myCoursesEmptyState" class="card hidden" style="padding:40px;text-align:center;color:var(--grey);font-size:13px;">
+          You haven't enrolled in any courses yet. <a href="courses.html" style="color:var(--violet);font-weight:700;">Browse the catalog →</a>
+        </div>
+        <div id="myCoursesNoResults" class="card hidden" style="padding:40px;text-align:center;color:var(--grey);font-size:13px;">
+          No courses match your search.
+        </div>
+        <div class="course-grid" id="myCoursesGrid"></div>
+      </section>
+
+
+      <!-- ============ PAGE: PROGRESS ============ -->
+      <section class="page" id="page-progress">
+        <div class="section">
+          <div class="section-head"><h3 id="progressCourseTitle">Course Progress</h3></div>
+          <div class="card" style="padding:20px;">
+            <div id="progressLessonList" style="display:flex;flex-direction:column;gap:16px;">
+              <p style="font-size:13px;color:var(--grey);">Loading…</p>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="section-head"><h3>Achievements</h3></div>
+          <div class="ach-grid">
+            <div class="card ach-card locked" id="ach-first"><div class="ach-icon">🎯</div><div class="ach-title">First Lesson</div><div class="ach-sub">Completed lesson 1</div></div>
+            <div class="card ach-card locked" id="ach-streak"><div class="ach-icon">🔥</div><div class="ach-title">Consistency</div><div class="ach-sub">Streak tracking coming soon</div></div>
+            <div class="card ach-card locked" id="ach-halfway"><div class="ach-icon">🏅</div><div class="ach-title">Halfway There</div><div class="ach-sub">Reach 50% in a course</div></div>
+            <div class="card ach-card locked" id="ach-graduate"><div class="ach-icon">🎓</div><div class="ach-title">Graduate</div><div class="ach-sub">Finish a course</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ PAGE: CERTIFICATES ============ -->
+      <section class="page" id="page-certificates">
+        <div class="section">
+          <div class="section-head"><h3>Your Certificates</h3></div>
+          <div id="certificatesEmptyState" class="card hidden" style="padding:40px;text-align:center;color:var(--grey);font-size:13px;">
+            Complete a course to earn your first certificate.
+          </div>
+          <div class="course-grid" id="certificatesGrid"></div>
+        </div>
+      </section>
+
+      <!-- ============ PAGE: MESSAGES ============ -->
+      <section class="page" id="page-messages">
+        <div class="section">
+          <div class="section-head"><h3>Messages</h3></div>
+          <div id="messagesEmptyState" class="card hidden" style="padding:40px;text-align:center;color:var(--grey);font-size:13px;">
+            No messages yet. You'll see updates here when instructors grade your work.
+          </div>
+          <div class="card" id="messagesList" style="padding:8px 18px;"></div>
+        </div>
+      </section>
+
+
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { watchAuth, auth, db, logout } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { listMyCourseProgress } from './progress.js';
+  import { listCourses, courseThumbStyle } from './courses.js';
+  import { listLessonsForCourse } from './lessons.js';
+  import { listNotificationsForUser, markNotificationRead } from './assignments.js';
+  import { getFinalTest, getTestAttempt } from './finalTest.js';
+  import { getCertificate } from './certificates.js';
+  import { listAnnouncementsForRole } from './announcements.js';
+
+  var titles = {
+    home:{title:'Welcome back', sub:"Let's keep your learning streak going"},
+    courses:{title:'My Courses', sub:''},
+    progress:{title:'Progress', sub:'Track your lessons and achievements'},
+    certificates:{title:'Certificates', sub:'Courses you have completed'},
+    messages:{title:'Messages', sub:'Instructors and platform updates'}
+  };
+  function showPage(name){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    var t = document.getElementById('page-' + name);
+    if(t){ t.classList.add('active'); }
+    document.querySelectorAll('.sb-link').forEach(function(l){ l.classList.toggle('active', l.getAttribute('data-page') === name); });
+    if(titles[name]){
+      document.getElementById('pageTitle').textContent = titles[name].title;
+      document.getElementById('pageSub').textContent = titles[name].sub;
+    }
+    closeSidebar();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  document.querySelectorAll('[data-page]').forEach(function(el){
+    el.addEventListener('click', function(e){ e.preventDefault(); showPage(el.getAttribute('data-page')); });
+  });
+  var sidebar = document.getElementById('sidebar');
+  var overlay = document.getElementById('overlay');
+  document.getElementById('hamburger').addEventListener('click', function(){ sidebar.classList.add('open'); });
+  document.getElementById('sbClose').addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  function closeSidebar(){ sidebar.classList.remove('open'); }
+
+  document.getElementById('logoutBtn').addEventListener('click', async function(){
+    await logout();
+    window.location.href = 'login.html';
+  });
+
+  function initials(firstName, lastName){
+    return ((firstName || '').charAt(0) + (lastName || '').charAt(0)).toUpperCase() || '–';
+  }
+
+  function courseCardHtml(item, opts){
+    opts = opts || {};
+    const badge = item.isComplete
+      ? '<span class="course-badge" style="background:var(--green-bg);color:var(--green);">Completed</span>'
+      : (item.percent > 0 ? `<span class="course-badge">${item.percent}% done</span>` : '');
+    const actionHref = item.isComplete
+      ? '#'
+      : `course-detail.html?course=${item.course.id}`;
+    const actionLabel = item.isComplete ? 'View Certificate' : (item.percent > 0 ? 'Resume Course' : 'Start Course');
+    const actionClick = item.isComplete ? ` data-page="certificates"` : '';
+    return `
+      <div class="card course-card" data-category="${item.course.category}">
+        <div class="course-thumb" style="${courseThumbStyle(item.course)}">
+          ${badge}
+        </div>
+        <div class="course-body">
+          <div class="course-cat">${item.course.category}</div>
+          <h4>${item.course.title}</h4>
+          <div class="course-meta"><span>${item.totalLessons} Lessons</span></div>
+          <a href="${actionHref}"${actionClick} class="btn ${item.isComplete ? 'btn-outline' : 'btn-violet'} btn-sm" style="width:100%;">${actionLabel}</a>
+        </div>
+      </div>`;
+  }
+
+  watchAuth(async function(user){
+    if(!user){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+
+    const profileSnap = await getDoc(doc(db, "users", user.uid));
+    const profile = profileSnap.exists() ? profileSnap.data() : { firstName: '', lastName: '' };
+    const fullName = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
+
+    document.getElementById('sbFootAvatar').textContent = initials(profile.firstName, profile.lastName);
+    document.getElementById('sbFootName').textContent = fullName;
+    document.getElementById('tbAvatar').textContent = initials(profile.firstName, profile.lastName);
+    titles.home.title = `Welcome back, ${profile.firstName || fullName}`;
+    document.getElementById('pageTitle').textContent = titles.home.title;
+    document.getElementById('pageSub').textContent = titles.home.sub;
+
+    const progressItems = await listMyCourseProgress(user.uid);
+    const enrolledIds = progressItems.map(i => i.course.id);
+    const completedCount = progressItems.filter(i => i.isComplete).length;
+    const avgProgress = progressItems.length
+      ? Math.round(progressItems.reduce((sum, i) => sum + i.percent, 0) / progressItems.length)
+      : 0;
+    const totalLessonsDone = progressItems.reduce((sum, i) => sum + i.completedCount, 0);
+
+    // ---- Stats ----
+    document.getElementById('statEnrolled').textContent = progressItems.length;
+    document.getElementById('statCompleted').textContent = completedCount;
+    document.getElementById('statAvgProgress').textContent = avgProgress + '%';
+    document.getElementById('statLessonsDone').textContent = totalLessonsDone;
+    titles.courses.sub = `${progressItems.length} enrolled · ${completedCount} completed`;
+
+    // ---- Hero + Continue Learning ----
+    const inProgressItems = progressItems.filter(i => !i.isComplete);
+    const active = inProgressItems[0] || progressItems[0];
+    const heroHeadline = document.getElementById('heroHeadline');
+    const heroBtn = document.getElementById('heroContinueBtn');
+    const clWrap = document.getElementById('continueLearningWrap');
+    if(active){
+      const othersCount = inProgressItems.length - 1;
+      const othersLabel = othersCount > 0 ? ` — and ${othersCount} other${othersCount === 1 ? '' : 's'}` : '';
+      heroHeadline.innerHTML = `You're <span class="gold-txt">${active.percent}%</span> through ${active.course.title}${othersLabel}.`;
+      heroBtn.href = `course-detail.html?course=${active.course.id}`;
+      heroBtn.removeAttribute('data-page');
+
+      const coursesToShow = inProgressItems.length > 0 ? inProgressItems : [active];
+      clWrap.innerHTML = coursesToShow.map(item => `
+        <div class="card cl-card">
+          <div class="cl-thumb" style="${courseThumbStyle(item.course)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14l3-4 3 2 4-5"/></svg></div>
+          <div class="cl-info">
+            <div class="cl-cat">${item.course.category}</div>
+            <h4>${item.course.title}</h4>
+            <div class="cl-track"><div class="cl-track-fill" style="width:${item.percent}%"></div></div>
+            <div class="cl-meta">${item.completedCount} of ${item.totalLessons} lessons complete</div>
+          </div>
+          <a href="course-detail.html?course=${item.course.id}" class="btn btn-violet btn-sm">Resume</a>
+        </div>`).join('');
+    } else {
+      heroHeadline.textContent = "You haven't enrolled in a course yet — let's fix that.";
+      heroBtn.textContent = 'Browse Courses';
+      heroBtn.href = 'courses.html';
+      heroBtn.removeAttribute('data-page');
+      clWrap.innerHTML = `<div class="card" style="padding:24px;text-align:center;font-size:13px;color:var(--grey);">No courses yet. <a href="courses.html" style="color:var(--violet);font-weight:700;">Browse the catalog →</a></div>`;
+    }
+
+    // ---- Recommended For You ----
+    const allCourses = await listCourses({});
+    const recommended = allCourses.filter(c => !enrolledIds.includes(c.id)).slice(0, 3);
+    document.getElementById('recommendedGrid').innerHTML = recommended.map(c => `
+      <div class="card course-card">
+        <div class="course-thumb" style="${courseThumbStyle(c)}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14l3-4 3 2 4-5"/></svg></div>
+        <div class="course-body">
+          <div class="course-cat">${c.category}</div>
+          <h4>${c.title}</h4>
+          <div class="course-meta"><span>${c.lessonsCount || 0} Lessons</span></div>
+          <a href="courses.html" class="btn btn-outline btn-sm" style="width:100%;">View Course</a>
+        </div>
+      </div>`).join('') || '<p style="font-size:13px;color:var(--grey);">You\'re enrolled in everything we\'ve got — nice work!</p>';
+
+    // ---- My Courses page ----
+    const myCoursesGrid = document.getElementById('myCoursesGrid');
+    const myCoursesEmpty = document.getElementById('myCoursesEmptyState');
+    const myCoursesNoResults = document.getElementById('myCoursesNoResults');
+    const myCoursesSearch = document.getElementById('myCoursesSearch');
+    let activeMyCoursesCategory = 'all';
+
+    function renderMyCourses(){
+      const term = myCoursesSearch.value.trim().toLowerCase();
+      let filtered = activeMyCoursesCategory !== 'all'
+        ? progressItems.filter(i => i.course.category === activeMyCoursesCategory)
+        : progressItems;
+      if(term){
+        filtered = filtered.filter(i => i.course.title.toLowerCase().includes(term));
+      }
+      myCoursesGrid.innerHTML = filtered.map(item => courseCardHtml(item)).join('');
+      myCoursesNoResults.classList.toggle('hidden', !(progressItems.length > 0 && filtered.length === 0));
+    }
+
+    // Build category chips from whatever categories the student is actually
+    // enrolled in, rather than hardcoding the full catalog list here.
+    const myCoursesCategories = [...new Set(progressItems.map(i => i.course.category))];
+    const chipRow = document.getElementById('myCoursesChipRow');
+    myCoursesCategories.forEach(cat => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.setAttribute('data-category', cat);
+      chip.textContent = cat;
+      chipRow.appendChild(chip);
+    });
+
+    if(progressItems.length === 0){ myCoursesEmpty.classList.remove('hidden'); }
+    renderMyCourses();
+    chipRow.addEventListener('click', function(e){
+      const chip = e.target.closest('.chip');
+      if(!chip) return;
+      chipRow.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeMyCoursesCategory = chip.getAttribute('data-category');
+      renderMyCourses();
+    });
+    myCoursesSearch.addEventListener('input', renderMyCourses);
+
+    // ---- Progress page (every enrolled course, not just the active one) ----
+    const progressTitle = document.getElementById('progressCourseTitle');
+    const progressList = document.getElementById('progressLessonList');
+    if(progressItems.length > 0){
+      progressTitle.textContent = 'Course Progress';
+      const sections = [];
+      for(const item of progressItems){
+        const lessons = await listLessonsForCourse(item.course.id);
+        const lessonRows = lessons.map(function(lesson, idx){
+          const isDone = idx < item.completedCount;
+          const isCurrent = idx === item.completedCount;
+          const icon = isDone
+            ? '<div class="stat-icon" style="background:var(--green-bg);color:var(--green);width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>'
+            : isCurrent
+              ? '<div class="stat-icon" style="background:var(--active-bg);color:var(--violet);width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l11-7z"/></svg></div>'
+              : '<div class="stat-icon" style="background:var(--bg-lav);color:var(--grey-light);width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>';
+          const statusLabel = isDone ? 'Completed' : (isCurrent ? 'In Progress' : 'Not started');
+          return `<div style="display:flex;align-items:center;gap:12px;">
+            ${icon}
+            <div style="flex:1;"><b style="font-size:13.5px;${isCurrent ? 'color:var(--violet);' : (!isDone ? 'color:var(--grey-light);' : '')}">${lesson.title}</b>
+            <div style="font-size:11.5px;color:var(--grey);">Lesson ${idx+1} · ${statusLabel}</div></div>
+          </div>`;
+        }).join('') || '<p style="font-size:13px;color:var(--grey);">This course has no lessons yet.</p>';
+
+        sections.push(`
+          <div class="card" style="padding:20px;margin-bottom:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+              <h4 style="font-size:14.5px;">${item.course.title}${item.isComplete ? ' <span style="color:var(--green);font-size:11.5px;font-weight:700;">· Completed</span>' : ''}</h4>
+              <span style="font-size:12px;font-weight:700;color:var(--violet);">${item.percent}%</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:16px;">${lessonRows}</div>
+          </div>`);
+      }
+      progressList.innerHTML = sections.join('');
+    } else {
+      progressTitle.textContent = 'Course Progress';
+      progressList.innerHTML = '<p style="font-size:13px;color:var(--grey);">Enroll in a course to start tracking progress.</p>';
+    }
+
+    // ---- Achievements (computed from real data, no fabricated streaks) ----
+    function setAch(id, unlocked){
+      const el = document.getElementById(id);
+      el.classList.toggle('locked', !unlocked);
+    }
+    setAch('ach-first', totalLessonsDone >= 1);
+    setAch('ach-halfway', progressItems.some(i => i.percent >= 50));
+    setAch('ach-graduate', completedCount >= 1);
+    // ach-streak intentionally always locked — no login-streak tracking built yet
+
+    // ---- Certificates ----
+    const completedItems = progressItems.filter(i => i.isComplete);
+    const certGrid = document.getElementById('certificatesGrid');
+    const certEmpty = document.getElementById('certificatesEmptyState');
+    if(completedItems.length === 0){
+      certEmpty.classList.remove('hidden');
+    } else {
+      certGrid.innerHTML = '';
+      for(const item of completedItems){
+        const courseId = item.course.id;
+        const finalTest = await getFinalTest(courseId);
+        const certificate = await getCertificate(user.uid, courseId);
+        let actionHtml;
+        if(certificate){
+          actionHtml = `<a href="certificate.html?course=${courseId}" class="btn btn-violet btn-sm" style="width:100%;">View Certificate</a>`;
+        } else if(finalTest){
+          const attempt = await getTestAttempt(user.uid, courseId);
+          actionHtml = attempt && !attempt.passed
+            ? `<a href="course-test.html?course=${courseId}" class="btn btn-outline btn-sm" style="width:100%;">Retake Test (${attempt.score}%)</a>`
+            : `<a href="course-test.html?course=${courseId}" class="btn btn-violet btn-sm" style="width:100%;">Take Final Test</a>`;
+        } else {
+          actionHtml = `<div style="font-size:11px;color:var(--grey-light);">No final test set for this course yet.</div>`;
+        }
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.style.cssText = 'padding:22px;text-align:center;';
+        card.innerHTML = `
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--active-bg);color:var(--violet);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="24" height="24"><path d="M12 2 4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6l-8-4Z"/></svg></div>
+          <h4 style="font-size:13.5px;margin-bottom:6px;">${item.course.title}</h4>
+          <div style="font-size:11.5px;color:var(--grey);margin-bottom:14px;">${certificate ? 'Certificate earned' : 'Course completed'}</div>
+          ${actionHtml}`;
+        certGrid.appendChild(card);
+      }
+    }
+
+    // ---- Announcement banner ----
+    const announcements = await listAnnouncementsForRole('student');
+    if(announcements.length > 0){
+      const latest = announcements[0];
+      document.getElementById('announcementBanner').innerHTML = `
+        <div class="ann-banner">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1Z"/><path d="M15 8a5 5 0 0 1 0 8M18.5 5.5a9 9 0 0 1 0 13"/></svg></div>
+          <div style="flex:1;">
+            <h5>${latest.title}</h5>
+            <p>${latest.message}</p>
+          </div>
+          <button class="dismiss" id="dismissAnnBtn">&times;</button>
+        </div>`;
+      document.getElementById('dismissAnnBtn').addEventListener('click', function(){
+        document.getElementById('announcementBanner').innerHTML = '';
+      });
+    }
+
+    // ---- Messages (real notifications) ----
+    const notifications = await listNotificationsForUser(user.uid);
+    const messagesList = document.getElementById('messagesList');
+    const messagesEmpty = document.getElementById('messagesEmptyState');
+    if(notifications.length === 0){
+      messagesEmpty.classList.remove('hidden');
+    } else {
+      messagesList.innerHTML = notifications.map(function(n, idx){
+        const isLast = idx === notifications.length - 1;
+        const when = n.createdAt && n.createdAt.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString() : '';
+        return `<div class="cl-card" style="padding:14px 0;${isLast ? '' : 'border-bottom:1px solid var(--border);'}">
+          <div class="cl-thumb" style="width:44px;height:44px;background:var(--gradient);"><span style="color:#fff;font-weight:700;font-size:12px;">NDA</span></div>
+          <div class="cl-info"><h4 style="font-size:13px;">Moon Digital Academy</h4><div class="cl-meta">${n.message}</div><div style="font-size:10.5px;color:var(--grey-light);margin-top:2px;">${when}</div></div>
+        </div>`;
+      }).join('');
+    }
+
+    // ---- Notifications panel (topbar bell) ----
+    renderNotifPanel(notifications);
+    if(notifications.some(n => !n.read)){
+      document.getElementById('notifDot').style.display = 'block';
+    }
+  });
+
+  let loadedNotifications = [];
+  function notifIconSvg(){
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 4 1.5 5 1.5 6.5H4.5C4.5 13 6 12 6 8Z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>';
+  }
+  function renderNotifPanel(notifications){
+    loadedNotifications = notifications;
+    const list = document.getElementById('notifPanelList');
+    if(notifications.length === 0){
+      list.innerHTML = '<p style="font-size:12.5px;color:var(--grey);padding:16px;">No notifications yet.</p>';
+      return;
+    }
+    list.innerHTML = notifications.slice(0, 6).map(function(n){
+      const when = n.createdAt && n.createdAt.seconds ? new Date(n.createdAt.seconds * 1000).toLocaleDateString() : '';
+      return `<div class="notif-item">
+        <div class="n-icon">${notifIconSvg()}</div>
+        <div><div class="n-msg">${n.message}</div><div class="n-time">${when}</div></div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('notifBellBtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    const panel = document.getElementById('notifPanel');
+    const opening = panel.classList.contains('hidden');
+    panel.classList.toggle('hidden');
+    if(opening && loadedNotifications.some(n => !n.read)){
+      document.getElementById('notifDot').style.display = 'none';
+      loadedNotifications.filter(n => !n.read).forEach(n => markNotificationRead(n.id));
+    }
+  });
+  document.addEventListener('click', function(e){
+    const panel = document.getElementById('notifPanel');
+    if(!panel.classList.contains('hidden') && !panel.contains(e.target) && e.target.id !== 'notifBellBtn'){
+      panel.classList.add('hidden');
+    }
+  });
+</script>
+
+</body>
+</html>

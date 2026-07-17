@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Courses — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+.wrap{max-width:1000px;margin:0 auto;padding:32px 24px 60px;}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:18px;}
+.back svg{width:14px;height:14px;}
+.page-title{font-size:22px;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--grey);margin-bottom:26px;}
+
+.course-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.course-card{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.course-thumb{height:110px;position:relative;}
+.complete-badge{position:absolute;top:12px;right:12px;background:var(--green);color:#fff;font-size:11px;font-weight:700;padding:5px 11px;border-radius:8px;display:flex;align-items:center;gap:5px;}
+.complete-badge svg{width:11px;height:11px;}
+.course-body{padding:18px;}
+.course-cat{font-size:10.5px;font-weight:700;color:var(--violet);margin-bottom:6px;}
+.course-body h4{font-size:15px;margin-bottom:12px;line-height:1.35;}
+.progress-track{height:7px;background:var(--bg-lav);border-radius:5px;overflow:hidden;margin-bottom:8px;}
+.progress-fill{height:100%;background:var(--violet);border-radius:5px;}
+.progress-fill.complete{background:var(--green);}
+.progress-label{font-size:11.5px;color:var(--grey);margin-bottom:16px;}
+.card-actions{display:flex;gap:8px;}
+.btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px;border-radius:9px;font-weight:600;font-size:12.5px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);}
+
+.state-box{text-align:center;padding:70px 20px;color:var(--grey);}
+.state-box svg{width:34px;height:34px;color:var(--grey-light);margin:0 auto 14px;display:block;}
+.state-box h4{font-size:15px;color:var(--navy);margin-bottom:6px;}
+.state-box .btn{display:inline-flex;margin-top:16px;padding:11px 22px;}
+.hidden{display:none;}
+
+@media (max-width:700px){
+  .course-grid{grid-template-columns:1fr;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <a href="dashboard-student.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Dashboard</a>
+  <div class="page-title">My Courses</div>
+  <div class="page-sub">Pick up right where you left off.</div>
+
+  <div id="loadingState" class="state-box">Loading your courses…</div>
+
+  <div id="emptyState" class="state-box hidden">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+    <h4>You haven't enrolled in any courses yet</h4>
+    <p>Browse the catalog to get started.</p>
+    <a href="courses.html" class="btn btn-violet">Explore Courses</a>
+  </div>
+
+  <div id="courseGrid" class="course-grid"></div>
+</div>
+
+<script type="module">
+  import { watchAuth } from './auth.js';
+  import { listMyCourseProgress } from './progress.js';
+  import { courseThumbStyle } from './courses.js';
+
+  watchAuth(async function(user){
+    if(!user){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+    await render(user.uid);
+  });
+
+  async function render(uid){
+    const items = await listMyCourseProgress(uid);
+    document.getElementById('loadingState').classList.add('hidden');
+
+    if(items.length === 0){
+      document.getElementById('emptyState').classList.remove('hidden');
+      return;
+    }
+
+    const grid = document.getElementById('courseGrid');
+    for(const item of items){
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      const continueHref = `course-detail.html?course=${item.course.id}`;
+      card.innerHTML = `
+        <div class="course-thumb" style="${courseThumbStyle(item.course)}">
+          ${item.isComplete ? `<div class="complete-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Complete</div>` : ''}
+        </div>
+        <div class="course-body">
+          <div class="course-cat">${item.course.category}</div>
+          <h4>${item.course.title}</h4>
+          <div class="progress-track"><div class="progress-fill ${item.isComplete ? 'complete' : ''}" style="width:${item.percent}%"></div></div>
+          <div class="progress-label">${item.completedCount} of ${item.totalLessons} lessons · ${item.percent}% complete</div>
+          <div class="card-actions">
+            <a href="${continueHref}" class="btn btn-violet">${item.percent > 0 ? 'Continue' : 'Start Course'}</a>
+            <a href="assignments.html?course=${item.course.id}" class="btn btn-outline">Assignments</a>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    }
+  }
+</script>
+</body>
+</html>

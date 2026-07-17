@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Certificate — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;min-height:100vh;}
+h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button,input{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+
+.nav{padding:16px 24px;}
+.nav-brand{display:inline-flex;align-items:center;gap:10px;}
+.nav-logo{width:36px;height:36px;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:11px;}
+.nav-logo-img{height:30px;width:auto;display:block;}
+.nav-brand-text{font-size:13.5px;font-weight:700;}
+
+.wrap{max-width:520px;margin:40px auto 80px;padding:0 24px;}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:32px;text-align:center;}
+
+.search-form{display:flex;gap:10px;margin-bottom:6px;}
+.search-form input{flex:1;border:1.5px solid var(--border);border-radius:11px;padding:12px 14px;font-size:13.5px;outline:none;text-align:center;letter-spacing:.03em;}
+.search-form input:focus{border-color:var(--violet);}
+.search-form button{background:var(--violet);color:#fff;padding:12px 20px;border-radius:11px;font-weight:600;font-size:13.5px;}
+
+.result{margin-top:26px;text-align:left;}
+.result-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.result-icon svg{width:26px;height:26px;}
+.result-title{text-align:center;font-size:17px;margin-bottom:4px;}
+.result-sub{text-align:center;font-size:12.5px;color:var(--grey);margin-bottom:22px;}
+.detail-row{display:flex;justify-content:space-between;font-size:13px;padding:10px 0;border-bottom:1px solid var(--border);}
+.detail-row:last-child{border-bottom:none;}
+.detail-row .lbl{color:var(--grey);}
+.detail-row .val{font-weight:700;text-align:right;}
+.hidden{display:none;}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">
+    <img src="logo.png" alt="Moon Digital Academy" class="nav-logo-img">
+  </a>
+</nav>
+
+<div class="wrap">
+  <div class="card">
+    <h2 style="font-size:18px;margin-bottom:6px;">Verify a Certificate</h2>
+    <p style="font-size:13px;color:var(--grey);margin-bottom:22px;">Enter a certificate code to confirm it was genuinely issued by Moon Digital Academy.</p>
+
+    <div class="search-form">
+      <input type="text" id="codeInput" placeholder="e.g. NDA-7F3K9Q">
+      <button id="verifyBtn">Verify</button>
+    </div>
+
+    <div id="loadingResult" class="result hidden" style="text-align:center;color:var(--grey);font-size:13px;">Checking…</div>
+
+    <div id="validResult" class="result hidden">
+      <div class="result-icon" style="background:var(--green-bg);color:var(--green);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <div class="result-title">Valid Certificate</div>
+      <div class="result-sub">This certificate was genuinely issued by Moon Digital Academy.</div>
+      <div class="detail-row"><span class="lbl">Student</span><span class="val" id="resultStudent"></span></div>
+      <div class="detail-row"><span class="lbl">Course</span><span class="val" id="resultCourse"></span></div>
+      <div class="detail-row hidden" id="resultCredentialRow"><span class="lbl">Credential</span><span class="val" id="resultCredential"></span></div>
+      <div class="detail-row"><span class="lbl">Instructor</span><span class="val" id="resultInstructor"></span></div>
+      <div class="detail-row"><span class="lbl">Final Test Score</span><span class="val" id="resultScore"></span></div>
+      <div class="detail-row"><span class="lbl">Date Issued</span><span class="val" id="resultDate"></span></div>
+      <div class="detail-row"><span class="lbl">Code</span><span class="val" id="resultCode"></span></div>
+    </div>
+
+    <div id="invalidResult" class="result hidden">
+      <div class="result-icon" style="background:var(--red-bg);color:var(--red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg></div>
+      <div class="result-title">Certificate Not Found</div>
+      <div class="result-sub">We couldn't find a certificate with that code. Double-check it and try again.</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { getCertificateByCode } from './certificates.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const codeInput = document.getElementById('codeInput');
+  const prefilledCode = params.get('code');
+  if(prefilledCode){
+    codeInput.value = prefilledCode;
+    runVerify();
+  }
+
+  document.getElementById('verifyBtn').addEventListener('click', runVerify);
+  codeInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') runVerify(); });
+
+  async function runVerify(){
+    const code = codeInput.value.trim().toUpperCase();
+    if(!code) return;
+
+    ['loadingResult','validResult','invalidResult'].forEach(id => document.getElementById(id).classList.add('hidden'));
+    document.getElementById('loadingResult').classList.remove('hidden');
+
+    const cert = await getCertificateByCode(code);
+    document.getElementById('loadingResult').classList.add('hidden');
+
+    if(!cert){
+      document.getElementById('invalidResult').classList.remove('hidden');
+      return;
+    }
+    document.getElementById('resultStudent').textContent = cert.studentName;
+    document.getElementById('resultCourse').textContent = cert.courseTitle;
+    if(cert.credentialTitle){
+      document.getElementById('resultCredential').textContent = cert.credentialTitle;
+      document.getElementById('resultCredentialRow').classList.remove('hidden');
+    }
+    document.getElementById('resultInstructor').textContent = cert.signatoryName || cert.instructorName;
+    document.getElementById('resultScore').textContent = (cert.score !== undefined && cert.score !== null) ? cert.score + '%' : '—';
+    document.getElementById('resultDate').textContent = (cert.issuedAt && cert.issuedAt.seconds)
+      ? new Date(cert.issuedAt.seconds * 1000).toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'})
+      : '—';
+    document.getElementById('resultCode').textContent = cert.certificateCode;
+    document.getElementById('validResult').classList.remove('hidden');
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Courses — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B; --gold-dark:#D98E1E;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#fff;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;}
+input,select{font-family:'Inter',sans-serif;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+/* nav (shared with index.html) */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1180px;margin:0 auto;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo{width:38px;height:38px;border-radius:11px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;}
+.nav-logo-img{height:30px;width:auto;display:block;}
+.nav-brand-text{font-size:14px;font-weight:700;}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{font-size:13.5px;font-weight:600;color:var(--grey);}
+.nav-links a:hover{color:var(--navy);}
+.nav-actions{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:11px;font-weight:600;font-size:13.5px;transition:.15s;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:hover{background:var(--violet-dark);}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+.btn-outline:hover{border-color:var(--violet);color:var(--violet);}
+
+/* Account sidebar — shown instead of the public nav once we know someone's logged in. */
+:root{--sidebar-w:240px;}
+.sidebar{display:none;width:var(--sidebar-w);flex-shrink:0;background:var(--gradient);color:#fff;flex-direction:column;padding:22px 16px;position:fixed;top:0;left:0;bottom:0;z-index:60;transition:transform .25s ease;}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:4px 8px 26px;}
+.sb-logo{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;flex-shrink:0;}
+.sb-logo-img{height:26px;width:auto;display:block;}
+.sb-brand-text .name{font-size:13px;font-weight:700;line-height:1.2;}
+.sb-brand-text .tag{font-size:9.5px;color:var(--gold);font-weight:700;letter-spacing:.05em;}
+.sb-nav{display:flex;flex-direction:column;gap:3px;flex:1;}
+.sb-link{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;font-size:13px;font-weight:600;color:rgba(255,255,255,.68);}
+.sb-link svg{width:18px;height:18px;flex-shrink:0;}
+.sb-link:hover{background:rgba(255,255,255,.07);color:#fff;}
+.sb-link.active{background:rgba(255,255,255,.14);color:#fff;}
+.sb-divider{height:1px;background:rgba(255,255,255,.12);margin:14px 4px;}
+.sb-foot{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;background:rgba(255,255,255,.08);margin-top:6px;}
+.sb-foot-avatar{width:32px;height:32px;border-radius:50%;background:var(--gold);color:#1A1330;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;}
+.sb-foot-text .n{font-size:12px;font-weight:700;}
+.sb-foot-text .r{font-size:10px;color:rgba(255,255,255,.6);}
+.sb-close{display:none;position:absolute;top:20px;right:16px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;align-items:center;justify-content:center;}
+.sb-close svg{width:15px;height:15px;}
+.hamburger{display:none;width:38px;height:38px;border-radius:10px;background:var(--bg-lav);align-items:center;justify-content:center;color:var(--navy);flex-shrink:0;margin-right:10px;}
+.hamburger svg{width:18px;height:18px;}
+.overlay-nav{display:none;position:fixed;inset:0;background:rgba(20,22,58,.45);z-index:55;}
+
+/* Once we've confirmed a logged-in user, swap the public nav for the sidebar. */
+body.has-sidebar .nav{display:none;}
+body.has-sidebar .sidebar{display:flex;}
+body.has-sidebar .page-header,
+body.has-sidebar > .wrap,
+body.has-sidebar .toast{margin-left:var(--sidebar-w);}
+body.has-sidebar .page-header{padding-left:24px;}
+
+@media (max-width:860px){
+  body.has-sidebar .sidebar{transform:translateX(-100%);}
+  body.has-sidebar .sidebar.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.3);}
+  body.has-sidebar .sidebar.open ~ .overlay-nav{display:block;}
+  body.has-sidebar .sb-close{display:flex;}
+  body.has-sidebar .page-header,
+  body.has-sidebar > .wrap,
+  body.has-sidebar .toast{margin-left:0;}
+  body.has-sidebar .hamburger{display:flex;}
+}
+
+/* header */
+.page-header{padding:44px 0 28px;background:var(--bg-lav);}
+.page-header h1{font-size:28px;margin-bottom:8px;}
+.page-header p{font-size:14px;color:var(--grey);}
+
+/* controls */
+.controls{padding:22px 0;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.search-box{display:flex;align-items:center;gap:9px;background:var(--bg-lav);border-radius:11px;padding:11px 16px;flex:1;min-width:220px;max-width:360px;}
+.search-box svg{width:16px;height:16px;color:var(--grey-light);flex-shrink:0;}
+.search-box input{border:none;background:none;outline:none;font-size:13.5px;width:100%;color:var(--navy);}
+.sort-select{border:1.5px solid var(--border);border-radius:11px;padding:10px 14px;font-size:13px;font-weight:600;color:var(--navy);background:#fff;}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;padding:18px 0 4px;}
+.chip{padding:9px 16px;border-radius:20px;background:var(--bg-lav);font-size:12.5px;font-weight:600;color:var(--grey);cursor:pointer;transition:.15s;border:1.5px solid transparent;}
+.chip.active{background:var(--violet);color:#fff;}
+.chip:hover:not(.active){border-color:var(--violet);}
+
+/* course grid */
+.grid-section{padding:30px 0 70px;}
+.result-count{font-size:12.5px;color:var(--grey);margin-bottom:16px;}
+.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.course-card{border:1px solid var(--border);border-radius:18px;overflow:hidden;transition:.2s;background:#fff;}
+.course-card:hover{border-color:var(--violet);box-shadow:0 20px 40px -22px rgba(91,63,214,.3);transform:translateY(-2px);}
+.course-thumb{height:140px;display:flex;align-items:center;justify-content:center;position:relative;}
+.course-thumb svg{width:36px;height:36px;color:rgba(255,255,255,.9);}
+.course-price-badge{position:absolute;top:12px;right:12px;background:#fff;color:var(--navy);font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:8px;}
+.course-body{padding:18px;}
+.course-cat{font-size:10.5px;font-weight:700;margin-bottom:8px;}
+.course-body h4{font-size:15px;margin-bottom:8px;line-height:1.35;min-height:41px;}
+.course-instructor{font-size:12px;color:var(--grey);margin-bottom:10px;}
+.course-meta-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.course-rating{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--navy);font-weight:600;}
+.course-rating svg{width:13px;height:13px;fill:var(--gold);}
+.course-lessons{font-size:11.5px;color:var(--grey);}
+.enroll-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px;border-radius:10px;font-weight:600;font-size:13px;background:var(--violet);color:#fff;transition:.15s;}
+.enroll-btn:hover{background:var(--violet-dark);}
+.enroll-btn.enrolled{background:var(--green-bg);color:var(--green);cursor:default;}
+.enroll-btn:disabled{opacity:.7;cursor:default;}
+
+.state-box{text-align:center;padding:60px 20px;color:var(--grey);}
+.state-box svg{width:34px;height:34px;color:var(--grey-light);margin:0 auto 14px;display:block;}
+.state-box h4{font-size:15px;color:var(--navy);margin-bottom:6px;}
+.state-box p{font-size:13px;}
+.hidden{display:none;}
+
+.spinner-lg{width:26px;height:26px;border:3px solid var(--border);border-top-color:var(--violet);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:13px 22px;border-radius:11px;font-size:13px;font-weight:600;box-shadow:0 20px 40px -12px rgba(20,22,58,.4);z-index:100;display:none;align-items:center;gap:8px;}
+.toast.show{display:flex;}
+.toast svg{width:16px;height:16px;color:var(--gold);}
+
+@media (max-width:980px){
+  .course-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:760px){
+  .nav-links{display:none;}
+}
+@media (max-width:560px){
+  .course-grid{grid-template-columns:1fr;}
+  .controls{flex-direction:column;align-items:stretch;}
+  .search-box{max-width:none;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+  <button class="sb-close" id="sbClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  <div class="sb-brand">
+    <img src="logo-white.png" alt="Moon Digital Academy" class="sb-logo-img">
+    <div class="sb-brand-text"><div class="tag" id="sbRoleTag">STUDENT PORTAL</div></div>
+  </div>
+  <nav class="sb-nav" id="sbNav">
+    <!-- populated by JS based on role, see <script> below -->
+  </nav>
+  <div class="sb-divider"></div>
+  <button id="logoutBtn" class="sb-link" style="margin-bottom:10px;width:100%;text-align:left;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>Log Out
+  </button>
+  <div class="sb-foot">
+    <div class="sb-foot-avatar" id="sbFootAvatar">–</div>
+    <div class="sb-foot-text"><div class="n" id="sbFootName">Loading…</div><div class="r" id="sbFootRole">Student</div></div>
+  </div>
+</aside>
+<div class="overlay-nav" id="overlayNav"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="Moon Digital Academy" class="nav-logo-img">
+    </a>
+    <div class="nav-links">
+      <a href="courses.html">Courses</a>
+      <a href="index.html#why">About</a>
+      <a href="index.html#testimonials">Instructors</a>
+      <a href="index.html#footer">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline">Log In</a>
+      <a href="register.html" class="btn btn-violet">Get Started</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="wrap" style="display:flex;align-items:center;gap:14px;">
+    <button class="hamburger" id="hamburger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <div>
+      <h1>Explore Courses</h1>
+      <p>Practical, income-generating skills taught by working professionals.</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="controls">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input type="text" id="searchInput" placeholder="Search courses or instructors...">
+    </div>
+    <select class="sort-select" id="sortSelect">
+      <option value="newest">Newest</option>
+      <option value="price-low">Price: Low to High</option>
+      <option value="price-high">Price: High to Low</option>
+      <option value="rating">Highest Rated</option>
+    </select>
+  </div>
+
+  <div class="chip-row" id="chipRow">
+    <div class="chip active" data-category="all">All Courses</div>
+    <div class="chip" data-category="Beauty & Cosmetics">Beauty & Cosmetics</div>
+    <div class="chip" data-category="Food & Catering">Food & Catering</div>
+    <div class="chip" data-category="Fashion & Design">Fashion & Design</div>
+    <div class="chip" data-category="Digital Business">Digital Business</div>
+    <div class="chip" data-category="Creator Economy">Creator Economy</div>
+    <div class="chip" data-category="Web & App Development">Web & App Development</div>
+    <div class="chip" data-category="Graphic Design">Graphic Design</div>
+    <div class="chip" data-category="Video Editing & Film">Video Editing & Film</div>
+    <div class="chip" data-category="Photography">Photography</div>
+    <div class="chip" data-category="Marketing & Sales">Marketing & Sales</div>
+    <div class="chip" data-category="Freelancing & Remote Work">Freelancing & Remote Work</div>
+    <div class="chip" data-category="Data & AI">Data & AI</div>
+    <div class="chip" data-category="Personal Finance">Personal Finance</div>
+    <div class="chip" data-category="Health & Wellness">Health & Wellness</div>
+  </div>
+
+  <section class="grid-section">
+    <div id="loadingState" class="state-box">
+      <div class="spinner-lg"></div>
+      <p>Loading courses…</p>
+    </div>
+
+    <div id="emptyState" class="state-box hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <h4>No courses found</h4>
+      <p>Try a different search term or category.</p>
+    </div>
+
+    <div id="resultsWrap" class="hidden">
+      <div class="result-count" id="resultCount"></div>
+      <div class="course-grid" id="courseGrid"></div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+  <span id="toastText"></span>
+</div>
+
+<script type="module">
+  import { watchAuth, auth, db, logout } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { listCourses, enrollInCourse, isEnrolled, courseThumbStyle } from './courses.js';
+
+  let currentUser = null;
+  let currentCategory = 'all';
+  let currentSort = 'newest';
+  let searchDebounce;
+
+  const grid = document.getElementById('courseGrid');
+  const loadingState = document.getElementById('loadingState');
+  const emptyState = document.getElementById('emptyState');
+  const resultsWrap = document.getElementById('resultsWrap');
+  const resultCount = document.getElementById('resultCount');
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+
+  function showToast(msg){
+    toastText.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  function starSvg(){
+    return '<svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>';
+  }
+
+  async function renderCourses(){
+    loadingState.classList.remove('hidden');
+    resultsWrap.classList.add('hidden');
+    emptyState.classList.add('hidden');
+
+    const courses = await listCourses({
+      category: currentCategory,
+      searchTerm: document.getElementById('searchInput').value,
+      sortBy: currentSort
+    });
+
+    loadingState.classList.add('hidden');
+
+    if(courses.length === 0){
+      emptyState.classList.remove('hidden');
+      return;
+    }
+
+    resultsWrap.classList.remove('hidden');
+    resultCount.textContent = courses.length + (courses.length === 1 ? ' course found' : ' courses found');
+    grid.innerHTML = '';
+
+    for(const course of courses){
+      const card = document.createElement('div');
+      card.className = 'course-card';
+      const priceLabel = course.price > 0 ? '₦' + Number(course.price).toLocaleString() : 'Free';
+      card.innerHTML = `
+        <a href="course-detail.html?course=${course.id}" style="display:block;">
+          <div class="course-thumb" style="${courseThumbStyle(course)}">
+            <span class="course-price-badge">${priceLabel}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14l3-4 3 2 4-5"/></svg>
+          </div>
+        </a>
+        <div class="course-body">
+          <div class="course-cat" style="color:var(--violet);">${course.category}</div>
+          <a href="course-detail.html?course=${course.id}" style="color:inherit;"><h4>${course.title}</h4></a>
+          <div class="course-instructor">by ${course.instructorName}</div>
+          <div class="course-meta-row">
+            <div class="course-rating">${starSvg()} ${course.rating ? course.rating.toFixed(1) : 'New'}</div>
+            <div class="course-lessons">${course.lessonsCount || 0} lessons</div>
+          </div>
+          <button class="enroll-btn" data-course-id="${course.id}" data-price="${course.price || 0}">${course.price > 0 ? 'View & Enroll' : 'Enroll Now'}</button>
+        </div>`;
+      grid.appendChild(card);
+    }
+
+    // Wire up enroll buttons, and mark already-enrolled courses if logged in
+    const buttons = grid.querySelectorAll('.enroll-btn');
+    for(const btn of buttons){
+      const courseId = btn.getAttribute('data-course-id');
+      let enrolled = false;
+      if(currentUser){
+        try{
+          enrolled = await isEnrolled(currentUser.uid, courseId);
+        }catch(err){
+          // Don't let one failed check stop the rest of the buttons from wiring up.
+          console.error('isEnrolled check failed for', courseId, err);
+        }
+      }
+      if(enrolled){
+        btn.textContent = 'Enrolled ✓';
+        btn.classList.add('enrolled');
+        btn.disabled = true;
+        continue;
+      }
+      btn.addEventListener('click', () => handleEnroll(btn, courseId, Number(btn.getAttribute('data-price')) || 0));
+    }
+  }
+
+  async function handleEnroll(btn, courseId, price){
+    if(!currentUser){
+      window.location.href = 'login.html?redirect=courses.html';
+      return;
+    }
+    // Paid courses go through course-detail.html → payment.html; only free
+    // courses enroll instantly from this quick button.
+    if(price > 0){
+      window.location.href = 'course-detail.html?course=' + courseId;
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Enrolling…';
+    try{
+      await enrollInCourse(currentUser.uid, courseId);
+      btn.textContent = 'Enrolled ✓';
+      btn.classList.add('enrolled');
+      showToast('Enrolled! Find it under My Courses on your dashboard.');
+    }catch(err){
+      btn.disabled = false;
+      btn.textContent = 'Enroll Now';
+      showToast('Something went wrong. Please try again.');
+    }
+  }
+
+  document.getElementById('chipRow').addEventListener('click', function(e){
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCategory = chip.getAttribute('data-category');
+    renderCourses();
+  });
+
+  document.getElementById('sortSelect').addEventListener('change', function(e){
+    currentSort = e.target.value;
+    renderCourses();
+  });
+
+  document.getElementById('searchInput').addEventListener('input', function(){
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(renderCourses, 350);
+  });
+
+  // ---- Sidebar (shown only once we know someone's logged in) ----
+  const sidebar = document.getElementById('sidebar');
+  const overlayNav = document.getElementById('overlayNav');
+  function closeSidebar(){ sidebar.classList.remove('open'); }
+  document.getElementById('hamburger').addEventListener('click', () => sidebar.classList.add('open'));
+  document.getElementById('sbClose').addEventListener('click', closeSidebar);
+  overlayNav.addEventListener('click', closeSidebar);
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await logout();
+    window.location.href = 'index.html';
+  });
+
+  function initials(firstName, lastName){
+    return ((firstName || '').charAt(0) + (lastName || '').charAt(0)).toUpperCase() || '–';
+  }
+
+  function svgHome(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h14V10"/></svg>'; }
+  function svgBook(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>'; }
+  function svgSearch(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>'; }
+  function svgGrade(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>'; }
+
+  function renderSidebarNav(role){
+    const nav = document.getElementById('sbNav');
+    if(role === 'instructor'){
+      document.getElementById('sbRoleTag').textContent = 'INSTRUCTOR PORTAL';
+      nav.innerHTML = `
+        <a href="dashboard-instructor.html" class="sb-link">${svgHome()}My Courses (Teaching)</a>
+        <a href="grading.html" class="sb-link">${svgGrade()}Grading</a>
+        <a href="courses.html" class="sb-link active">${svgSearch()}View Catalog</a>`;
+    } else {
+      document.getElementById('sbRoleTag').textContent = 'STUDENT PORTAL';
+      nav.innerHTML = `
+        <a href="dashboard-student.html" class="sb-link">${svgHome()}Dashboard</a>
+        <a href="my-courses.html" class="sb-link">${svgBook()}My Courses</a>
+        <a href="courses.html" class="sb-link active">${svgSearch()}View Catalog</a>`;
+    }
+  }
+
+  watchAuth(async function(user){
+    currentUser = user;
+    if(user){
+      const profileSnap = await getDoc(doc(db, "users", user.uid));
+      const profile = profileSnap.exists() ? profileSnap.data() : { firstName: '', lastName: '', role: 'student' };
+      document.body.classList.add('has-sidebar');
+      renderSidebarNav(profile.role);
+      document.getElementById('sbFootAvatar').textContent = initials(profile.firstName, profile.lastName);
+      document.getElementById('sbFootName').textContent = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || user.email;
+      document.getElementById('sbFootRole').textContent = profile.role === 'instructor' ? 'Instructor' : 'Student';
+    } else {
+      document.body.classList.remove('has-sidebar');
+    }
+    renderCourses();
+  });
+</script>
+</body>
+</html>

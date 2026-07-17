@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assignments — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+.wrap{max-width:800px;margin:0 auto;padding:32px 24px 60px;}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:18px;}
+.back svg{width:14px;height:14px;}
+.page-title{font-size:22px;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--grey);margin-bottom:26px;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;}
+.a-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.a-title{font-size:15.5px;}
+.a-due{font-size:11.5px;color:var(--grey);white-space:nowrap;}
+.a-desc{font-size:13px;color:var(--grey);line-height:1.6;margin-bottom:16px;}
+
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;margin-bottom:14px;}
+.status-badge svg{width:12px;height:12px;}
+.status-pending{background:var(--bg-lav);color:var(--grey);}
+.status-submitted{background:#FCE9C9;color:#C97F33;}
+.status-graded{background:var(--green-bg);color:var(--green);}
+
+.q-block{border-top:1px solid var(--border);padding-top:16px;margin-top:16px;}
+.q-block:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+.q-label{font-size:13px;font-weight:700;margin-bottom:10px;}
+.q-points{font-size:11px;color:var(--grey-light);font-weight:600;}
+.q-option{display:flex;align-items:center;gap:9px;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px;font-size:13px;cursor:pointer;}
+.q-option:hover{border-color:var(--violet);}
+.q-option input{width:15px;height:15px;accent-color:var(--violet);flex-shrink:0;}
+.q-option.correct{border-color:var(--green);background:var(--green-bg);}
+.q-option.incorrect{border-color:var(--red);background:var(--red-bg);}
+.q-textarea{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:'Inter',sans-serif;min-height:90px;resize:vertical;}
+.q-answer-readonly{font-size:13px;color:var(--navy);background:var(--bg-lav);padding:12px;border-radius:10px;line-height:1.6;white-space:pre-wrap;}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:10px;font-weight:600;font-size:13px;flex-shrink:0;margin-top:6px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+
+.grade-box{background:var(--green-bg);border-radius:12px;padding:14px 16px;margin-top:16px;}
+.grade-score{font-family:'Poppins';font-weight:700;font-size:18px;color:var(--green);}
+.grade-feedback{font-size:12.5px;color:var(--navy);margin-top:6px;line-height:1.6;}
+
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.spinner.show{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.state-box{text-align:center;padding:60px 20px;color:var(--grey);}
+.hidden{display:none;}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <a href="dashboard-student.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to My Courses</a>
+  <div class="page-title" id="courseTitle">Loading…</div>
+  <div class="page-sub">Assignments for this course</div>
+
+  <div id="loadingState" class="state-box">Loading assignments…</div>
+  <div id="emptyState" class="state-box hidden">No assignments have been posted for this course yet.</div>
+  <div id="assignmentList"></div>
+</div>
+
+<script type="module">
+  import { watchAuth } from './auth.js';
+  import { getCourse } from './courses.js';
+  import { listAssignmentsForCourse, getSubmission, submitAssignment } from './assignments.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+  let currentUser = null;
+  let course = null;
+
+  if(!courseId){
+    document.getElementById('loadingState').textContent = 'No course specified.';
+  } else {
+    watchAuth(async function(user){
+      if(!user){
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+      currentUser = user;
+      await init();
+    });
+  }
+
+  async function init(){
+    course = await getCourse(courseId);
+    if(!course){ document.getElementById('loadingState').textContent = 'Course not found.'; return; }
+    document.getElementById('courseTitle').textContent = course.title;
+
+    let assignments = [];
+    try{
+      assignments = await listAssignmentsForCourse(courseId);
+    }catch(err){
+      console.error('listAssignmentsForCourse failed', err);
+      document.getElementById('loadingState').textContent =
+        'Could not load assignments. This usually means the Firestore security rules haven\'t been published yet — ask your admin to check Firebase Console.';
+      return;
+    }
+    document.getElementById('loadingState').classList.add('hidden');
+
+    if(assignments.length === 0){
+      document.getElementById('emptyState').classList.remove('hidden');
+      return;
+    }
+
+    const listWrap = document.getElementById('assignmentList');
+    for(const a of assignments){
+      let submission = null;
+      try{
+        submission = await getSubmission(currentUser.uid, a.id);
+      }catch(err){
+        console.error('getSubmission failed for', a.id, err);
+      }
+      const card = renderAssignmentCard(a, submission);
+      card.id = 'assignment-' + a.id;
+      listWrap.appendChild(card);
+    }
+
+    // Deep link from lesson.html (?assignment=ID) — scroll to and briefly highlight it.
+    const targetAssignmentId = params.get('assignment');
+    if(targetAssignmentId){
+      const targetCard = document.getElementById('assignment-' + targetAssignmentId);
+      if(targetCard){
+        targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetCard.style.outline = '2px solid var(--violet)';
+        targetCard.style.outlineOffset = '3px';
+        setTimeout(() => { targetCard.style.outline = ''; }, 2500);
+      }
+    }
+  }
+
+  function questionReviewHtml(q, i, submission){
+    const savedAnswer = submission ? submission.answers[i] : null;
+    if(q.type === 'written'){
+      const answerText = savedAnswer ? savedAnswer.answer : '';
+      return `
+        <div class="q-block" data-qindex="${i}" data-qtype="written">
+          <div class="q-label">${i + 1}. ${q.question} <span class="q-points">(${q.points} pts)</span></div>
+          ${submission
+            ? `<div class="q-answer-readonly">${answerText || '(no answer given)'}</div>`
+            : `<textarea class="q-textarea" placeholder="Type your answer…"></textarea>`}
+        </div>`;
+    }
+    const options = (q.options || []).map((opt, oi) => {
+      let cls = 'q-option';
+      let mark = '';
+      if(submission){
+        const chosen = savedAnswer && Number(savedAnswer.answer) === oi;
+        if(oi === q.correctIndex){ cls += ' correct'; }
+        else if(chosen){ cls += ' incorrect'; }
+        if(chosen) mark = ' ✓ your answer';
+        else if(oi === q.correctIndex) mark = ' ✓ correct answer';
+      }
+      return `<label class="${cls}"><input type="radio" name="q-${i}" value="${oi}" ${submission ? 'disabled' : ''} ${savedAnswer && Number(savedAnswer.answer) === oi ? 'checked' : ''}>${opt}${mark ? `<span style="margin-left:auto;font-size:11px;font-weight:700;">${mark}</span>` : ''}</label>`;
+    }).join('');
+    return `
+      <div class="q-block" data-qindex="${i}" data-qtype="mcq">
+        <div class="q-label">${i + 1}. ${q.question} <span class="q-points">(${q.points} pts)</span></div>
+        ${options}
+      </div>`;
+  }
+
+  function renderAssignmentCard(assignment, submission){
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const dueLabel = assignment.dueDate ? `Due ${new Date(assignment.dueDate).toLocaleDateString()}` : 'No due date';
+    const questions = assignment.questions || [];
+
+    let statusHtml;
+    if(submission && submission.status === 'graded'){
+      statusHtml = `<div class="status-badge status-graded"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>Graded</div>`;
+    } else if(submission && submission.status === 'submitted'){
+      statusHtml = `<div class="status-badge status-submitted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Awaiting Grade</div>`;
+    } else {
+      statusHtml = `<div class="status-badge status-pending">Not Submitted</div>`;
+    }
+
+    const questionsHtml = questions.map((q, i) => questionReviewHtml(q, i, submission)).join('');
+
+    const gradeHtml = (submission && submission.status === 'graded')
+      ? `<div class="grade-box">
+          <span class="grade-score">${submission.score} / ${assignment.maxScore}</span>
+          ${submission.feedback ? `<div class="grade-feedback">${submission.feedback}</div>` : ''}
+        </div>`
+      : '';
+
+    const submitBtnHtml = !submission
+      ? `<button class="btn btn-violet" id="submit-${assignment.id}"><span class="spinner"></span><span class="submit-label">Submit Answers</span></button>`
+      : '';
+
+    card.innerHTML = `
+      <div class="a-top"><div class="a-title">${assignment.title}</div><div class="a-due">${dueLabel} · ${assignment.maxScore} pts</div></div>
+      ${assignment.description ? `<div class="a-desc">${assignment.description}</div>` : ''}
+      ${statusHtml}
+      ${questionsHtml}
+      ${gradeHtml}
+      ${submitBtnHtml}`;
+
+    if(!submission){
+      const submitBtn = card.querySelector(`#submit-${assignment.id}`);
+      submitBtn.addEventListener('click', async function(){
+        const blocks = Array.from(card.querySelectorAll('.q-block'));
+        const answers = blocks.map(block => {
+          if(block.getAttribute('data-qtype') === 'written'){
+            return block.querySelector('.q-textarea').value.trim();
+          }
+          const checked = block.querySelector('input[type="radio"]:checked');
+          return checked ? Number(checked.value) : null;
+        });
+        if(answers.some(a => a === null || a === '')){
+          alert('Please answer every question before submitting.');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.querySelector('.spinner').classList.add('show');
+        submitBtn.querySelector('.submit-label').textContent = 'Submitting…';
+        try{
+          const newSubmission = await submitAssignment({
+            uid: currentUser.uid,
+            courseId,
+            assignmentId: assignment.id,
+            answers,
+            instructorId: course.instructorId
+          });
+          const newCard = renderAssignmentCard(assignment, newSubmission);
+          card.replaceWith(newCard);
+        }catch(err){
+          console.error('submitAssignment failed:', err);
+          submitBtn.disabled = false;
+          submitBtn.querySelector('.spinner').classList.remove('show');
+          submitBtn.querySelector('.submit-label').textContent = 'Submit Answers';
+          alert('Could not submit your answers: ' + (err.message || 'please try again.'));
+        }
+      });
+    }
+
+    return card;
+  }
+</script>
+</body>
+</html>

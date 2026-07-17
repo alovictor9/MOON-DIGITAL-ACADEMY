@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moon Digital Academy — Learn. Apply. Grow. Succeed.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B; --gold-dark:#D98E1E;
+  --violet:#5B3FD6; --violet-dark:#4A30B8; --blue-btn:#1B4FC4;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#fff;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;}
+img,svg{display:block;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+/* ---- Nav ---- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1180px;margin:0 auto;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo{width:38px;height:38px;border-radius:11px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;}
+.nav-logo-img{height:30px;width:auto;display:block;}
+.nav-brand-text{font-size:14px;font-weight:700;}
+.nav-links{display:flex;align-items:center;gap:32px;}
+.nav-links a{font-size:13.5px;font-weight:600;color:var(--grey);}
+.nav-links a:hover{color:var(--navy);}
+.nav-actions{display:flex;align-items:center;gap:12px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:11px;font-weight:600;font-size:13.5px;transition:.15s;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:hover{background:var(--violet-dark);}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);}
+.btn-outline:hover{border-color:var(--violet);color:var(--violet);}
+.btn-gold{background:var(--gold);color:#1A1330;}
+.nav-toggle{display:none;width:38px;height:38px;border-radius:10px;background:var(--bg-lav);align-items:center;justify-content:center;}
+.nav-toggle svg{width:18px;height:18px;}
+
+/* ---- Hero ---- */
+.hero{padding:70px 0 60px;overflow:hidden;position:relative;}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center;}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--bg-lav);color:var(--violet);font-size:12px;font-weight:700;padding:7px 14px;border-radius:20px;margin-bottom:20px;}
+.hero h1{font-size:44px;line-height:1.15;margin-bottom:18px;}
+.hero h1 .gold{color:var(--gold-dark);}
+.hero p.lead{font-size:16px;color:var(--grey);line-height:1.7;max-width:480px;margin-bottom:28px;}
+.hero-btns{display:flex;gap:12px;margin-bottom:34px;}
+.hero-btns .btn{padding:14px 24px;font-size:14px;}
+.trust-row{display:flex;align-items:center;gap:22px;}
+.trust-avatars{display:flex;}
+.trust-avatars span{width:32px;height:32px;border-radius:50%;border:2.5px solid #fff;margin-left:-10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;}
+.trust-avatars span:first-child{margin-left:0;}
+.trust-text{font-size:12.5px;color:var(--grey);}
+.trust-text b{color:var(--navy);}
+
+.hero-visual{position:relative;}
+.hv-card{background:var(--gradient);border-radius:24px;padding:30px;position:relative;overflow:hidden;box-shadow:0 30px 60px -20px rgba(20,22,58,.35);}
+.hv-card::after{content:"";position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06);}
+.hv-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:relative;z-index:2;}
+.hv-top .live{display:flex;align-items:center;gap:6px;color:#cfd3ff;font-size:11px;font-weight:700;}
+.hv-top .live .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);}
+.hv-thumb{height:150px;border-radius:16px;background:linear-gradient(160deg,#7C8CF0,#3957D6);display:flex;align-items:center;justify-content:center;position:relative;z-index:2;margin-bottom:16px;}
+.hv-thumb svg{width:44px;height:44px;color:rgba(255,255,255,.9);}
+.hv-card h4{color:#fff;font-size:15px;margin-bottom:6px;position:relative;z-index:2;}
+.hv-card .meta{color:#cfd3ff;font-size:11.5px;position:relative;z-index:2;margin-bottom:16px;}
+.hv-progress{height:6px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden;position:relative;z-index:2;}
+.hv-progress-fill{height:100%;width:64%;background:var(--gold);border-radius:4px;}
+.hv-float{position:absolute;background:#fff;border-radius:16px;padding:14px 16px;box-shadow:0 20px 40px -12px rgba(20,22,58,.25);display:flex;align-items:center;gap:10px;z-index:3;}
+.hv-float.f1{top:-18px;left:-24px;}
+.hv-float.f2{bottom:-20px;right:-20px;}
+.hv-float .ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.hv-float .ic svg{width:16px;height:16px;}
+.hv-float .num{font-family:'Poppins';font-weight:700;font-size:15px;}
+.hv-float .lbl{font-size:10px;color:var(--grey);}
+
+/* ---- Stats bar ---- */
+.stats-bar{padding:44px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg-lav);}
+.stats-bar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;}
+.stats-bar-item .num{font-family:'Poppins';font-weight:800;font-size:30px;color:var(--navy);}
+.stats-bar-item .num .gold{color:var(--gold-dark);}
+.stats-bar-item .lbl{font-size:12.5px;color:var(--grey);margin-top:4px;font-weight:600;}
+
+/* ---- Section shared ---- */
+.section{padding:80px 0;}
+.section-head{text-align:center;max-width:560px;margin:0 auto 46px;}
+.section-head .eyebrow{margin-bottom:14px;}
+.section-head h2{font-size:30px;line-height:1.3;margin-bottom:12px;}
+.section-head p{font-size:14.5px;color:var(--grey);line-height:1.7;}
+
+/* ---- Categories ---- */
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.cat-card{border:1px solid var(--border);border-radius:18px;padding:26px 22px;transition:.2s;}
+.cat-card:hover{border-color:var(--violet);box-shadow:0 20px 40px -20px rgba(91,63,214,.3);transform:translateY(-3px);}
+.cat-ic{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.cat-ic svg{width:22px;height:22px;}
+.cat-card h4{font-size:15.5px;margin-bottom:8px;}
+.cat-card p{font-size:12.5px;color:var(--grey);line-height:1.6;margin-bottom:16px;}
+.cat-card .cat-link{font-size:12.5px;font-weight:700;color:var(--violet);display:flex;align-items:center;gap:5px;}
+.cat-card .cat-link svg{width:13px;height:13px;}
+
+/* ---- Why choose ---- */
+.why-section{background:var(--navy);color:#fff;}
+.why-section .section-head p{color:rgba(255,255,255,.55);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+.why-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:28px 24px;}
+.why-ic{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+.why-ic svg{width:21px;height:21px;color:var(--gold);}
+.why-card h4{font-size:16px;color:#fff;margin-bottom:9px;}
+.why-card p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;}
+
+/* ---- Testimonials ---- */
+.tmn-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.tmn-card{border:1px solid var(--border);border-radius:18px;padding:24px;}
+.tmn-stars{display:flex;gap:3px;margin-bottom:14px;}
+.tmn-stars svg{width:14px;height:14px;fill:var(--gold);}
+.tmn-card p{font-size:13.5px;color:var(--navy);line-height:1.7;margin-bottom:18px;}
+.tmn-person{display:flex;align-items:center;gap:10px;}
+.tmn-avatar{width:36px;height:36px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;}
+.tmn-name{font-size:12.5px;font-weight:700;}
+.tmn-role{font-size:11px;color:var(--grey);}
+
+/* ---- CTA ---- */
+.cta-band{background:var(--gradient);border-radius:26px;padding:52px 40px;margin:0 24px;max-width:1132px;margin:0 auto;position:relative;overflow:hidden;text-align:center;}
+.cta-band::after{content:"";position:absolute;top:-70px;left:-70px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06);}
+.cta-band h2{color:#fff;font-size:28px;margin-bottom:12px;position:relative;z-index:2;}
+.cta-band p{color:#cfd3ff;font-size:14.5px;margin-bottom:26px;position:relative;z-index:2;}
+.cta-band .btns{display:flex;gap:12px;justify-content:center;position:relative;z-index:2;}
+
+/* ---- Footer ---- */
+.footer{background:#0F1130;color:rgba(255,255,255,.6);padding:60px 0 26px;}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:30px;margin-bottom:40px;}
+.footer-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.footer-brand-text{color:#fff;font-weight:700;font-size:14px;}
+.footer p.desc{font-size:12.5px;line-height:1.7;max-width:280px;}
+.footer h5{color:#fff;font-size:12.5px;margin-bottom:16px;text-transform:uppercase;letter-spacing:.05em;}
+.footer ul{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:11px;}
+.footer ul a{font-size:13px;}
+.footer ul a:hover{color:#fff;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.1);padding-top:22px;display:flex;align-items:center;justify-content:space-between;font-size:12px;flex-wrap:wrap;gap:10px;}
+.social-row{display:flex;gap:10px;}
+.social-row a{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;}
+.social-row svg{width:15px;height:15px;}
+
+/* ---- Responsive ---- */
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-visual{max-width:440px;}
+  .cat-grid{grid-template-columns:1fr 1fr;}
+  .why-grid,.tmn-grid{grid-template-columns:1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .stats-bar-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:760px){
+  .nav-links{display:none;}
+  .nav-toggle{display:flex;}
+  .nav-actions .btn-outline{display:none;}
+  .hero h1{font-size:32px;}
+  .hero-btns{flex-direction:column;}
+  .hero-btns .btn{width:100%;}
+}
+@media (max-width:560px){
+  .cat-grid,.why-grid,.tmn-grid,.footer-grid,.stats-bar-grid{grid-template-columns:1fr;}
+  .cta-band{margin:0 16px;padding:40px 24px;}
+  .cta-band .btns{flex-direction:column;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="Moon Digital Academy" class="nav-logo-img">
+    </a>
+    <div class="nav-links">
+      <a href="#categories">Courses</a>
+      <a href="#why">About</a>
+      <a href="#testimonials">Instructors</a>
+      <a href="#footer">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-outline">Log In</a>
+      <a href="register.html" class="btn btn-violet">Get Started</a>
+      <button class="nav-toggle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6l-8-4Z"/></svg>
+        Trusted by 3,400+ learners across Nigeria
+      </div>
+      <h1>Learn Practical Skills. Build Real Opportunities. <span class="gold">Shape Your Future.</span></h1>
+      <p class="lead">Industry-relevant training in Beauty &amp; Cosmetics, Food &amp; Catering, Digital Business, and the Creator Economy — taught by working professionals.</p>
+      <div class="hero-btns">
+        <a href="register.html" class="btn btn-gold">Start Learning Today</a>
+        <a href="#categories" class="btn btn-outline">Explore Courses</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-avatars">
+          <span style="background:#5B3FD6;">AJ</span>
+          <span style="background:#D98E1E;">TO</span>
+          <span style="background:#3957D6;">CE</span>
+          <span style="background:#D6516B;">KA</span>
+        </div>
+        <div class="trust-text"><b>4.8/5</b> average rating from 1,200+ reviews</div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hv-float f1">
+        <div class="ic" style="background:#DDF2E3;color:#3F8F62;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div><div class="num">24</div><div class="lbl">Certificates Issued</div></div>
+      </div>
+      <div class="hv-card">
+        <div class="hv-top">
+          <div class="live"><span class="dot"></span>LIVE COHORT</div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#cfd3ff" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+        </div>
+        <div class="hv-thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="m15 10 6-3v10l-6-3"/></svg></div>
+        <h4>Content Creation &amp; YouTube Growth</h4>
+        <div class="meta">16 lessons · Beginner friendly</div>
+        <div class="hv-progress"><div class="hv-progress-fill"></div></div>
+      </div>
+      <div class="hv-float f2">
+        <div class="ic" style="background:#E7E3FB;color:#5B3FD6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg></div>
+        <div><div class="num">46</div><div class="lbl">Active Courses</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats-bar">
+  <div class="wrap stats-bar-grid">
+    <div class="stats-bar-item"><div class="num">3,482</div><div class="lbl">Students Enrolled</div></div>
+    <div class="stats-bar-item"><div class="num">46</div><div class="lbl">Active Courses</div></div>
+    <div class="stats-bar-item"><div class="num"><span class="gold">120+</span></div><div class="lbl">Expert Instructors</div></div>
+    <div class="stats-bar-item"><div class="num">2,900</div><div class="lbl">Certificates Issued</div></div>
+  </div>
+</section>
+
+<section class="section" id="categories">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">What You'll Learn</div>
+      <h2>Skills built for real income, not just certificates</h2>
+      <p>Every course is designed around what employers and clients are actually asking for.</p>
+    </div>
+    <div class="cat-grid">
+      <a href="dashboard-student.html" class="cat-card">
+        <div class="cat-ic" style="background:#FBE3EC;color:#D6516B;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.4-7-10a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 5.6-7 10-7 10Z"/></svg></div>
+        <h4>Beauty &amp; Cosmetics</h4>
+        <p>Makeup artistry, skincare, and professional beauty techniques.</p>
+        <span class="cat-link">Explore courses <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <a href="dashboard-student.html" class="cat-card">
+        <div class="cat-ic" style="background:#FCE9C9;color:#C97F33;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3v8a3 3 0 0 0 3 3v7M12 3v8a2 2 0 0 0 4 0V3"/></svg></div>
+        <h4>Food &amp; Catering</h4>
+        <p>Catering operations, event management, and culinary business.</p>
+        <span class="cat-link">Explore courses <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <a href="dashboard-student.html" class="cat-card">
+        <div class="cat-ic" style="background:#E3E8FE;color:#3957D6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14l3-4 3 2 4-5"/></svg></div>
+        <h4>Digital Business</h4>
+        <p>Digital marketing, e-commerce, and online business fundamentals.</p>
+        <span class="cat-link">Explore courses <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+      <a href="dashboard-student.html" class="cat-card">
+        <div class="cat-ic" style="background:#E7E3FB;color:#5B3FD6;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/><path d="m15 10 6-3v10l-6-3"/></svg></div>
+        <h4>Creator Economy</h4>
+        <p>Content creation, personal branding, and YouTube growth.</p>
+        <span class="cat-link">Explore courses <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section why-section" id="why">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow" style="background:rgba(255,255,255,.08);color:var(--gold);">Why Moon Digital Academy</div>
+      <h2 style="color:#fff;">Built for people who need results, not lectures</h2>
+      <p>A modern online learning platform empowering individuals with practical, income-generating skills.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 12.5l2 2 4-5"/></svg></div>
+        <h4>Practical, Not Theoretical</h4>
+        <p>Every module ends with something you can actually apply — a client project, a portfolio piece, or a launched business idea.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg></div>
+        <h4>Instructors Who Practice What They Teach</h4>
+        <p>Learn from working professionals in beauty, food, digital business, and content creation — not career lecturers.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></div>
+        <h4>Learn On Your Own Schedule</h4>
+        <p>Self-paced lessons with progress tracking, so you can build skills around work, school, or family.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="testimonials">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Student Stories</div>
+      <h2>Real people, real income change</h2>
+    </div>
+    <div class="tmn-grid">
+      <div class="tmn-card">
+        <div class="tmn-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </div>
+        <p>"I started the Makeup Artistry course with zero experience. Three months later I'm booking paid bridal clients every weekend."</p>
+        <div class="tmn-person">
+          <div class="tmn-avatar" style="background:linear-gradient(160deg,#F4A6C1,#E96D95);">AJ</div>
+          <div><div class="tmn-name">Amaka Johnson</div><div class="tmn-role">Beauty &amp; Cosmetics graduate</div></div>
+        </div>
+      </div>
+      <div class="tmn-card">
+        <div class="tmn-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </div>
+        <p>"The Digital Marketing course paid for itself with my first freelance client. The lessons map directly to real client work."</p>
+        <div class="tmn-person">
+          <div class="tmn-avatar" style="background:linear-gradient(160deg,#7C8CF0,#3957D6);">CE</div>
+          <div><div class="tmn-name">Chiamaka Eze</div><div class="tmn-role">Digital Business graduate</div></div>
+        </div>
+      </div>
+      <div class="tmn-card">
+        <div class="tmn-stars">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        </div>
+        <p>"Teaching on Moon Digital Academy let me turn my catering business into a second income stream training other people."</p>
+        <div class="tmn-person">
+          <div class="tmn-avatar" style="background:linear-gradient(160deg,#F2C879,#D9842E);">TO</div>
+          <div><div class="tmn-name">Tunde Okafor</div><div class="tmn-role">Instructor, Food &amp; Catering</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0;">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Ready to build a skill that pays?</h2>
+      <p>Join 3,400+ learners already building real income with Moon Digital Academy.</p>
+      <div class="btns">
+        <a href="register.html" class="btn btn-gold">Create Free Account</a>
+        <a href="login.html" class="btn btn-outline" style="color:#fff;border-color:rgba(255,255,255,.5);">I already have an account</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" id="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="logo-white.png" alt="Moon Digital Academy" class="nav-logo-img">
+        </div>
+        <p class="desc">A modern online learning platform empowering individuals across Nigeria with practical, income-generating skills.</p>
+      </div>
+      <div>
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="#categories">Courses</a></li>
+          <li><a href="login.html">Log In</a></li>
+          <li><a href="register.html">Register</a></li>
+          <li><a href="dashboard-instructor.html">Become an Instructor</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#why">About Us</a></li>
+          <li><a href="#testimonials">Success Stories</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support</h5>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Moon Digital Academy. All rights reserved.</span>
+      <div class="social-row">
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M22 5.9c-.7.3-1.5.6-2.3.7a4 4 0 0 0 1.8-2.2 8 8 0 0 1-2.5 1 4 4 0 0 0-6.9 3.6A11.4 11.4 0 0 1 3.9 4.6a4 4 0 0 0 1.2 5.3c-.6 0-1.2-.2-1.7-.5v.1a4 4 0 0 0 3.2 3.9c-.6.1-1.2.2-1.8.1a4 4 0 0 0 3.7 2.8A8 8 0 0 1 2 18.4a11.3 11.3 0 0 0 6.1 1.8c7.3 0 11.3-6.1 11.3-11.3v-.5c.8-.6 1.4-1.3 1.9-2.1z"/></svg></a>
+        <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+rules_version = '2';
+
+// Moon Digital Academy doesn't use Firebase Storage for anything right now —
+// course thumbnails are plain image URLs (stored in Firestore, not uploaded
+// here) and assignments are answered in-browser, not submitted as files.
+// This is a safe default-deny ruleset in case Storage is still provisioned
+// on the project; nothing in the app reads or writes through it.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

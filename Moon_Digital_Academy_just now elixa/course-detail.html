@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Details — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#fff;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+.wrap{max-width:1000px;margin:0 auto;padding:0 24px;}
+
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;max-width:1000px;margin:0 auto;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo{width:38px;height:38px;border-radius:11px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;}
+.nav-logo-img{height:30px;width:auto;display:block;}
+.nav-brand-text{font-size:14px;font-weight:700;}
+.back-link{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);}
+.back-link svg{width:14px;height:14px;}
+
+.state-box{text-align:center;padding:100px 20px;color:var(--grey);}
+
+.hero{padding:34px 0 8px;}
+.cat-badge{display:inline-block;background:var(--bg-lav);color:var(--violet);font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;margin-bottom:14px;}
+.hero h1{font-size:26px;line-height:1.3;margin-bottom:14px;}
+.meta-row{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:26px;}
+.meta-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--grey);}
+.meta-item svg{width:16px;height:16px;color:var(--grey-light);flex-shrink:0;}
+.meta-item b{color:var(--navy);}
+
+.layout{display:grid;grid-template-columns:1.6fr 1fr;gap:28px;align-items:start;padding-bottom:70px;}
+.thumb-lg{height:220px;border-radius:18px;margin-bottom:24px;display:flex;align-items:center;justify-content:center;}
+.thumb-lg svg{width:48px;height:48px;color:rgba(255,255,255,.9);}
+.desc h3{font-size:16px;margin-bottom:10px;}
+.desc p{font-size:13.5px;color:var(--grey);line-height:1.75;}
+
+.sidebar-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:24px;position:sticky;top:90px;}
+.price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;}
+.price{font-family:'Poppins';font-weight:700;font-size:28px;}
+.price-free{color:var(--green);}
+.price-sub{font-size:12px;color:var(--grey);margin-bottom:20px;}
+.enroll-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:12px;font-weight:600;font-size:14.5px;background:var(--violet);color:#fff;margin-bottom:14px;}
+.enroll-btn:hover{background:var(--violet-dark);}
+.enroll-btn.enrolled{background:var(--green-bg);color:var(--green);cursor:default;}
+.enroll-btn:disabled{opacity:.7;}
+.includes{border-top:1px solid var(--border);padding-top:18px;margin-top:4px;}
+.includes h5{font-size:12.5px;font-weight:700;margin-bottom:12px;}
+.includes-row{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--grey);margin-bottom:10px;}
+.includes-row svg{width:15px;height:15px;color:var(--violet);flex-shrink:0;}
+
+/* Confirmation modal */
+.overlay{position:fixed;inset:0;background:rgba(20,22,58,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
+.overlay.show{display:flex;}
+.modal{background:#fff;border-radius:20px;padding:0;max-width:440px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-head{padding:22px 24px;border-bottom:1px solid var(--border);}
+.modal-head h3{font-size:17px;}
+.modal-body{padding:22px 24px;}
+.review-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.review-row:last-of-type{border-bottom:none;}
+.review-row .label{color:var(--grey);}
+.review-row .val{font-weight:600;text-align:right;}
+.pm-title{font-size:12px;font-weight:700;color:var(--grey);margin:18px 0 10px;text-transform:uppercase;letter-spacing:.04em;}
+.pm-option{display:flex;align-items:center;gap:11px;border:1.5px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:9px;cursor:pointer;}
+.pm-option.selected{border-color:var(--violet);background:#EDE9FB;}
+.pm-option svg{width:18px;height:18px;color:var(--grey);flex-shrink:0;}
+.pm-option.selected svg{color:var(--violet);}
+.pm-option span{font-size:13px;font-weight:600;}
+.pm-note{font-size:11px;color:var(--grey-light);margin-top:8px;}
+.modal-foot{display:flex;gap:10px;padding:18px 24px;border-top:1px solid var(--border);}
+.modal-foot .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:11px;font-weight:600;font-size:13.5px;}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.spinner.show{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* Success state (replaces modal content) */
+.success-body{padding:36px 24px;text-align:center;}
+.success-icon{width:64px;height:64px;border-radius:50%;background:var(--green-bg);color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.success-icon svg{width:30px;height:30px;}
+.success-body h3{font-size:18px;margin-bottom:8px;}
+.success-body p{font-size:13px;color:var(--grey);line-height:1.6;}
+.hidden{display:none;}
+.outline-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+.outline-row:last-child{border-bottom:none;}
+.outline-num{width:26px;height:26px;border-radius:50%;background:var(--bg-lav);color:var(--violet);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.outline-title{font-size:13.5px;font-weight:600;flex:1;}
+.outline-empty{font-size:13px;color:var(--grey);}
+
+@media (max-width:800px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar-card{position:static;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="Moon Digital Academy" class="nav-logo-img">
+    </a>
+    <a href="courses.html" class="back-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>All Courses</a>
+  </div>
+</nav>
+
+<div id="loadingState" class="state-box">Loading course…</div>
+
+<div id="courseContent" class="hidden">
+  <div class="wrap hero">
+    <div class="cat-badge" id="courseCategory"></div>
+    <h1 id="courseTitle"></h1>
+    <div class="meta-row">
+      <div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Instructor: <b id="courseInstructor"></b></div>
+      <div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Duration: <b id="courseDuration"></b></div>
+      <div class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg><b id="courseLessonCount"></b> lessons</div>
+    </div>
+  </div>
+
+  <div class="wrap layout">
+    <div>
+      <div class="thumb-lg" id="courseThumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14l3-4 3 2 4-5"/></svg></div>
+      <div id="introVideoWrap" class="hidden" style="margin-bottom:24px;">
+        <h3 style="font-size:15px;margin-bottom:10px;">Introduction</h3>
+        <div style="position:relative;padding-top:56.25%;border-radius:14px;overflow:hidden;background:#000;">
+          <iframe id="introVideoFrame" class="hidden" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" allowfullscreen></iframe>
+          <video id="introVideoTag" class="hidden" style="position:absolute;top:0;left:0;width:100%;height:100%;" controls></video>
+        </div>
+      </div>
+      <div class="desc">
+        <h3>About this course</h3>
+        <p id="courseDescription"></p>
+      </div>
+      <div class="desc" id="outlineWrap">
+        <h3>Course Outline</h3>
+        <div id="outlineList"></div>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="price-row"><span class="price" id="coursePrice">–</span></div>
+      <div class="price-sub" id="coursePriceSub">One-time payment · Lifetime access</div>
+      <div id="enrollSlot">
+        <button class="enroll-btn" id="enrollBtn">Enroll Now</button>
+      </div>
+      <div class="includes">
+        <h5>This course includes:</h5>
+        <div class="includes-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M7 14l3-4 3 2 4-5"/></svg><span id="includesLessons">– video lessons</span></div>
+        <div class="includes-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Downloadable resources</div>
+        <div class="includes-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 4 6v6c0 5 4 8 8 10 4-2 8-5 8-10V6l-8-4Z"/></svg>Certificate on completion</div>
+        <div class="includes-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Lifetime access</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Confirmation modal ===== -->
+<div class="overlay" id="enrollOverlay">
+  <div class="modal">
+    <div id="reviewStep">
+      <div class="modal-head"><h3>Confirm Enrollment</h3></div>
+      <div class="modal-body">
+        <div class="review-row"><span class="label">Course</span><span class="val" id="reviewTitle"></span></div>
+        <div class="review-row"><span class="label">Instructor</span><span class="val" id="reviewInstructor"></span></div>
+        <div class="review-row"><span class="label">Category</span><span class="val" id="reviewCategory"></span></div>
+        <div class="review-row"><span class="label">Price</span><span class="val" id="reviewPrice"></span></div>
+        <p style="font-size:11.5px;color:var(--grey);margin-top:14px;">This course is free — no payment required.</p>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" id="cancelEnrollBtn">Cancel</button>
+        <button class="btn btn-violet" id="confirmEnrollBtn">
+          <span class="spinner" id="confirmSpinner"></span>
+          <span id="confirmLabel">Confirm Enrollment</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="successStep" class="hidden">
+      <div class="success-body">
+        <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <h3>You're enrolled!</h3>
+        <p id="successMessage">Welcome to the course. Taking you to your dashboard…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { watchAuth } from './auth.js';
+  import { getCourse, enrollInCourse, isEnrolled, courseThumbStyle } from './courses.js';
+  import { listLessonsForCourse } from './lessons.js';
+  import { getCourseProgress } from './progress.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+  let currentUser = null;
+  let course = null;
+  let totalLessons = 0;
+
+  if(!courseId){
+    document.getElementById('loadingState').textContent = 'No course specified.';
+  } else {
+    watchAuth(async function(user){
+      currentUser = user; // may be null — enrollment just requires login when they click Enroll
+      await init();
+    });
+  }
+
+  async function init(){
+    course = await getCourse(courseId);
+    if(!course){ document.getElementById('loadingState').textContent = 'Course not found.'; return; }
+
+    const lessons = await listLessonsForCourse(courseId);
+    totalLessons = lessons.length;
+    const totalSeconds = lessons.reduce((sum, l) => sum + (l.durationSeconds || 0), 0);
+    const durationLabel = totalSeconds > 0 ? `${Math.round(totalSeconds / 60)} min` : `${totalLessons} lesson${totalLessons === 1 ? '' : 's'}`;
+
+    document.getElementById('courseCategory').textContent = course.category;
+    document.getElementById('courseTitle').textContent = course.title;
+    document.getElementById('courseInstructor').textContent = course.instructorName;
+    document.getElementById('courseDuration').textContent = durationLabel;
+    document.getElementById('courseLessonCount').textContent = totalLessons;
+    document.getElementById('courseThumb').style.cssText += courseThumbStyle(course);
+    document.getElementById('courseDescription').textContent = course.description || 'No description provided yet.';
+    document.getElementById('includesLessons').textContent = `${totalLessons} video lessons`;
+
+    const priceEl = document.getElementById('coursePrice');
+    if(course.price > 0){
+      priceEl.textContent = '₦' + Number(course.price).toLocaleString();
+    } else {
+      priceEl.textContent = 'Free';
+      priceEl.classList.add('price-free');
+      document.getElementById('coursePriceSub').textContent = 'Lifetime access';
+    }
+
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('courseContent').classList.remove('hidden');
+
+    // ---- Intro video (optional) ----
+    if(course.introVideoUrl){
+      const youtubeUrl = getYouTubeEmbedUrl(course.introVideoUrl);
+      const frame = document.getElementById('introVideoFrame');
+      const tag = document.getElementById('introVideoTag');
+      document.getElementById('introVideoWrap').classList.remove('hidden');
+      if(youtubeUrl){
+        frame.src = youtubeUrl;
+        frame.classList.remove('hidden');
+        tag.classList.add('hidden');
+      } else {
+        tag.src = course.introVideoUrl;
+        tag.classList.remove('hidden');
+        frame.classList.add('hidden');
+      }
+    }
+
+    // ---- Course outline (lesson-by-lesson syllabus) ----
+    const outlineList = document.getElementById('outlineList');
+    if(lessons.length === 0){
+      outlineList.innerHTML = '<p class="outline-empty">The lesson outline for this course hasn\'t been published yet.</p>';
+    } else {
+      outlineList.innerHTML = lessons.map((l, i) => `
+        <div class="outline-row">
+          <div class="outline-num">${i + 1}</div>
+          <div class="outline-title">${l.title}</div>
+        </div>`).join('');
+    }
+
+    await refreshEnrollButton();
+  }
+
+  // Detects a YouTube link in any common form and returns an embeddable URL, or null.
+  function getYouTubeEmbedUrl(url){
+    if(!url) return null;
+    const patterns = [
+      /youtube\.com\/watch\?v=([\w-]{6,})/,
+      /youtu\.be\/([\w-]{6,})/,
+      /youtube\.com\/embed\/([\w-]{6,})/,
+      /youtube\.com\/shorts\/([\w-]{6,})/
+    ];
+    for(const p of patterns){
+      const m = url.match(p);
+      if(m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    return null;
+  }
+
+  async function refreshEnrollButton(){
+    const slot = document.getElementById('enrollSlot');
+    if(currentUser){
+      const enrolled = await isEnrolled(currentUser.uid, courseId);
+      if(enrolled){
+        const progress = await getCourseProgress(currentUser.uid, courseId);
+        const nextLessonId = progress ? progress.nextLessonId : null;
+        slot.innerHTML = `<a href="lesson.html?course=${courseId}${nextLessonId ? '&lesson=' + nextLessonId : ''}" class="enroll-btn enrolled">Go to Course</a>`;
+        return;
+      }
+    }
+    slot.innerHTML = `<button class="enroll-btn" id="enrollBtn">Enroll Now</button>`;
+    document.getElementById('enrollBtn').addEventListener('click', function(){
+      if(!currentUser){
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+      if(course.price > 0){
+        window.location.href = `payment.html?course=${courseId}`;
+      } else {
+        openEnrollModal();
+      }
+    });
+  }
+
+  function openEnrollModal(){
+    if(!currentUser){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+    document.getElementById('reviewTitle').textContent = course.title;
+    document.getElementById('reviewInstructor').textContent = course.instructorName;
+    document.getElementById('reviewCategory').textContent = course.category;
+    document.getElementById('reviewPrice').textContent = course.price > 0 ? '₦' + Number(course.price).toLocaleString() : 'Free';
+    document.getElementById('reviewStep').classList.remove('hidden');
+    document.getElementById('successStep').classList.add('hidden');
+    document.getElementById('enrollOverlay').classList.add('show');
+  }
+  document.getElementById('cancelEnrollBtn').addEventListener('click', () => {
+    document.getElementById('enrollOverlay').classList.remove('show');
+  });
+
+  document.getElementById('confirmEnrollBtn').addEventListener('click', async function(){
+    this.disabled = true;
+    document.getElementById('confirmSpinner').classList.add('show');
+    document.getElementById('confirmLabel').textContent = 'Enrolling…';
+    try{
+      await enrollInCourse(currentUser.uid, courseId);
+      document.getElementById('reviewStep').classList.add('hidden');
+      document.getElementById('successStep').classList.remove('hidden');
+      document.getElementById('successMessage').textContent = `Welcome to ${course.title}. Taking you to your dashboard…`;
+      setTimeout(() => { window.location.href = 'dashboard-student.html'; }, 1800);
+    }catch(err){
+      this.disabled = false;
+      document.getElementById('confirmSpinner').classList.remove('show');
+      document.getElementById('confirmLabel').textContent = 'Confirm Enrollment';
+      alert('Something went wrong. Please try again.');
+    }
+  });
+</script>
+</body>
+</html>

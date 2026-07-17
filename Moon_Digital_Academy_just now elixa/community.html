@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button,textarea,input,select{font-family:'Inter',sans-serif;}
+button{color:inherit;cursor:pointer;border:none;background:none;}
+.wrap{max-width:680px;margin:0 auto;padding:0 20px;}
+
+.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;max-width:680px;margin:0 auto;}
+.nav-brand{display:flex;align-items:center;gap:10px;}
+.nav-logo{width:34px;height:34px;border-radius:10px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:11px;}
+.nav-logo-img{height:30px;width:auto;display:block;}
+.nav-brand-text{font-size:13px;font-weight:700;}
+.nav-back{font-size:12.5px;font-weight:600;color:var(--grey);}
+
+.page-head{padding:24px 0 6px;}
+.page-head h1{font-size:22px;margin-bottom:4px;}
+.page-head p{font-size:13px;color:var(--grey);}
+
+.guidelines-note{background:var(--bg-lav);border-radius:12px;padding:12px 16px;font-size:12px;color:var(--grey);line-height:1.6;margin:16px 0;display:flex;gap:10px;align-items:flex-start;}
+.guidelines-note svg{width:15px;height:15px;color:var(--violet);flex-shrink:0;margin-top:1px;}
+.guidelines-note a{color:var(--violet);font-weight:700;}
+
+.controls{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap;}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:11px;padding:10px 14px;flex:1;min-width:180px;}
+.search-box svg{width:15px;height:15px;color:var(--grey-light);flex-shrink:0;}
+.search-box input{border:none;background:none;outline:none;font-size:13px;width:100%;}
+.chip-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px;}
+.chip{padding:8px 14px;border-radius:18px;background:#fff;border:1.5px solid var(--border);font-size:12px;font-weight:600;color:var(--grey);cursor:pointer;}
+.chip.active{background:var(--violet);color:#fff;border-color:var(--violet);}
+
+.compose-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:20px;}
+.compose-top{display:flex;gap:11px;}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--violet);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;flex-shrink:0;}
+.compose-card textarea{flex:1;border:none;outline:none;resize:vertical;min-height:60px;font-size:13.5px;font-family:inherit;padding-top:8px;}
+.compose-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:12px;border-top:1px solid var(--border);}
+.compose-cat select{border:1.5px solid var(--border);border-radius:9px;padding:7px 10px;font-size:12px;font-weight:600;color:var(--navy);}
+.btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:9px 18px;border-radius:10px;font-weight:600;font-size:12.5px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+
+.post-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px;}
+.post-head{display:flex;gap:11px;align-items:flex-start;margin-bottom:12px;}
+.post-author-name{font-size:13.5px;font-weight:700;}
+.post-role-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;margin-left:6px;text-transform:uppercase;}
+.role-student{background:var(--bg-lav);color:var(--violet);}
+.role-instructor{background:#FCE9C9;color:#C97F33;}
+.role-admin{background:var(--red-bg);color:var(--red);}
+.post-meta{font-size:11.5px;color:var(--grey);margin-top:2px;}
+.post-cat-tag{font-size:10.5px;font-weight:700;color:var(--violet);background:var(--bg-lav);padding:2px 9px;border-radius:6px;margin-left:8px;}
+.post-content{font-size:13.5px;line-height:1.65;margin-bottom:14px;white-space:pre-wrap;}
+.post-actions{display:flex;gap:18px;border-top:1px solid var(--border);padding-top:12px;align-items:center;}
+.action-btn{display:flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--grey);}
+.action-btn svg{width:16px;height:16px;}
+.action-btn.liked{color:var(--red);}
+.action-btn.delete{margin-left:auto;color:var(--grey-light);}
+.action-btn.delete:hover{color:var(--red);}
+
+.comments-section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:none;}
+.comments-section.open{display:block;}
+.comment-row{display:flex;gap:9px;margin-bottom:12px;}
+.comment-avatar{width:28px;height:28px;border-radius:50%;background:var(--bg-lav);color:var(--violet);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;flex-shrink:0;}
+.comment-bubble{background:var(--bg-lav);border-radius:12px;padding:9px 12px;flex:1;}
+.comment-author{font-size:12px;font-weight:700;}
+.comment-text{font-size:12.5px;line-height:1.5;margin-top:2px;}
+.comment-meta-row{display:flex;gap:12px;margin-top:4px;}
+.comment-meta-row span{font-size:10.5px;color:var(--grey-light);font-weight:600;cursor:pointer;}
+.comment-edit-input{width:100%;border:1px solid var(--border);border-radius:8px;padding:6px 9px;font-size:12.5px;margin-top:4px;}
+.comment-compose{display:flex;gap:9px;margin-top:10px;}
+.comment-compose input{flex:1;border:1.5px solid var(--border);border-radius:20px;padding:9px 14px;font-size:12.5px;outline:none;}
+.comment-compose input:focus{border-color:var(--violet);}
+.comment-compose button{background:var(--violet);color:#fff;width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.comment-compose button svg{width:15px;height:15px;}
+.comment-replies{margin-left:37px;margin-top:8px;}
+.reply-compose{display:flex;gap:8px;margin:8px 0 0 37px;}
+.reply-compose input{flex:1;border:1.5px solid var(--border);border-radius:20px;padding:7px 12px;font-size:12px;outline:none;}
+.reply-compose input:focus{border-color:var(--violet);}
+.reply-compose button{background:var(--violet);color:#fff;font-size:11px;font-weight:700;padding:0 14px;border-radius:20px;flex-shrink:0;}
+.reply-cancel{font-size:11px;font-weight:700;color:var(--grey);align-self:center;}
+.reply-to-tag{font-size:10.5px;color:var(--violet);font-weight:700;margin-bottom:2px;}
+
+.state-box{text-align:center;padding:60px 20px;color:var(--grey);}
+.hidden{display:none;}
+
+.overlay{position:fixed;inset:0;background:rgba(20,22,58,.5);display:none;align-items:center;justify-content:center;padding:20px;z-index:100;}
+.overlay.show{display:flex;}
+.guidelines-modal{background:#fff;border-radius:18px;max-width:480px;width:100%;max-height:82vh;overflow-y:auto;}
+.gm-head{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid var(--border);position:sticky;top:0;background:#fff;}
+.gm-head h3{font-size:16px;}
+.gm-close{font-size:22px;color:var(--grey);line-height:1;padding:4px;}
+.gm-body{padding:20px 22px 26px;}
+.gm-body p{font-size:12.5px;color:var(--grey);line-height:1.65;margin-bottom:12px;}
+.gm-body h5{font-size:12.5px;color:var(--navy);margin-bottom:5px;}
+@media (max-width:500px){ .compose-top{flex-direction:column;} }
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">
+      <img src="logo.png" alt="Moon Digital Academy" class="nav-logo-img">
+    </a>
+    <a href="dashboard-student.html" class="nav-back" id="dashboardBackLink">← Back to Dashboard</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Welcome to the Community</h1>
+    <p>A place to ask questions, share what you're working on, and learn from students and instructors across every track. Whether you're stuck on a lesson or celebrating a first client, this is your space.</p>
+  </div>
+
+  <div class="guidelines-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <div>Be kind, be constructive, and keep it relevant to learning. No spam, no harassment. <a href="#" id="openGuidelinesLink">Read the full community guidelines →</a></div>
+  </div>
+
+  <div id="composeWrap"></div>
+
+  <div class="controls">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>
+      <input type="text" id="searchInput" placeholder="Search posts...">
+    </div>
+  </div>
+  <div class="chip-row" id="chipRow">
+    <div class="chip active" data-category="all">All</div>
+    <div class="chip" data-category="General Discussion">General</div>
+    <div class="chip" data-category="Beauty & Cosmetics">Beauty & Cosmetics</div>
+    <div class="chip" data-category="Food & Catering">Food & Catering</div>
+    <div class="chip" data-category="Fashion & Design">Fashion & Design</div>
+    <div class="chip" data-category="Digital Business">Digital Business</div>
+    <div class="chip" data-category="Creator Economy">Creator Economy</div>
+    <div class="chip" data-category="Web & App Development">Web & App Development</div>
+    <div class="chip" data-category="Graphic Design">Graphic Design</div>
+    <div class="chip" data-category="Video Editing & Film">Video Editing & Film</div>
+    <div class="chip" data-category="Photography">Photography</div>
+    <div class="chip" data-category="Marketing & Sales">Marketing & Sales</div>
+    <div class="chip" data-category="Freelancing & Remote Work">Freelancing & Remote Work</div>
+    <div class="chip" data-category="Data & AI">Data & AI</div>
+    <div class="chip" data-category="Personal Finance">Personal Finance</div>
+    <div class="chip" data-category="Health & Wellness">Health & Wellness</div>
+  </div>
+
+  <div id="loadingState" class="state-box">Loading posts…</div>
+  <div id="emptyState" class="state-box hidden">No posts yet — be the first to share something!</div>
+  <div id="postsList"></div>
+</div>
+
+<div class="overlay" id="guidelinesOverlay">
+  <div class="guidelines-modal">
+    <div class="gm-head">
+      <h3>Community Guidelines</h3>
+      <button class="gm-close" id="closeGuidelinesBtn">&times;</button>
+    </div>
+    <div class="gm-body">
+      <p>This community exists to help you learn faster and go further — together. A few ground rules keep it that way:</p>
+      <h5>1. Be kind and constructive</h5>
+      <p>Disagreement is fine; disrespect isn't. Critique ideas and work, not people. Assume good intent, and give feedback the way you'd want to receive it.</p>
+      <h5>2. Keep it relevant</h5>
+      <p>This is a space for learning — questions about lessons, course feedback, career advice, and sharing your progress all belong here. Off-topic promotion or unrelated content doesn't.</p>
+      <h5>3. No spam or self-promotion</h5>
+      <p>Don't use posts or comments to advertise unrelated products, services, or other platforms. Sharing your own work as a student (a finished project, a client win) is welcome and encouraged.</p>
+      <h5>4. No harassment, hate speech, or abuse</h5>
+      <p>Any content that harasses, threatens, or demeans another person or group will be removed, and repeat behavior can result in losing access to the community.</p>
+      <h5>5. Respect privacy</h5>
+      <p>Don't share other people's personal information, private messages, or payment details here.</p>
+      <h5>6. Moderation</h5>
+      <p>Admins and instructors can remove posts or comments that break these guidelines. If you see something that shouldn't be here, use your judgment and avoid engaging — reporting tools are on the way.</p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { watchAuth, db } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { createPost, listPosts, deletePost, toggleLike, addComment, listComments, updateComment, deleteComment } from './community.js';
+
+  let currentUser = null;
+  let currentProfile = null;
+  let currentCategory = 'all';
+  let currentSearch = '';
+  let searchDebounce;
+
+  document.getElementById('openGuidelinesLink').addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('guidelinesOverlay').classList.add('show');
+  });
+  document.getElementById('closeGuidelinesBtn').addEventListener('click', function(){
+    document.getElementById('guidelinesOverlay').classList.remove('show');
+  });
+  document.getElementById('guidelinesOverlay').addEventListener('click', function(e){
+    if(e.target === this){ this.classList.remove('show'); }
+  });
+
+  watchAuth(async function(user){
+    currentUser = user;
+    if(user){
+      const snap = await getDoc(doc(db, "users", user.uid));
+      currentProfile = snap.exists() ? snap.data() : { firstName: '', lastName: '', role: 'student' };
+      const dashboardByRole = { student: 'dashboard-student.html', instructor: 'dashboard-instructor.html', admin: 'dashboard-admin.html' };
+      document.getElementById('dashboardBackLink').href = dashboardByRole[currentProfile.role] || 'dashboard-student.html';
+      renderComposer();
+    } else {
+      document.getElementById('composeWrap').innerHTML = `
+        <div class="compose-card" style="text-align:center;">
+          <p style="font-size:13px;color:var(--grey);margin-bottom:10px;">Log in to join the conversation.</p>
+          <a href="login.html?redirect=community.html" class="btn btn-violet" style="display:inline-flex;">Log In</a>
+        </div>`;
+    }
+    await renderPosts();
+  });
+
+  function initials(name){
+    const parts = (name || '').trim().split(/\s+/);
+    return ((parts[0]||'')[0] || '') + ((parts[1]||'')[0] || '');
+  }
+  function fullName(profile){
+    return `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || 'User';
+  }
+  function timeAgo(ts){
+    if(!ts || !ts.seconds) return 'just now';
+    const diffMs = Date.now() - ts.seconds * 1000;
+    const mins = Math.floor(diffMs / 60000);
+    if(mins < 1) return 'just now';
+    if(mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if(hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    if(days < 7) return days + 'd ago';
+    return new Date(ts.seconds * 1000).toLocaleDateString();
+  }
+
+  function renderComposer(){
+    document.getElementById('composeWrap').innerHTML = `
+      <div class="compose-card">
+        <div class="compose-top">
+          <div class="avatar">${initials(fullName(currentProfile))}</div>
+          <textarea id="composeInput" placeholder="Ask a question, share a win, or start a discussion..."></textarea>
+        </div>
+        <p style="font-size:11px;color:var(--grey-light);margin:8px 0 0 49px;">Tip: mention the course or category your question relates to so the right people see it.</p>
+        <div class="compose-foot">
+          <div class="compose-cat">
+            <select id="composeCategory">
+              <option value="General Discussion">General Discussion</option>
+              <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
+              <option value="Food & Catering">Food & Catering</option>
+              <option value="Fashion & Design">Fashion & Design</option>
+              <option value="Digital Business">Digital Business</option>
+              <option value="Creator Economy">Creator Economy</option>
+              <option value="Web & App Development">Web & App Development</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Video Editing & Film">Video Editing & Film</option>
+              <option value="Photography">Photography</option>
+              <option value="Marketing & Sales">Marketing & Sales</option>
+              <option value="Freelancing & Remote Work">Freelancing & Remote Work</option>
+              <option value="Data & AI">Data & AI</option>
+              <option value="Personal Finance">Personal Finance</option>
+              <option value="Health & Wellness">Health & Wellness</option>
+            </select>
+          </div>
+          <button class="btn btn-violet" id="postBtn">Post</button>
+        </div>
+      </div>`;
+    document.getElementById('postBtn').addEventListener('click', async function(){
+      const input = document.getElementById('composeInput');
+      const content = input.value.trim();
+      if(!content) return;
+      this.disabled = true;
+      try{
+        await createPost({
+          uid: currentUser.uid,
+          authorName: fullName(currentProfile),
+          authorRole: currentProfile.role || 'student',
+          content,
+          category: document.getElementById('composeCategory').value
+        });
+        input.value = '';
+        await renderPosts();
+      }catch(err){
+        console.error('createPost failed:', err);
+        alert('Could not post: ' + (err.message || 'please try again.'));
+      }finally{
+        this.disabled = false;
+      }
+    });
+  }
+
+  document.getElementById('chipRow').addEventListener('click', function(e){
+    const chip = e.target.closest('.chip');
+    if(!chip) return;
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCategory = chip.getAttribute('data-category');
+    renderPosts();
+  });
+  document.getElementById('searchInput').addEventListener('input', function(){
+    clearTimeout(searchDebounce);
+    currentSearch = this.value;
+    searchDebounce = setTimeout(renderPosts, 350);
+  });
+
+  async function renderPosts(){
+    document.getElementById('loadingState').classList.remove('hidden');
+    document.getElementById('emptyState').classList.add('hidden');
+    const posts = await listPosts({ category: currentCategory, searchTerm: currentSearch });
+    document.getElementById('loadingState').classList.add('hidden');
+
+    const list = document.getElementById('postsList');
+    if(posts.length === 0){
+      document.getElementById('emptyState').classList.remove('hidden');
+      list.innerHTML = '';
+      return;
+    }
+
+    list.innerHTML = posts.map(renderPostCard).join('');
+    wireUpPostCards();
+  }
+
+  const roleBadgeClass = { student: 'role-student', instructor: 'role-instructor', admin: 'role-admin' };
+
+  function renderPostCard(post){
+    const liked = currentUser && (post.likedBy || []).includes(currentUser.uid);
+    const canDelete = currentUser && (currentUser.uid === post.uid || (currentProfile && currentProfile.role === 'admin'));
+    return `
+      <div class="post-card" data-post-id="${post.id}">
+        <div class="post-head">
+          <div class="avatar">${post.authorInitials || '–'}</div>
+          <div>
+            <span class="post-author-name">${post.authorName}</span><span class="post-role-badge ${roleBadgeClass[post.authorRole] || 'role-student'}">${post.authorRole}</span>
+            <div class="post-meta">${timeAgo(post.createdAt)}<span class="post-cat-tag">${post.category}</span></div>
+          </div>
+        </div>
+        <div class="post-content">${escapeHtml(post.content)}</div>
+        <div class="post-actions">
+          <button class="action-btn like-btn ${liked ? 'liked' : ''}">
+            <svg viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.8"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+            <span class="like-count">${(post.likedBy || []).length}</span>
+          </button>
+          <button class="action-btn comment-toggle-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.4A8.5 8.5 0 0 1 3 11.5 8.38 8.38 0 0 1 11.5 3a8.5 8.5 0 0 1 9.5 8.5Z"/></svg>
+            <span class="comment-count">${post.commentCount || 0}</span> Comments
+          </button>
+          ${canDelete ? `<button class="action-btn delete post-delete-btn">Delete</button>` : ''}
+        </div>
+        <div class="comments-section" id="comments-${post.id}">
+          <div class="comment-list"></div>
+          ${currentUser ? `
+          <div class="comment-compose">
+            <input type="text" class="comment-input" placeholder="Write a comment...">
+            <button class="comment-submit-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z"/></svg></button>
+          </div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function wireUpPostCards(){
+    document.querySelectorAll('.post-card').forEach(function(card){
+      const postId = card.getAttribute('data-post-id');
+
+      card.querySelector('.like-btn').addEventListener('click', async function(){
+        if(!currentUser){ window.location.href = 'login.html?redirect=community.html'; return; }
+        const btn = this;
+        const nowLiked = await toggleLike(postId, currentUser.uid);
+        btn.classList.toggle('liked', nowLiked);
+        btn.querySelector('svg').setAttribute('fill', nowLiked ? 'currentColor' : 'none');
+        const countEl = btn.querySelector('.like-count');
+        countEl.textContent = Number(countEl.textContent) + (nowLiked ? 1 : -1);
+      });
+
+      const deleteBtn = card.querySelector('.post-delete-btn');
+      if(deleteBtn){
+        deleteBtn.addEventListener('click', async function(){
+          if(!confirm('Delete this post?')) return;
+          await deletePost(postId);
+          card.remove();
+        });
+      }
+
+      const commentToggle = card.querySelector('.comment-toggle-btn');
+      const commentsSection = card.querySelector('.comments-section');
+      let commentsLoaded = false;
+      commentToggle.addEventListener('click', async function(){
+        commentsSection.classList.toggle('open');
+        if(commentsSection.classList.contains('open') && !commentsLoaded){
+          commentsLoaded = true;
+          await loadComments(postId, commentsSection);
+        }
+      });
+
+      const commentInput = card.querySelector('.comment-input');
+      const commentSubmitBtn = card.querySelector('.comment-submit-btn');
+      if(commentSubmitBtn){
+        commentSubmitBtn.addEventListener('click', async function(){
+          const content = commentInput.value.trim();
+          if(!content) return;
+          await addComment(postId, { uid: currentUser.uid, authorName: fullName(currentProfile), content });
+          commentInput.value = '';
+          await loadComments(postId, commentsSection);
+          card.querySelector('.comment-count').textContent = Number(card.querySelector('.comment-count').textContent) + 1;
+        });
+        commentInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') commentSubmitBtn.click(); });
+      }
+    });
+  }
+
+  async function loadComments(postId, sectionEl){
+    const listEl = sectionEl.querySelector('.comment-list');
+    listEl.innerHTML = '<p style="font-size:12px;color:var(--grey);">Loading…</p>';
+    const comments = await listComments(postId);
+    if(comments.length === 0){
+      listEl.innerHTML = '<p style="font-size:12px;color:var(--grey);">No comments yet.</p>';
+      return;
+    }
+
+    // Build a reply tree: top-level comments (no replyToId) each get their
+    // replies nested under them. Only one level deep — a reply to a reply
+    // still nests under the original top-level comment, which keeps the
+    // thread readable instead of an ever-narrowing indent staircase.
+    const byId = {};
+    comments.forEach(c => { byId[c.id] = c; });
+    function topLevelAncestor(c){
+      let cur = c;
+      while(cur.replyToId && byId[cur.replyToId]){ cur = byId[cur.replyToId]; }
+      return cur.id;
+    }
+    const topLevel = comments.filter(c => !c.replyToId);
+    const repliesByParent = {};
+    comments.filter(c => c.replyToId).forEach(c => {
+      const parentId = topLevelAncestor(c);
+      (repliesByParent[parentId] = repliesByParent[parentId] || []).push(c);
+    });
+
+    function commentRowHtml(c, isReply){
+      const canEdit = currentUser && currentUser.uid === c.uid;
+      const canDelete = currentUser && (currentUser.uid === c.uid || (currentProfile && currentProfile.role === 'admin'));
+      return `<div class="comment-row" data-comment-id="${c.id}">
+        <div class="comment-avatar">${initials(c.authorName)}</div>
+        <div class="comment-bubble">
+          ${isReply && c.replyToAuthor ? `<div class="reply-to-tag">↳ replying to ${c.replyToAuthor}</div>` : ''}
+          <div class="comment-author">${c.authorName}</div>
+          <div class="comment-text">${escapeHtml(c.content)}${c.editedAt ? ' <span style="color:var(--grey-light);font-size:10px;">(edited)</span>' : ''}</div>
+          <div class="comment-meta-row">
+            ${currentUser ? `<span class="comment-reply-link">Reply</span>` : ''}
+            ${canEdit ? `<span class="comment-edit-link">Edit</span>` : ''}
+            ${canDelete ? `<span class="comment-delete-link">Delete</span>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }
+
+    listEl.innerHTML = topLevel.map(function(c){
+      const replies = repliesByParent[c.id] || [];
+      const repliesHtml = replies.length
+        ? `<div class="comment-replies">${replies.map(r => commentRowHtml(r, true)).join('')}</div>`
+        : '';
+      return commentRowHtml(c, false) + repliesHtml;
+    }).join('');
+
+    listEl.querySelectorAll('.comment-reply-link').forEach(function(link){
+      link.addEventListener('click', function(){
+        const row = link.closest('.comment-row');
+        // Only one reply box open at a time per comments section.
+        sectionEl.querySelectorAll('.reply-compose').forEach(el => el.remove());
+        const commentId = row.getAttribute('data-comment-id');
+        const authorName = row.querySelector('.comment-author').textContent;
+        const replyHtml = document.createElement('div');
+        replyHtml.className = 'reply-compose';
+        replyHtml.innerHTML = `<input type="text" placeholder="Reply to ${authorName}…"><button class="reply-send-btn">Send</button><span class="reply-cancel">Cancel</span>`;
+        row.insertAdjacentElement('afterend', replyHtml);
+        const replyInput = replyHtml.querySelector('input');
+        replyInput.focus();
+        replyHtml.querySelector('.reply-cancel').addEventListener('click', () => replyHtml.remove());
+        async function sendReply(){
+          const content = replyInput.value.trim();
+          if(!content) return;
+          await addComment(postId, {
+            uid: currentUser.uid,
+            authorName: fullName(currentProfile),
+            content,
+            replyToId: commentId,
+            replyToAuthor: authorName
+          });
+          await loadComments(postId, sectionEl);
+          const card = sectionEl.closest('.post-card');
+          card.querySelector('.comment-count').textContent = Number(card.querySelector('.comment-count').textContent) + 1;
+        }
+        replyHtml.querySelector('.reply-send-btn').addEventListener('click', sendReply);
+        replyInput.addEventListener('keydown', function(e){ if(e.key === 'Enter') sendReply(); });
+      });
+    });
+
+    listEl.querySelectorAll('.comment-edit-link').forEach(function(link){
+      link.addEventListener('click', function(){
+        const row = link.closest('.comment-row');
+        const commentId = row.getAttribute('data-comment-id');
+        const textEl = row.querySelector('.comment-text');
+        const currentText = textEl.textContent.replace(' (edited)', '');
+        row.querySelector('.comment-bubble').insertAdjacentHTML('beforeend', `<input type="text" class="comment-edit-input" value="${currentText.replace(/"/g,'&quot;')}"><div style="margin-top:5px;"><button class="comment-save-link" style="font-size:11px;font-weight:700;color:var(--violet);margin-right:10px;">Save</button><button class="comment-cancel-link" style="font-size:11px;font-weight:700;color:var(--grey);">Cancel</button></div>`);
+        row.querySelector('.comment-save-link').addEventListener('click', async function(){
+          const newText = row.querySelector('.comment-edit-input').value.trim();
+          if(newText){ await updateComment(postId, commentId, newText); }
+          await loadComments(postId, sectionEl);
+        });
+        row.querySelector('.comment-cancel-link').addEventListener('click', () => loadComments(postId, sectionEl));
+      });
+    });
+    listEl.querySelectorAll('.comment-delete-link').forEach(function(link){
+      link.addEventListener('click', async function(){
+        if(!confirm('Delete this comment?')) return;
+        const row = link.closest('.comment-row');
+        const commentId = row.getAttribute('data-comment-id');
+        await deleteComment(postId, commentId);
+        await loadComments(postId, sectionEl);
+        const card = row.closest('.post-card');
+        card.querySelector('.comment-count').textContent = Math.max(0, Number(card.querySelector('.comment-count').textContent) - 1);
+      });
+    });
+  }
+</script>
+</body>
+</html>

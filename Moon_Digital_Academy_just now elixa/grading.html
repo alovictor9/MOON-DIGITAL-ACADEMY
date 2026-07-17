@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grade Submissions — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --green:#3F8F62; --green-bg:#DDF2E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button,textarea,input{font-family:'Inter',sans-serif;}
+button{color:inherit;cursor:pointer;border:none;background:none;}
+.wrap{max-width:820px;margin:0 auto;padding:32px 24px 60px;}
+.back{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);margin-bottom:18px;}
+.back svg{width:14px;height:14px;}
+.page-title{font-size:22px;margin-bottom:6px;}
+.page-sub{font-size:13px;color:var(--grey);margin-bottom:26px;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:16px;}
+.s-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px;flex-wrap:wrap;}
+.s-student{font-size:14.5px;font-weight:700;}
+.s-meta{font-size:11.5px;color:var(--grey);margin-top:2px;}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:700;}
+.status-submitted{background:#FCE9C9;color:#C97F33;}
+.status-graded{background:var(--green-bg);color:var(--green);}
+
+.file-link{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--violet);margin-bottom:16px;}
+.file-link svg{width:15px;height:15px;}
+.answer-block{border-top:1px solid var(--border);padding-top:12px;margin-top:12px;}
+.answer-block:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+.a-q-label{font-size:12.5px;font-weight:700;margin-bottom:6px;}
+.a-q-points{font-size:10.5px;color:var(--grey-light);font-weight:600;}
+.a-q-answer{font-size:13px;padding:9px 12px;border-radius:9px;background:var(--bg-lav);}
+.a-q-answer.correct{background:var(--green-bg);color:var(--green);font-weight:600;}
+.a-q-answer.incorrect{background:#FBE3E3;color:#D64545;font-weight:600;}
+.suggested-score{font-size:11.5px;color:var(--grey);margin:14px 0 4px;}
+
+.grade-form{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;}
+.field{flex:1;min-width:160px;}
+.field label{display:block;font-size:11.5px;font-weight:600;color:var(--grey);margin-bottom:6px;}
+.field input, .field textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;outline:none;}
+.field input:focus, .field textarea:focus{border-color:var(--violet);}
+.field.score{max-width:110px;flex:0 0 auto;}
+.field.feedback{flex:2;min-width:220px;}
+.field textarea{resize:vertical;min-height:38px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:10px;font-weight:600;font-size:13px;flex-shrink:0;align-self:flex-end;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+
+.state-box{text-align:center;padding:60px 20px;color:var(--grey);}
+.hidden{display:none;}
+.picker-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;}
+.picker-row .p-title{font-size:13.5px;font-weight:700;}
+.picker-row .p-sub{font-size:11.5px;color:var(--grey);margin-top:2px;}
+.picker-row .p-count{font-size:11px;font-weight:700;color:var(--violet);background:var(--bg-lav);padding:4px 10px;border-radius:20px;flex-shrink:0;}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="wrap">
+  <a href="dashboard-instructor.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to Dashboard</a>
+  <div class="page-title" id="assignmentTitle">Loading…</div>
+  <div class="page-sub" id="assignmentSub"></div>
+
+  <div id="loadingState" class="state-box">Loading submissions…</div>
+  <div id="errorState" class="state-box hidden">Something went wrong loading this page. Please refresh and try again.</div>
+  <div id="emptyState" class="state-box hidden">No submissions yet.</div>
+  <div id="pickerEmptyState" class="state-box hidden">You haven't posted any assignments yet. Add one from a course's management page first.</div>
+  <div id="pickerList"></div>
+  <div id="submissionList"></div>
+</div>
+
+<script type="module">
+  import { watchAuth, db } from './auth.js';
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getAssignment, listAssignmentsForCourse } from './assignments.js';
+  import { listSubmissionsForAssignment, gradeSubmission } from './assignments.js';
+  import { listCoursesByInstructor } from './courses.js';
+  import { getFinalTest, listAttemptsForCourse } from './finalTest.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+  const assignmentId = params.get('assignment');
+
+  watchAuth(async function(user){
+    if(!user){
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+      return;
+    }
+    if(courseId && assignmentId){
+      await init(user);
+    } else {
+      await initPicker(user);
+    }
+  });
+
+  // ---- No specific assignment in the URL: show a picker across all of this
+  // instructor's courses so "Grading" in the sidebar always lands somewhere useful. ----
+  async function initPicker(user){
+    document.getElementById('assignmentTitle').textContent = 'Grade Submissions';
+    document.getElementById('assignmentSub').textContent = 'Choose an assignment to grade.';
+
+    try{
+      let courses;
+      try{
+        courses = await listCoursesByInstructor(user.uid);
+      }catch(e){ e.step = 'listCoursesByInstructor'; throw e; }
+
+      const pickerList = document.getElementById('pickerList');
+      let totalAssignments = 0;
+
+      for(const course of courses){
+        let assignments;
+        try{
+          assignments = await listAssignmentsForCourse(course.id);
+        }catch(e){ e.step = `listAssignmentsForCourse (course ${course.id})`; throw e; }
+
+        for(const a of assignments){
+          totalAssignments++;
+          let submissions;
+          try{
+            submissions = await listSubmissionsForAssignment(a.id, course.id);
+          }catch(e){ e.step = `listSubmissionsForAssignment (assignment ${a.id})`; throw e; }
+          const ungraded = submissions.filter(s => s.status !== 'graded').length;
+          const row = document.createElement('a');
+          row.href = `grading.html?course=${course.id}&assignment=${a.id}`;
+          row.className = 'card picker-row';
+          row.innerHTML = `
+            <div>
+              <div class="p-title">${a.title}</div>
+              <div class="p-sub">${course.title}</div>
+            </div>
+            <div class="p-count">${submissions.length} submission${submissions.length === 1 ? '' : 's'}${ungraded ? ' · ' + ungraded + ' to grade' : ''}</div>
+          `;
+          pickerList.appendChild(row);
+        }
+
+        let finalTest;
+        try{
+          finalTest = await getFinalTest(course.id);
+        }catch(e){ e.step = `getFinalTest (course ${course.id})`; throw e; }
+
+        if(finalTest){
+          totalAssignments++;
+          let attempts;
+          try{
+            attempts = await listAttemptsForCourse(course.id);
+          }catch(e){ e.step = `listAttemptsForCourse (course ${course.id})`; throw e; }
+          const passedCount = attempts.filter(at => at.passed).length;
+          const row = document.createElement('div');
+          row.className = 'card picker-row';
+          row.innerHTML = `
+            <div>
+              <div class="p-title">Final Test</div>
+              <div class="p-sub">${course.title} · auto-graded, no manual grading needed</div>
+            </div>
+            <div class="p-count">${attempts.length} attempt${attempts.length === 1 ? '' : 's'}${attempts.length ? ' · ' + passedCount + ' passed' : ''}</div>
+          `;
+          pickerList.appendChild(row);
+        }
+      }
+
+      document.getElementById('loadingState').classList.add('hidden');
+      if(totalAssignments === 0){
+        document.getElementById('pickerEmptyState').classList.remove('hidden');
+      }
+    }catch(err){
+      console.error(`Failed to load grading picker at step [${err.step || 'unknown'}]:`, err);
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('errorState').textContent =
+        `Something went wrong loading this page (step: ${err.step || 'unknown'}): ${err.message || err}`;
+      document.getElementById('errorState').classList.remove('hidden');
+    }
+  }
+
+  async function init(user){
+    try{
+      const assignment = await getAssignment(courseId, assignmentId);
+      if(!assignment){ document.getElementById('loadingState').textContent = 'Assignment not found.'; return; }
+      document.getElementById('assignmentTitle').textContent = assignment.title;
+      document.getElementById('assignmentSub').textContent = `Out of ${assignment.maxScore} points`;
+
+      const submissions = await listSubmissionsForAssignment(assignmentId, courseId);
+      document.getElementById('loadingState').classList.add('hidden');
+
+      if(submissions.length === 0){
+        document.getElementById('emptyState').classList.remove('hidden');
+        return;
+      }
+
+      const listWrap = document.getElementById('submissionList');
+      for(const s of submissions){
+        // Fetch the student's profile independently per-submission — if one
+        // lookup fails (e.g. a stale/orphaned submission), fall back to a
+        // placeholder instead of aborting the whole list.
+        let student = { firstName: 'Unknown', lastName: 'Student' };
+        try{
+          const studentSnap = await getDoc(doc(db, "users", s.uid));
+          if(studentSnap.exists()) student = studentSnap.data();
+        }catch(profileErr){
+          console.error('Failed to load student profile for submission', s.id, profileErr);
+        }
+        listWrap.appendChild(renderSubmissionCard(s, student, assignment));
+      }
+    }catch(err){
+      console.error('Failed to load submissions:', err);
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('errorState').classList.remove('hidden');
+    }
+  }
+
+  function renderSubmissionCard(submission, student, assignment){
+    const maxScore = assignment.maxScore;
+    const card = document.createElement('div');
+    card.className = 'card';
+    const isGraded = submission.status === 'graded';
+
+    const questions = assignment.questions || [];
+    const answersHtml = questions.map((q, i) => {
+      const ans = submission.answers ? submission.answers[i] : null;
+      if(q.type === 'written'){
+        return `<div class="answer-block">
+          <div class="a-q-label">${i + 1}. ${q.question} <span class="a-q-points">(${q.points} pts)</span></div>
+          <div class="a-q-answer">${ans ? (ans.answer || '(no answer given)') : '(no answer given)'}</div>
+        </div>`;
+      }
+      const chosenIndex = ans ? Number(ans.answer) : null;
+      const chosenText = (q.options && chosenIndex !== null) ? q.options[chosenIndex] : '(no answer given)';
+      const correct = ans ? ans.isCorrect : false;
+      return `<div class="answer-block">
+        <div class="a-q-label">${i + 1}. ${q.question} <span class="a-q-points">(${q.points} pts)</span></div>
+        <div class="a-q-answer ${correct ? 'correct' : 'incorrect'}">${chosenText} ${correct ? '✓ correct' : '✗ incorrect — correct answer: ' + (q.options ? q.options[q.correctIndex] : '')}</div>
+      </div>`;
+    }).join('');
+
+    const suggestedScoreHtml = questions.some(q => q.type === 'mcq')
+      ? `<div class="suggested-score">Suggested score from multiple-choice answers: <b>${submission.autoScore || 0} / ${questions.reduce((s,q)=>s+(q.type==='mcq'?q.points:0),0)}</b> — written responses still need your review.</div>`
+      : '';
+
+    card.innerHTML = `
+      <div class="s-top">
+        <div>
+          <div class="s-student">${student.firstName} ${student.lastName}</div>
+          <div class="s-meta">${student.email || ''}</div>
+        </div>
+        <div class="status-badge ${isGraded ? 'status-graded' : 'status-submitted'}">${isGraded ? 'Graded' : 'Awaiting Grade'}</div>
+      </div>
+      ${answersHtml}
+      ${suggestedScoreHtml}
+      <div class="grade-form">
+        <div class="field score">
+          <label>Score (/${maxScore})</label>
+          <input type="number" min="0" max="${maxScore}" value="${submission.score ?? (submission.autoScore || '')}" class="score-input">
+        </div>
+        <div class="field feedback">
+          <label>Feedback</label>
+          <textarea class="feedback-input" placeholder="Optional feedback for the student...">${submission.feedback || ''}</textarea>
+        </div>
+        <button class="btn btn-violet save-btn">${isGraded ? 'Update Grade' : 'Save Grade'}</button>
+      </div>`;
+
+    const scoreInput = card.querySelector('.score-input');
+    const feedbackInput = card.querySelector('.feedback-input');
+    const saveBtn = card.querySelector('.save-btn');
+    const statusBadge = card.querySelector('.status-badge');
+
+    saveBtn.addEventListener('click', async function(){
+      const score = Number(scoreInput.value);
+      if(isNaN(score) || score < 0 || score > maxScore){
+        alert(`Score must be between 0 and ${maxScore}.`);
+        return;
+      }
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Saving…';
+      try{
+        await gradeSubmission(submission.id, { score, feedback: feedbackInput.value });
+        saveBtn.textContent = 'Update Grade';
+        statusBadge.textContent = 'Graded';
+        statusBadge.classList.remove('status-submitted');
+        statusBadge.classList.add('status-graded');
+      }catch(err){
+        alert('Could not save grade. Please try again.');
+      }finally{
+        saveBtn.disabled = false;
+      }
+    });
+
+    return card;
+  }
+</script>
+</body>
+</html>

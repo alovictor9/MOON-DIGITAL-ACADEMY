@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B; --gold-dark:#D98E1E;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3; --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#fff;-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+input{font-family:'Inter',sans-serif;}
+
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+
+.brand-panel{background:var(--gradient);position:relative;overflow:hidden;padding:44px;display:flex;flex-direction:column;justify-content:space-between;}
+.brand-panel::after{content:"";position:absolute;top:-100px;right:-100px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.06);}
+.brand-panel::before{content:"";position:absolute;bottom:-120px;left:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.05);}
+.bp-logo{display:flex;align-items:center;gap:10px;position:relative;z-index:2;}
+.bp-logo-img{height:28px;width:auto;display:block;}
+.bp-logo-circle{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;color:#fff;}
+.bp-logo-text{color:#fff;font-weight:700;font-size:14px;}
+.bp-mid{position:relative;z-index:2;max-width:400px;}
+.bp-mid h1{color:#fff;font-size:30px;line-height:1.3;margin-bottom:16px;}
+.bp-mid h1 .gold{color:var(--gold);}
+.bp-mid p{color:#cfd3ff;font-size:14px;line-height:1.7;}
+.bp-perks{position:relative;z-index:2;display:flex;flex-direction:column;gap:14px;}
+.bp-perk{display:flex;align-items:center;gap:12px;}
+.bp-perk-ic{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bp-perk-ic svg{width:16px;height:16px;color:var(--gold);}
+.bp-perk span{color:#fff;font-size:13px;font-weight:600;}
+
+.form-panel{display:flex;align-items:center;justify-content:center;padding:40px;}
+.form-box{width:100%;max-width:400px;}
+.fb-top{margin-bottom:24px;}
+.fb-top a.back{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--grey);font-weight:600;margin-bottom:20px;}
+.fb-top a.back svg{width:14px;height:14px;}
+.fb-top h2{font-size:22px;margin-bottom:8px;}
+.fb-top p{font-size:13.5px;color:var(--grey);}
+.fb-top p a{color:var(--violet);font-weight:700;}
+
+.alert{display:none;align-items:flex-start;gap:9px;padding:12px 14px;border-radius:11px;font-size:12.5px;line-height:1.6;margin-bottom:18px;}
+.alert.show{display:flex;}
+.alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;}
+.alert-error{background:var(--red-bg);color:var(--red);}
+.alert-success{background:var(--green-bg);color:var(--green);}
+
+.role-select-row{display:flex;gap:10px;margin-bottom:18px;}
+.role-select-card{flex:1;border:1.5px solid var(--border);border-radius:13px;padding:14px 12px;text-align:center;cursor:pointer;transition:.15s;}
+.role-select-card svg{width:20px;height:20px;color:var(--grey);margin:0 auto 8px;display:block;}
+.role-select-card .t{font-size:12.5px;font-weight:700;color:var(--navy);}
+.role-select-card .s{font-size:10.5px;color:var(--grey);margin-top:2px;}
+.role-select-card.selected{border-color:var(--violet);background:#EDE9FB;}
+.role-select-card.selected svg{color:var(--violet);}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:7px;}
+.input-wrap{position:relative;display:flex;align-items:center;}
+.input-wrap svg.icon-left{position:absolute;left:13px;color:var(--grey-light);width:15px;height:15px;}
+.input-wrap input{
+  width:100%;padding:11px 14px 11px 38px;border:1.5px solid var(--border);border-radius:11px;
+  font-size:13.5px;background:#fff;outline:none;transition:.15s;color:var(--navy);
+}
+.input-wrap input::placeholder{color:#B7B6CC;}
+.input-wrap input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(91,63,214,.13);}
+.input-wrap input.invalid{border-color:var(--red);}
+.pw-toggle{position:absolute;right:12px;background:none;padding:2px;color:var(--grey-light);display:flex;}
+.pw-toggle svg{width:15px;height:15px;}
+.field-error{font-size:11.5px;color:var(--red);margin-top:6px;display:none;}
+.field-error.show{display:block;}
+.field-hint{font-size:11px;color:var(--grey-light);margin-top:6px;}
+
+.terms-row{display:flex;align-items:flex-start;gap:9px;margin:16px 0 18px;font-size:12px;color:var(--grey);line-height:1.6;}
+.terms-row input{width:15px;height:15px;accent-color:var(--violet);margin-top:1px;flex-shrink:0;}
+.terms-row a{color:var(--violet);font-weight:600;}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;transition:.15s;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:hover{background:var(--violet-dark);}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.spinner.show{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media (max-width:900px){
+  .split{grid-template-columns:1fr;}
+  .brand-panel{display:none;}
+  .form-panel{padding:28px 20px;}
+  .two-col{grid-template-columns:1fr;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="split">
+
+  <div class="brand-panel">
+    <div class="bp-logo">
+      <img src="logo-white.png" alt="Moon Digital Academy" class="bp-logo-img">
+    </div>
+    <div class="bp-mid">
+      <h1>Join a community building <span class="gold">real income skills.</span></h1>
+      <p>Whether you're here to learn or to teach, your account gives you a dashboard built around what you need to do next.</p>
+    </div>
+    <div class="bp-perks">
+      <div class="bp-perk">
+        <div class="bp-perk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <span>Free to join, pay only for the courses you take</span>
+      </div>
+      <div class="bp-perk">
+        <div class="bp-perk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <span>Track progress, certificates, and achievements</span>
+      </div>
+      <div class="bp-perk">
+        <div class="bp-perk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <span>Instructors keep 70% of every course sale</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="form-box">
+      <div class="fb-top">
+        <a href="index.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to homepage</a>
+        <h2>Create Your Account</h2>
+        <p>Already registered? <a href="login.html">Log in instead</a></p>
+      </div>
+
+      <div class="alert alert-error" id="errorAlert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span id="errorText"></span>
+      </div>
+      <div class="alert alert-success" id="successAlert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        <span id="successText"></span>
+      </div>
+
+      <form id="registerForm" novalidate>
+        <div class="field">
+          <label>I am joining as a...</label>
+          <div class="role-select-row">
+            <div class="role-select-card selected" data-role="student">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+              <div class="t">Student</div>
+              <div class="s">I want to learn</div>
+            </div>
+            <div class="role-select-card" data-role="instructor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>
+              <div class="t">Instructor</div>
+              <div class="s">I want to teach</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="field">
+            <label>First Name</label>
+            <div class="input-wrap"><input type="text" placeholder="Amaka" id="firstName" required></div>
+            <div class="field-error" id="firstNameError">Required.</div>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <div class="input-wrap"><input type="text" placeholder="Johnson" id="lastName" required></div>
+            <div class="field-error" id="lastNameError">Required.</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>
+            <input type="email" placeholder="Enter your email" id="email" required>
+          </div>
+          <div class="field-error" id="emailError">Please enter a valid email address.</div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <input type="password" placeholder="Create a password" id="pwInput" required>
+            <button class="pw-toggle" id="pwToggle" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="field-error" id="pwError">Password must be at least 6 characters.</div>
+          <div class="field-hint">Use at least 6 characters.</div>
+        </div>
+
+        <label class="terms-row">
+          <input type="checkbox" id="terms">
+          I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </label>
+
+        <button type="submit" class="btn btn-violet" id="createBtn">
+          <span class="spinner" id="createSpinner"></span>
+          <span id="createLabel">Create Account</span>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { registerUser, friendlyAuthError } from './auth.js';
+
+  let selectedRole = 'student';
+  document.querySelectorAll('.role-select-card').forEach(function(card){
+    card.addEventListener('click', function(){
+      document.querySelectorAll('.role-select-card').forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      selectedRole = card.getAttribute('data-role');
+    });
+  });
+
+  const pwInput = document.getElementById('pwInput');
+  document.getElementById('pwToggle').addEventListener('click', function(){
+    pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+  });
+
+  const form = document.getElementById('registerForm');
+  const firstName = document.getElementById('firstName');
+  const lastName = document.getElementById('lastName');
+  const email = document.getElementById('email');
+  const terms = document.getElementById('terms');
+  const createBtn = document.getElementById('createBtn');
+  const createSpinner = document.getElementById('createSpinner');
+  const createLabel = document.getElementById('createLabel');
+  const errorAlert = document.getElementById('errorAlert');
+  const errorText = document.getElementById('errorText');
+  const successAlert = document.getElementById('successAlert');
+  const successText = document.getElementById('successText');
+
+  function showError(msg){
+    errorText.textContent = msg;
+    errorAlert.classList.add('show');
+    successAlert.classList.remove('show');
+  }
+  function showSuccess(msg){
+    successText.textContent = msg;
+    successAlert.classList.add('show');
+    errorAlert.classList.remove('show');
+  }
+  function setLoading(loading){
+    createBtn.disabled = loading;
+    createSpinner.classList.toggle('show', loading);
+    createLabel.textContent = loading ? 'Creating account…' : 'Create Account';
+  }
+
+  function validate(){
+    let ok = true;
+    function check(input, errId, condition){
+      document.getElementById(errId).classList.toggle('show', !condition);
+      input.classList.toggle('invalid', !condition);
+      if(!condition) ok = false;
+    }
+    check(firstName, 'firstNameError', firstName.value.trim().length > 0);
+    check(lastName, 'lastNameError', lastName.value.trim().length > 0);
+    check(email, 'emailError', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()));
+    check(pwInput, 'pwError', pwInput.value.length >= 6);
+    if(!terms.checked){
+      ok = false;
+      showError('Please agree to the Terms of Service and Privacy Policy to continue.');
+    }
+    return ok;
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(!validate()) return;
+    setLoading(true);
+    try{
+      await registerUser({
+        firstName: firstName.value.trim(),
+        lastName: lastName.value.trim(),
+        email: email.value.trim(),
+        password: pwInput.value,
+        role: selectedRole
+      });
+      showSuccess('Account created! We sent a verification link to your email. Redirecting to your dashboard…');
+      const dest = selectedRole === 'instructor' ? 'dashboard-instructor.html' : 'dashboard-student.html';
+      setTimeout(() => window.location.href = dest, 1400);
+    }catch(err){
+      showError(friendlyAuthError(err.code));
+      setLoading(false);
+    }
+  });
+</script>
+</body>
+</html>

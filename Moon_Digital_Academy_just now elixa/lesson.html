@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --green:#3F8F62; --green-bg:#DDF2E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#F3F2F9;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+
+.app{display:grid;grid-template-columns:300px 1fr;min-height:100vh;}
+
+/* sidebar: lesson list */
+.lesson-sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;overflow-y:auto;max-height:100vh;position:sticky;top:0;}
+.ls-back{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--grey);padding:0 20px 16px;}
+.ls-back svg{width:14px;height:14px;}
+.ls-course-title{padding:0 20px 16px;font-size:15px;border-bottom:1px solid var(--border);margin-bottom:10px;}
+.ls-progress-row{padding:0 20px 16px;}
+.ls-progress-track{height:6px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:6px;}
+.ls-progress-fill{height:100%;background:var(--violet);border-radius:4px;}
+.ls-progress-label{font-size:11px;color:var(--grey);}
+.ls-item{display:flex;align-items:center;gap:10px;padding:12px 20px;font-size:13px;color:var(--navy);cursor:pointer;border-left:3px solid transparent;}
+.ls-item:hover{background:var(--bg-lav);}
+.ls-item.active{background:var(--bg-lav);border-left-color:var(--violet);font-weight:600;}
+.ls-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ls-check svg{width:11px;height:11px;color:#fff;}
+.ls-item.done .ls-check{background:var(--green);border-color:var(--green);}
+.ls-num{font-size:11px;color:var(--grey-light);width:16px;flex-shrink:0;}
+
+/* main content */
+.main{padding:28px 32px 60px;max-width:900px;}
+.player-wrap{background:#000;border-radius:16px;overflow:hidden;position:relative;aspect-ratio:16/9;margin-bottom:20px;}
+video{width:100%;height:100%;display:block;background:#000;}
+iframe.lesson-embed{width:100%;height:100%;display:block;background:#000;border:none;}
+.player-controls{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to top, rgba(0,0,0,.75), transparent);padding:28px 16px 12px;display:flex;flex-direction:column;gap:8px;opacity:1;transition:.2s;}
+.progress-bar{width:100%;height:5px;background:rgba(255,255,255,.25);border-radius:4px;cursor:pointer;position:relative;}
+.progress-fill{height:100%;background:var(--gold);border-radius:4px;width:0%;}
+.controls-row{display:flex;align-items:center;gap:14px;}
+.ctrl-btn{color:#fff;display:flex;align-items:center;justify-content:center;}
+.ctrl-btn svg{width:20px;height:20px;}
+.time-label{color:#fff;font-size:12px;font-variant-numeric:tabular-nums;flex-shrink:0;}
+.spacer{flex:1;}
+
+.lesson-title{font-size:21px;margin-bottom:8px;}
+.lesson-sub{font-size:13px;color:var(--grey);margin-bottom:20px;}
+
+.action-row{display:flex;gap:12px;margin-bottom:26px;flex-wrap:wrap;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:11px;font-weight:600;font-size:13.5px;}
+.btn svg{width:15px;height:15px;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-outline{border:1.5px solid var(--border);color:var(--navy);background:#fff;}
+.btn-complete{background:var(--green-bg);color:var(--green);}
+.btn:disabled{opacity:.6;cursor:default;}
+
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:20px;}
+.card h5{font-size:14px;margin-bottom:12px;}
+.resource-item{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.resource-item:last-child{border-bottom:none;}
+.resource-item .name{display:flex;align-items:center;gap:9px;}
+.resource-item svg{width:16px;color:var(--violet);flex-shrink:0;}
+.resource-item .dl{font-size:12px;font-weight:700;color:var(--violet);}
+
+.prevnext-row{display:flex;justify-content:space-between;gap:12px;}
+.state-box{text-align:center;padding:60px 20px;color:var(--grey);}
+.hidden{display:none;}
+
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;}
+  .lesson-sidebar{position:static;max-height:none;border-right:none;border-bottom:1px solid var(--border);}
+  .main{padding:20px 16px 50px;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="lesson-sidebar">
+    <a href="dashboard-student.html" class="ls-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to My Courses</a>
+    <div class="ls-course-title" id="courseTitle">Loading course…</div>
+    <div class="ls-progress-row">
+      <div class="ls-progress-track"><div class="ls-progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="ls-progress-label" id="progressLabel">0% complete</div>
+    </div>
+    <div id="lessonList"></div>
+  </aside>
+
+  <main class="main">
+    <div id="loadingState" class="state-box">Loading lesson…</div>
+
+    <div id="lessonContent" class="hidden">
+      <div class="player-wrap">
+        <video id="video" playsinline></video>
+        <iframe id="videoFrame" class="lesson-embed hidden" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        <div class="player-controls" id="playerControls">
+          <div class="progress-bar" id="progressBar"><div class="progress-fill" id="videoProgressFill"></div></div>
+          <div class="controls-row">
+            <button class="ctrl-btn" id="playBtn">
+              <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg id="pauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+            </button>
+            <span class="time-label" id="timeLabel">0:00 / 0:00</span>
+            <span class="spacer"></span>
+            <button class="ctrl-btn" id="fullscreenBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+          </div>
+        </div>
+      </div>
+
+      <h1 class="lesson-title" id="lessonTitle"></h1>
+      <p class="lesson-sub" id="lessonSub"></p>
+
+      <div class="action-row">
+        <button class="btn btn-complete" id="completeBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+          <span id="completeLabel">Mark as Complete</span>
+        </button>
+      </div>
+
+      <div class="card hidden" id="resourcesCard">
+        <h5>Lesson Resources</h5>
+        <div id="resourceList"></div>
+      </div>
+
+      <div class="card hidden" id="assignmentCard">
+        <h5>Assignment</h5>
+        <div id="assignmentInfo"></div>
+      </div>
+
+      <div class="prevnext-row">
+        <button class="btn btn-outline" id="prevBtn">← Previous Lesson</button>
+        <button class="btn btn-violet" id="nextBtn">Next Lesson →</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import { watchAuth } from './auth.js';
+  import { getCourse } from './courses.js';
+  import { listLessonsForCourse, markLessonComplete, getEnrollmentProgress } from './lessons.js';
+  import { listAssignmentsForCourse, getSubmission } from './assignments.js';
+
+  const params = new URLSearchParams(window.location.search);
+  const courseId = params.get('course');
+  const lessonIdParam = params.get('lesson');
+
+  let currentUser = null;
+  let lessons = [];
+  let currentLesson = null;
+  let completedIds = [];
+  let courseAssignments = [];
+
+  const loadingState = document.getElementById('loadingState');
+  const lessonContent = document.getElementById('lessonContent');
+
+  // Detects a YouTube link in any common form (watch?v=, youtu.be/, /embed/, /shorts/)
+  // and returns an embeddable URL, or null if this isn't a YouTube link at all.
+  function getYouTubeEmbedUrl(url){
+    if(!url) return null;
+    const patterns = [
+      /youtube\.com\/watch\?v=([\w-]{6,})/,
+      /youtu\.be\/([\w-]{6,})/,
+      /youtube\.com\/embed\/([\w-]{6,})/,
+      /youtube\.com\/shorts\/([\w-]{6,})/
+    ];
+    for(const p of patterns){
+      const m = url.match(p);
+      if(m) return `https://www.youtube.com/embed/${m[1]}`;
+    }
+    return null;
+  }
+
+  if(!courseId){
+    loadingState.textContent = 'No course specified.';
+  } else {
+    watchAuth(async function(user){
+      if(!user){
+        window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.href);
+        return;
+      }
+      currentUser = user;
+      await init();
+    });
+  }
+
+  async function init(){
+    const [course, lessonList, progress] = await Promise.all([
+      getCourse(courseId),
+      listLessonsForCourse(courseId),
+      getEnrollmentProgress(currentUser.uid, courseId)
+    ]);
+
+    if(!course){ loadingState.textContent = 'Course not found.'; return; }
+    if(!progress){
+      // Not enrolled — send them to the course page instead of the player.
+      window.location.href = 'courses.html';
+      return;
+    }
+
+    document.getElementById('courseTitle').textContent = course.title;
+    lessons = lessonList;
+    completedIds = progress.completedLessonIds || [];
+    try{
+      courseAssignments = await listAssignmentsForCourse(courseId);
+    }catch(err){
+      console.error('listAssignmentsForCourse failed', err);
+      courseAssignments = [];
+    }
+    updateProgressUI();
+    renderLessonList();
+
+    const targetId = lessonIdParam || (lessons[0] && lessons[0].id);
+    if(!targetId){ loadingState.textContent = 'This course has no lessons yet.'; return; }
+    await loadLesson(targetId);
+
+    loadingState.classList.add('hidden');
+    lessonContent.classList.remove('hidden');
+  }
+
+  async function renderAssignmentCard(lessonId){
+    const assignmentCard = document.getElementById('assignmentCard');
+    const assignmentInfo = document.getElementById('assignmentInfo');
+    const assignment = courseAssignments.find(a => a.lessonId === lessonId);
+
+    if(!assignment){
+      assignmentCard.classList.add('hidden');
+      return;
+    }
+
+    assignmentCard.classList.remove('hidden');
+    assignmentInfo.innerHTML = `<p style="color:var(--grey);font-size:13px;">Loading…</p>`;
+
+    let submission = null;
+    try{
+      submission = await getSubmission(currentUser.uid, assignment.id);
+    }catch(err){
+      console.error('getSubmission failed', err);
+    }
+
+    const dueLabel = assignment.dueDate ? `Due ${new Date(assignment.dueDate).toLocaleDateString()}` : 'No due date';
+    let statusLabel = 'Not submitted';
+    if(submission && submission.status === 'graded'){
+      statusLabel = `Graded — ${submission.score}/${assignment.maxScore}`;
+    } else if(submission){
+      statusLabel = 'Submitted — awaiting grading';
+    }
+
+    assignmentInfo.innerHTML = `
+      <p style="font-weight:600;font-size:13.5px;margin-bottom:4px;">${assignment.title}</p>
+      <p style="color:var(--grey);font-size:12.5px;margin-bottom:8px;">${assignment.description || ''}</p>
+      <p style="font-size:11.5px;color:var(--grey-light);margin-bottom:10px;">${dueLabel} · ${assignment.maxScore} pts · ${statusLabel}</p>
+      <a href="assignments.html?course=${courseId}&assignment=${assignment.id}" class="btn btn-violet btn-sm">${submission ? 'View Submission' : 'Submit Assignment'}</a>
+    `;
+  }
+
+  function updateProgressUI(){
+    const pct = lessons.length ? Math.round((completedIds.length / lessons.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = pct + '% complete';
+  }
+
+  function renderLessonList(){
+    const wrap = document.getElementById('lessonList');
+    wrap.innerHTML = '';
+    lessons.forEach(function(lesson, i){
+      const item = document.createElement('div');
+      const isDone = completedIds.includes(lesson.id);
+      const isActive = currentLesson && currentLesson.id === lesson.id;
+      item.className = 'ls-item' + (isDone ? ' done' : '') + (isActive ? ' active' : '');
+      item.innerHTML = `
+        <div class="ls-check">${isDone ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>' : ''}</div>
+        <span class="ls-num">${i+1}.</span>
+        <span>${lesson.title}</span>`;
+      item.addEventListener('click', () => loadLesson(lesson.id));
+      wrap.appendChild(item);
+    });
+  }
+
+  async function loadLesson(lessonId){
+    currentLesson = lessons.find(l => l.id === lessonId);
+    if(!currentLesson) return;
+
+    // update URL without reloading
+    const url = new URL(window.location);
+    url.searchParams.set('lesson', lessonId);
+    window.history.replaceState({}, '', url);
+
+    document.getElementById('lessonTitle').textContent = currentLesson.title;
+    const idx = lessons.findIndex(l => l.id === lessonId);
+    document.getElementById('lessonSub').textContent = `Lesson ${idx+1} of ${lessons.length}`;
+
+    const video = document.getElementById('video');
+    const videoFrame = document.getElementById('videoFrame');
+    const playerControls = document.getElementById('playerControls');
+    const youtubeUrl = getYouTubeEmbedUrl(currentLesson.videoUrl);
+
+    if(youtubeUrl){
+      // YouTube: use an iframe embed. We lose the custom play/pause/progress
+      // controls and auto-advance-on-end here, since a cross-origin iframe
+      // can't be driven the same way a native <video> element can — the
+      // student uses YouTube's own player controls instead, and clicks
+      // "Mark as Complete" manually when done.
+      video.pause();
+      video.removeAttribute('src');
+      video.classList.add('hidden');
+      playerControls.classList.add('hidden');
+      videoFrame.src = youtubeUrl;
+      videoFrame.classList.remove('hidden');
+    } else {
+      videoFrame.src = '';
+      videoFrame.classList.add('hidden');
+      video.classList.remove('hidden');
+      playerControls.classList.remove('hidden');
+      video.src = currentLesson.videoUrl;
+      video.load();
+    }
+
+    const resourcesCard = document.getElementById('resourcesCard');
+    const resourceList = document.getElementById('resourceList');
+    resourceList.innerHTML = '';
+    if(currentLesson.resources && currentLesson.resources.length){
+      resourcesCard.classList.remove('hidden');
+      currentLesson.resources.forEach(r => {
+        const row = document.createElement('div');
+        row.className = 'resource-item';
+        row.innerHTML = `
+          <span class="name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>${r.name}</span>
+          <a class="dl" href="${r.url}" target="_blank" rel="noopener">Download</a>`;
+        resourceList.appendChild(row);
+      });
+    } else {
+      resourcesCard.classList.add('hidden');
+    }
+
+    await renderAssignmentCard(currentLesson.id);
+
+    updateCompleteButton();
+    updatePrevNextButtons();
+    renderLessonList();
+  }
+
+  function updateCompleteButton(){
+    const btn = document.getElementById('completeBtn');
+    const label = document.getElementById('completeLabel');
+    const isDone = completedIds.includes(currentLesson.id);
+    label.textContent = isDone ? 'Completed' : 'Mark as Complete';
+    btn.disabled = isDone;
+  }
+
+  function updatePrevNextButtons(){
+    const idx = lessons.findIndex(l => l.id === currentLesson.id);
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    prevBtn.disabled = idx <= 0;
+    nextBtn.disabled = idx >= lessons.length - 1;
+    prevBtn.onclick = () => idx > 0 && loadLesson(lessons[idx-1].id);
+    nextBtn.onclick = () => idx < lessons.length - 1 && loadLesson(lessons[idx+1].id);
+  }
+
+  document.getElementById('completeBtn').addEventListener('click', async function(){
+    if(completedIds.includes(currentLesson.id)) return;
+    await markLessonComplete(currentUser.uid, courseId, currentLesson.id, lessons.length);
+    completedIds.push(currentLesson.id);
+    updateCompleteButton();
+    updateProgressUI();
+    renderLessonList();
+  });
+
+  // ---- Custom video controls ----
+  const video = document.getElementById('video');
+  const playBtn = document.getElementById('playBtn');
+  const playIcon = document.getElementById('playIcon');
+  const pauseIcon = document.getElementById('pauseIcon');
+  const progressBar = document.getElementById('progressBar');
+  const videoProgressFill = document.getElementById('videoProgressFill');
+  const timeLabel = document.getElementById('timeLabel');
+  const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+  function formatTime(sec){
+    if(isNaN(sec)) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60).toString().padStart(2, '0');
+    return `${m}:${s}`;
+  }
+
+  playBtn.addEventListener('click', function(){
+    if(video.paused){ video.play(); } else { video.pause(); }
+  });
+  video.addEventListener('play', function(){
+    playIcon.style.display = 'none';
+    pauseIcon.style.display = '';
+  });
+  video.addEventListener('pause', function(){
+    playIcon.style.display = '';
+    pauseIcon.style.display = 'none';
+  });
+  video.addEventListener('timeupdate', function(){
+    const pct = video.duration ? (video.currentTime / video.duration) * 100 : 0;
+    videoProgressFill.style.width = pct + '%';
+    timeLabel.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+  });
+  progressBar.addEventListener('click', function(e){
+    const rect = progressBar.getBoundingClientRect();
+    const pct = (e.clientX - rect.left) / rect.width;
+    if(video.duration) video.currentTime = pct * video.duration;
+  });
+  fullscreenBtn.addEventListener('click', function(){
+    const wrap = document.querySelector('.player-wrap');
+    if(document.fullscreenElement){ document.exitFullscreen(); }
+    else { wrap.requestFullscreen(); }
+  });
+  video.addEventListener('ended', function(){
+    document.getElementById('completeBtn').click();
+    const idx = lessons.findIndex(l => l.id === currentLesson.id);
+    if(idx < lessons.length - 1) loadLesson(lessons[idx+1].id);
+  });
+</script>
+</body>
+</html>

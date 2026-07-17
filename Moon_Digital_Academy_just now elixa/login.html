@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#5B3FD6">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log In — Moon Digital Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+:root{
+  --navy:#14163A; --grey:#6B7280; --grey-light:#9CA3AF; --border:#E6E4F3;
+  --bg-lav:#F5F3FC; --gold:#F2A93B; --gold-dark:#D98E1E;
+  --violet:#5B3FD6; --violet-dark:#4A30B8;
+  --gradient: linear-gradient(150deg,#15308E 0%, #2A2C9A 45%, #3E2C95 100%);
+  --red:#D64545; --red-bg:#FBE3E3;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:var(--navy);background:#fff;-webkit-font-smoothing:antialiased;}
+h1,h2,h3{font-family:'Poppins',sans-serif;margin:0;letter-spacing:-0.01em;}
+p{margin:0;}
+a{text-decoration:none;color:inherit;}
+button{color:inherit;font-family:'Inter',sans-serif;cursor:pointer;border:none;background:none;}
+input{font-family:'Inter',sans-serif;}
+
+.split{display:grid;grid-template-columns:1fr 1fr;min-height:100vh;}
+
+.brand-panel{background:var(--gradient);position:relative;overflow:hidden;padding:44px;display:flex;flex-direction:column;justify-content:space-between;}
+.brand-panel::after{content:"";position:absolute;top:-100px;right:-100px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.06);}
+.brand-panel::before{content:"";position:absolute;bottom:-120px;left:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.05);}
+.bp-logo{display:flex;align-items:center;gap:10px;position:relative;z-index:2;}
+.bp-logo-img{height:28px;width:auto;display:block;}
+.bp-logo-circle{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-weight:800;font-size:12px;color:#fff;}
+.bp-logo-text{color:#fff;font-weight:700;font-size:14px;}
+.bp-mid{position:relative;z-index:2;max-width:400px;}
+.bp-mid h1{color:#fff;font-size:32px;line-height:1.3;margin-bottom:16px;}
+.bp-mid h1 .gold{color:var(--gold);}
+.bp-mid p{color:#cfd3ff;font-size:14px;line-height:1.7;}
+.bp-quote{position:relative;z-index:2;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:20px;max-width:400px;}
+.bp-quote p{color:#fff;font-size:13.5px;line-height:1.7;font-style:italic;margin-bottom:14px;}
+.bp-quote .who{display:flex;align-items:center;gap:10px;}
+.bp-quote .av{width:32px;height:32px;border-radius:50%;background:linear-gradient(160deg,#F4A6C1,#E96D95);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;}
+.bp-quote .name{color:#fff;font-size:12.5px;font-weight:700;}
+.bp-quote .role{color:#cfd3ff;font-size:11px;}
+
+.form-panel{display:flex;align-items:center;justify-content:center;padding:40px;}
+.form-box{width:100%;max-width:380px;}
+.fb-top{margin-bottom:28px;}
+.fb-top a.back{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--grey);font-weight:600;margin-bottom:22px;}
+.fb-top a.back svg{width:14px;height:14px;}
+.fb-top h2{font-size:23px;margin-bottom:8px;}
+.fb-top p{font-size:13.5px;color:var(--grey);}
+.fb-top p a{color:var(--violet);font-weight:700;}
+
+.alert{display:none;align-items:flex-start;gap:9px;padding:12px 14px;border-radius:11px;font-size:12.5px;line-height:1.6;margin-bottom:18px;}
+.alert.show{display:flex;}
+.alert svg{width:16px;height:16px;flex-shrink:0;margin-top:1px;}
+.alert-error{background:var(--red-bg);color:var(--red);}
+.alert-success{background:#DDF2E3;color:#3F8F62;}
+
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:7px;}
+.input-wrap{position:relative;display:flex;align-items:center;}
+.input-wrap svg.icon-left{position:absolute;left:13px;color:var(--grey-light);width:16px;height:16px;}
+.input-wrap input{
+  width:100%;padding:12px 14px 12px 40px;border:1.5px solid var(--border);border-radius:11px;
+  font-size:13.5px;background:#fff;outline:none;transition:.15s;color:var(--navy);
+}
+.input-wrap input::placeholder{color:#B7B6CC;}
+.input-wrap input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(91,63,214,.13);}
+.input-wrap input.invalid{border-color:var(--red);}
+.pw-toggle{position:absolute;right:12px;background:none;padding:2px;color:var(--grey-light);display:flex;}
+.pw-toggle svg{width:16px;height:16px;}
+.field-error{font-size:11.5px;color:var(--red);margin-top:6px;display:none;}
+.field-error.show{display:block;}
+.row-between{display:flex;align-items:center;justify-content:space-between;margin:2px 0 20px;font-size:12.5px;}
+.remember{display:flex;align-items:center;gap:7px;color:var(--grey);}
+.remember input{width:14px;height:14px;accent-color:var(--violet);}
+.link-violet{color:var(--violet);font-weight:600;}
+
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;text-align:center;padding:13px;border-radius:12px;font-weight:600;font-size:14px;transition:.15s;}
+.btn-violet{background:var(--violet);color:#fff;}
+.btn-violet:hover{background:var(--violet-dark);}
+.btn-violet:disabled{background:#B8ABEA;cursor:not-allowed;}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.spinner.show{display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+.divider{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--grey-light);font-size:11.5px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:11px;border:1.5px solid var(--border);border-radius:11px;font-size:13px;font-weight:600;margin-bottom:10px;}
+.social-btn svg{width:16px;height:16px;}
+.social-btn:disabled{opacity:.6;cursor:not-allowed;}
+
+@media (max-width:900px){
+  .split{grid-template-columns:1fr;}
+  .brand-panel{display:none;}
+  .form-panel{padding:28px 20px;}
+}
+</style>
+  <script src="pwa-register.js" defer></script>
+</head>
+<body>
+<div class="split">
+
+  <div class="brand-panel">
+    <div class="bp-logo">
+      <img src="logo-white.png" alt="Moon Digital Academy" class="bp-logo-img">
+    </div>
+    <div class="bp-mid">
+      <h1>Learn. Apply.<br>Grow. <span class="gold">Succeed.</span></h1>
+      <p>Track your progress and build practical, income-generating skills — whether you're learning, teaching, or managing the platform.</p>
+    </div>
+    <div class="bp-quote">
+      <p>"I started with zero experience. Three months later I'm booking paid bridal clients every weekend."</p>
+      <div class="who">
+        <div class="av">AJ</div>
+        <div><div class="name">Amaka Johnson</div><div class="role">Beauty &amp; Cosmetics graduate</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-panel">
+    <div class="form-box">
+      <div class="fb-top">
+        <a href="index.html" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back to homepage</a>
+        <h2>Welcome Back</h2>
+        <p>Log in to continue your journey. New here? <a href="register.html">Create an account</a></p>
+      </div>
+
+      <div class="alert alert-error" id="errorAlert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v5M12 16h.01"/></svg>
+        <span id="errorText"></span>
+      </div>
+      <div class="alert alert-success" id="successAlert">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+        <span id="successText"></span>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label>Email Address</label>
+          <div class="input-wrap">
+            <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M4 7l8 6 8-6"/></svg>
+            <input type="email" placeholder="Enter your email" id="email" required>
+          </div>
+          <div class="field-error" id="emailError">Please enter a valid email address.</div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <svg class="icon-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+            <input type="password" placeholder="Enter your password" id="pwInput" required>
+            <button class="pw-toggle" id="pwToggle" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <div class="field-error" id="pwError">Please enter your password.</div>
+        </div>
+        <div class="row-between">
+          <label class="remember"><input type="checkbox" id="remember">Remember me</label>
+          <a href="forgot-password.html" class="link-violet">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-violet" id="signInBtn">
+          <span class="spinner" id="signInSpinner"></span>
+          <span id="signInLabel">Sign In</span>
+        </button>
+      </form>
+
+      <div class="divider">or continue with</div>
+      <button class="social-btn" type="button" id="googleBtn">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.2 2.7-2.5 3.6v3h4C22.2 19.4 23.5 16.2 23.5 12.3Z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 7.9-2.9l-4-3c-1.1.7-2.4 1.2-4 1.2-3 0-5.6-2-6.6-4.8h-4v3.1C3.3 21.5 7.3 24 12 24Z"/><path fill="#FBBC05" d="M5.4 14.5c-.3-.7-.4-1.5-.4-2.3s.1-1.6.4-2.3V6.8h-4C.5 8.4 0 10.2 0 12.2s.5 3.8 1.4 5.4l4-3.1Z"/><path fill="#EA4335" d="M12 4.8c1.7 0 3.3.6 4.5 1.8l3.4-3.4C17.9 1.2 15.2 0 12 0 7.3 0 3.3 2.5 1.4 6.8l4 3.1c1-2.8 3.6-4.8 6.6-4.8Z"/></svg>
+        Continue with Google
+      </button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { loginUser, loginWithGoogle, friendlyAuthError } from './auth.js';
+
+  const form = document.getElementById('loginForm');
+  const emailInput = document.getElementById('email');
+  const pwInput = document.getElementById('pwInput');
+  const signInBtn = document.getElementById('signInBtn');
+  const signInSpinner = document.getElementById('signInSpinner');
+  const signInLabel = document.getElementById('signInLabel');
+  const errorAlert = document.getElementById('errorAlert');
+  const errorText = document.getElementById('errorText');
+  const successAlert = document.getElementById('successAlert');
+  const successText = document.getElementById('successText');
+  const googleBtn = document.getElementById('googleBtn');
+
+  function showError(msg){
+    errorText.textContent = msg;
+    errorAlert.classList.add('show');
+    successAlert.classList.remove('show');
+  }
+  function showSuccess(msg){
+    successText.textContent = msg;
+    successAlert.classList.add('show');
+    errorAlert.classList.remove('show');
+  }
+  function setLoading(loading){
+    signInBtn.disabled = loading;
+    googleBtn.disabled = loading;
+    signInSpinner.classList.toggle('show', loading);
+    signInLabel.textContent = loading ? 'Signing in…' : 'Sign In';
+  }
+  function validate(){
+    let ok = true;
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+    document.getElementById('emailError').classList.toggle('show', !emailOk);
+    emailInput.classList.toggle('invalid', !emailOk);
+    if(!emailOk) ok = false;
+    const pwOk = pwInput.value.length > 0;
+    document.getElementById('pwError').classList.toggle('show', !pwOk);
+    pwInput.classList.toggle('invalid', !pwOk);
+    if(!pwOk) ok = false;
+    return ok;
+  }
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(!validate()) return;
+    setLoading(true);
+    try{
+      const { dashboard } = await loginUser(emailInput.value.trim(), pwInput.value);
+      showSuccess('Welcome back! Redirecting to your dashboard…');
+      setTimeout(() => window.location.href = dashboard, 700);
+    }catch(err){
+      showError(friendlyAuthError(err.code));
+      setLoading(false);
+    }
+  });
+
+  googleBtn.addEventListener('click', async function(){
+    setLoading(true);
+    try{
+      const { dashboard } = await loginWithGoogle();
+      showSuccess('Welcome! Redirecting to your dashboard…');
+      setTimeout(() => window.location.href = dashboard, 700);
+    }catch(err){
+      showError(friendlyAuthError(err.code));
+      setLoading(false);
+    }
+  });
+
+  document.getElementById('pwToggle').addEventListener('click', function(){
+    pwInput.type = pwInput.type === 'password' ? 'text' : 'password';
+  });
+</script>
+</body>
+</html>
