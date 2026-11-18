@@ -1,0 +1,27 @@
+{
+  "name": "Moon Digital Academy",
+  "short_name": "MDA",
+  "description": "Learn practical, income-generating skills — beauty, food, digital business, and creator economy courses.",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#F5F3FC",
+  "theme_color": "#5B3FD6",
+  "categories": ["education", "business"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Courses",
+      "url": "/courses.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Dashboard",
+      "url": "/dashboard-student.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

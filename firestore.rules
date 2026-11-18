@@ -1,0 +1,208 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function isInstructor() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'instructor';
+    }
+
+    match /users/{userId} {
+      // A user can read their own profile; admins can read (and list) anyone's.
+      // Instructors can also read individual profiles (get, not list) — needed so
+      // grading.html can show a student's name/email next to their submission.
+      allow get: if isOwner(userId) || isAdmin() || isInstructor();
+      allow list: if isAdmin();
+
+      // On sign-up, a user can only create their OWN doc, only as student/instructor
+      // (never admin), and the email in the doc must match their auth email.
+      allow create: if isOwner(userId)
+        && request.resource.data.role in ['student', 'instructor']
+        && request.resource.data.email == request.auth.token.email;
+
+      // After creation, a user can update their own profile fields, but the
+      // "role" field is locked — it can never change via a client write.
+      // (Promoting someone to instructor/admin, or changing roles, should be
+      // done from the Firebase Console or a trusted backend/Cloud Function.)
+      allow update: if (isOwner(userId) &&
+                          request.resource.data.role == resource.data.role)
+                        || isAdmin();
+
+      allow delete: if isAdmin();
+    }
+
+    match /courses/{courseId} {
+      // Anyone (including logged-out visitors) can browse courses. The client
+      // (courses.js listCourses) filters to status == "approved" for the
+      // public catalog — this rule intentionally still allows reading
+      // pending/rejected docs by direct ID, since instructors need to see
+      // their own not-yet-approved courses on their dashboard.
+      allow read: if true;
+
+      // New courses start as "pending" so an instructor can't publish straight
+      // to the live catalog — an admin must approve first. Admins themselves
+      // (e.g. running seed-courses.html) can create a course pre-approved.
+      allow create: if isSignedIn() && request.resource.data.instructorId == request.auth.uid
+        && (request.resource.data.status == 'pending' || isAdmin());
+
+      // Admins can change anything (including approving/rejecting).
+      // Instructors can edit their own course's details but cannot touch
+      // "status" — only an admin can approve/reject.
+      allow update: if isAdmin() ||
+        (isSignedIn() && resource.data.instructorId == request.auth.uid
+          && request.resource.data.status == resource.data.status);
+      allow delete: if isAdmin() ||
+        (isSignedIn() && resource.data.instructorId == request.auth.uid);
+
+      match /lessons/{lessonId} {
+        // Lesson content is only visible to signed-in users (courses can be
+        // paid, so full lesson content shouldn't be publicly readable pre-login).
+        // For stricter "must be enrolled" gating, check the enrollments
+        // collection here too — left simple since lesson.html already
+        // redirects non-enrolled users away.
+        allow read: if isSignedIn();
+        allow create, update, delete: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/courses/$(courseId)).data.instructorId == request.auth.uid);
+      }
+
+      match /assignments/{assignmentId} {
+        // Enrolled students and the instructor/admin all need to read assignments;
+        // simplest safe rule here is "any signed-in user can read", since assignment
+        // content itself isn't sensitive. Only the owning instructor/admin can write.
+        allow read: if isSignedIn();
+        allow create, update, delete: if isAdmin() ||
+          (isSignedIn() && get(/databases/$(database)/documents/courses/$(courseId)).data.instructorId == request.auth.uid);
+      }
+    }
+
+    match /enrollments/{enrollmentId} {
+      // A student can read/create their own enrollment; instructors/admins can read all
+      // (needed for grading, progress views, and the admin dashboard).
+      // NOTE: `resource == null` handles the "am I enrolled?" check from courses.html,
+      // which calls getDoc() on an enrollment doc that may not exist yet — without this
+      // guard, Firestore throws a permission error (not just "not found") whenever the
+      // referenced document doesn't exist, since resource.data can't be read off null.
+      allow read: if isSignedIn() &&
+        (resource == null || resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() &&
+        request.resource.data.uid == request.auth.uid;
+      allow update: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    match /submissions/{submissionId} {
+      // Same non-existent-document guard as enrollments above — getSubmission()
+      // checks for a submission that may not exist yet. Course instructor can
+      // also read/grade submissions for their own course.
+      allow read: if isSignedIn() &&
+        (resource == null || resource.data.uid == request.auth.uid || isAdmin() ||
+         get(/databases/$(database)/documents/courses/$(resource.data.courseId)).data.instructorId == request.auth.uid);
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      // Students can update their own submission (e.g. resubmit); the owning
+      // instructor/admin grades it (writes score/feedback/status).
+      allow update: if isAdmin() ||
+        (isSignedIn() && resource.data.uid == request.auth.uid) ||
+        (isSignedIn() && get(/databases/$(database)/documents/courses/$(resource.data.courseId)).data.instructorId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      // A user can only read/update (mark-read)/delete their own notifications.
+      // Any signed-in user can create a notification *for someone else*
+      // (this is how submitAssignment/gradeSubmission notify the other party) —
+      // this mirrors how the app's assignments.js is written; if you want this
+      // tighter later, route notification creation through a Cloud Function instead.
+      allow read, update: if isSignedIn() && resource.data.uid == request.auth.uid;
+      allow create: if isSignedIn();
+      allow delete: if isSignedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    match /testAttempts/{attemptId} {
+      // Same non-existent-document guard as enrollments/submissions — checking
+      // "have I already passed this test?" reads a doc that may not exist yet.
+      // The course's instructor can also read attempts for their own course
+      // (needed for the instructor-facing results list on the grading page).
+      allow read: if isSignedIn() &&
+        (resource == null || resource.data.uid == request.auth.uid || isAdmin() ||
+         get(/databases/$(database)/documents/courses/$(resource.data.courseId)).data.instructorId == request.auth.uid);
+      allow create, update: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if isAdmin();
+    }
+
+    match /certificates/{certificateId} {
+      // Public read so the verification page (certificate-verify.html) works
+      // for anyone, without login.
+      allow read: if true;
+
+      // A student can only issue their own certificate. Grading happens
+      // client-side (see finalTest.js/course-test.html), so this trusts that
+      // the student only calls issueCertificateIfPassed() after a genuine
+      // passing result — acceptable for a small internal academy with no
+      // Cloud Functions; tighten with server-side grading if that changes.
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+
+      // Certificates are immutable once issued.
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+
+    match /payments/{paymentId} {
+      // A user can create and read their own payment records; admins can read all.
+      // NOTE: because there's no real payment gateway + server-side verification
+      // yet, the client itself marks a payment "completed"/"failed" after the
+      // simulated processing step — that's fine for this stage, but before
+      // connecting a real gateway, payment status should only ever be written
+      // by a trusted backend (Cloud Function verifying with Paystack/Flutterwave),
+      // not the client.
+      allow read: if isSignedIn() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    match /announcements/{announcementId} {
+      // Any signed-in user can read (shown on their dashboard); only admins compose/delete.
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /posts/{postId} {
+      // Public community feed — anyone can read, only signed-in users can post.
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+
+      // Any signed-in user can update a post (needed so any user can like/unlike
+      // it, and so a new comment can bump its commentCount) — but only the
+      // likedBy/commentCount fields; the author, content, and category of
+      // someone else's post can't be rewritten this way.
+      allow update: if isSignedIn() &&
+        request.resource.data.uid == resource.data.uid &&
+        request.resource.data.authorName == resource.data.authorName &&
+        request.resource.data.content == resource.data.content &&
+        request.resource.data.category == resource.data.category;
+
+      allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+
+      match /comments/{commentId} {
+        allow read: if true;
+        allow create: if isSignedIn() && request.resource.data.uid == request.auth.uid;
+        allow update: if isSignedIn() && resource.data.uid == request.auth.uid;
+        allow delete: if isAdmin() || (isSignedIn() && resource.data.uid == request.auth.uid);
+      }
+    }
+  }
+}

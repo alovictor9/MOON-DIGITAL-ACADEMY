@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're Offline — Moon Digital Academy</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#5B3FD6">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap');
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Inter',sans-serif;color:#14163A;background:#F5F3FC;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;-webkit-font-smoothing:antialiased;}
+h1{font-family:'Poppins',sans-serif;font-size:20px;margin:0 0 10px;}
+p{font-size:13.5px;color:#6B7280;line-height:1.6;margin:0 0 24px;}
+.card{max-width:380px;text-align:center;background:#fff;border-radius:20px;padding:40px 32px;box-shadow:0 30px 60px -30px rgba(20,22,58,.25);}
+.icon{width:56px;height:56px;border-radius:50%;background:#EDE9FB;color:#5B3FD6;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;}
+.icon svg{width:26px;height:26px;}
+button{font-family:'Inter',sans-serif;cursor:pointer;border:none;background:#5B3FD6;color:#fff;padding:12px 24px;border-radius:11px;font-weight:600;font-size:13.5px;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9Z" opacity=".3"/><path d="M5 13l2 2a7.07 7.07 0 0 1 10 0l2-2a10 10 0 0 0-14 0Z"/><path d="M9 17l2 2a3.16 3.16 0 0 1 2 0l2-2a6 6 0 0 0-6 0Z" opacity=".6"/><line x1="2" y1="2" x2="22" y2="22"/></svg></div>
+    <h1>You're offline</h1>
+    <p>This page hasn't been saved for offline use yet. Reconnect and try again — anything you've already visited should still work.</p>
+    <button onclick="window.location.reload()">Try Again</button>
+  </div>
+</body>
+</html>
